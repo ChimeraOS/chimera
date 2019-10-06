@@ -16,6 +16,21 @@ def do_upload():
 	hidden = request.forms.get('hidden')
 	banner = request.files.get('banner')
 	content = request.files.get('content')
+
+	shortcuts = []
+	shortcuts_dir = "{data_dir}/steam-shortcuts".format(data_dir=BASE_DIR)
+	if not os.path.exists(shortcuts_dir):
+		os.makedirs(shortcuts_dir)
+	shortcuts_file = "{shortcuts_dir}/prom.{platform}.yaml".format(shortcuts_dir=shortcuts_dir, platform=platform)
+	if os.path.isfile(shortcuts_file):
+		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.FullLoader)
+
+	if not shortcuts:
+		shortcuts = []
+
+	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+	if len(matches) > 0:
+		return 'Shortcut already exists'
 	
 	if banner:
 		dir_path = "{data_dir}/banners/{platform}".format(data_dir=DATA_DIR, platform=platform)
@@ -40,13 +55,6 @@ def do_upload():
 	if not os.path.exists(saves_dir):
 		os.makedirs(saves_dir)
 
-	shortcuts = []
-	shortcuts_dir = "{data_dir}/steam-shortcuts".format(data_dir=BASE_DIR)
-	if not os.path.exists(shortcuts_dir):
-		os.makedirs(shortcuts_dir)
-	shortcuts_file = "{shortcuts_dir}/prom.{platform}.yaml".format(shortcuts_dir=shortcuts_dir, platform=platform)
-	if os.path.isfile(shortcuts_file):
-		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.FullLoader)
 
 
 	shortcut = {}
