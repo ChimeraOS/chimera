@@ -31,13 +31,14 @@ def root():
 
 @route('/platforms/<platform>')
 def platform(platform):
-	shortcuts = load_shortcuts(platform)
-	output = '<style>img { padding : 10px }</style>'
+	shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
+	output = '<style>img { padding : 10px } .hidden { opacity : 0.25 }</style>'
 	output += '<p><a href="/">Platforms</a>  <a href="/platforms/{platform}/new">Add</a></p>'.format(platform=platform)
 	for shortcut in shortcuts:
+		hiddenClass = 'hidden' if shortcut['hidden'] else ''
 		filename = os.path.basename(shortcut['image'])
 		image = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
-		output += '<img src="{image}" alt="{name}" title="{name}" width="460" height="215"></img>'.format(image=image, name=shortcut['name'])
+		output += '<a href="/platforms/{platform}/edit/{name}"><img class="{hidden}" src="{image}" alt="{name}" title="{name}" width="460" height="215"></img></a>'.format(image=image, name=shortcut['name'], platform=platform, hidden=hiddenClass)
 
 	return output
 
@@ -48,15 +49,26 @@ def banners(platform, filename):
 
 @route('/platforms/<platform>/new')
 def new(platform):
-	return template('new.tpl', platform=platform)
+	return template('new.tpl', platform=platform, name='')
 	#return static_file('shortcuts.html', root='.')
+
+@route('/platforms/<platform>/edit/<name>')
+def edit(platform, name):
+	shortcuts_dir = "{data_dir}/steam-shortcuts".format(data_dir=BASE_DIR)
+	shortcuts_file = "{shortcuts_dir}/prom.{platform}.yaml".format(shortcuts_dir=shortcuts_dir, platform=platform)
+	shortcuts = load_shortcuts(platform)
+
+	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+	shortcut = matches[0]
+
+	return template('edit.tpl', platform=platform, name=name, hidden=shortcut['hidden'])
 
 @route('/art/<filename>')
 def art(filename):
 	return static_file('art/' + filename, root='.')
 
-@route('/shortcuts', method='POST')
-def shortcuts():
+@route('/shortcuts/new', method='POST')
+def shortcut_create():
 	name = request.forms.get('name')
 	platform = request.forms.get('platform')
 	hidden = request.forms.get('hidden')
@@ -109,7 +121,83 @@ def shortcuts():
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)	
 
-	#return 'Shortcut added'
+	redirect('/platforms/{platform}'.format(platform=platform))
+
+@route('/shortcuts/edit', method='POST')
+def shortcut_update():
+	original_name = request.forms.get('original_name')
+	name = request.forms.get('name')
+	platform = request.forms.get('platform')
+	hidden = request.forms.get('hidden')
+	banner = request.files.get('banner')
+	content = request.files.get('content')
+
+	shortcuts_dir = "{data_dir}/steam-shortcuts".format(data_dir=BASE_DIR)
+	shortcuts_file = "{shortcuts_dir}/prom.{platform}.yaml".format(shortcuts_dir=shortcuts_dir, platform=platform)
+	shortcuts = load_shortcuts(platform)
+
+	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+	
+	if banner:
+		_, ext = os.path.splitext(banner.filename)
+		dir_path = "{data_dir}/banners/{platform}".format(data_dir=DATA_DIR, platform=platform)
+		if not os.path.exists(dir_path):
+			os.makedirs(dir_path)
+		banner_path = "{dir_path}/{filename}{ext}".format(dir_path=dir_path, filename=name, ext=ext)
+		if os.path.exists(banner_path):
+			os.remove(banner_path)
+		banner.save(banner_path)
+	
+	if content:
+		_, ext = os.path.splitext(content.filename)
+		dir_path = "{data_dir}/content/{platform}".format(data_dir=DATA_DIR, platform=platform)
+		if not os.path.exists(dir_path):
+			os.makedirs(dir_path)
+		content_path = "{dir_path}/{filename}{ext}".format(dir_path=dir_path, filename=name, ext=ext)
+		if os.path.exists(content_path):
+			os.remove(content_path)
+		content.save(content_path)
+
+
+	saves_dir = "{data_dir}/saves/{platform}".format(data_dir=DATA_DIR, platform=platform)
+	if not os.path.exists(saves_dir):
+		os.makedirs(saves_dir)
+
+	shortcut = matches[0]
+	shortcut['name'] = original_name # TODO: allow editing of name
+	shortcut['cmd'] = platform
+	shortcut['hidden'] = hidden == 'on'
+	shortcut['dir'] = "{data_dir}/saves/{platform}".format(data_dir=DATA_DIR, platform=platform)
+	if banner:
+		shortcut['image'] = banner_path
+	if content:
+		shortcut['params'] = content_path
+
+	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+
+	redirect('/platforms/{platform}'.format(platform=platform))
+
+@route('/shortcuts/delete', method='POST')
+def shortcut_delete():
+	name = request.forms.get('name')
+	platform = request.forms.get('platform')
+
+	shortcuts_dir = "{data_dir}/steam-shortcuts".format(data_dir=BASE_DIR)
+	shortcuts_file = "{shortcuts_dir}/prom.{platform}.yaml".format(shortcuts_dir=shortcuts_dir, platform=platform)
+	shortcuts = load_shortcuts(platform)
+
+	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+	shortcut = matches[0]
+
+	if 'params' in shortcut:
+		os.remove(shortcut['params'])
+
+	if 'image' in shortcut:
+		os.remove(shortcut['image'])
+
+	shortcuts.remove(shortcut)
+	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+
 	redirect('/platforms/{platform}'.format(platform=platform))
 
 if __name__ == '__main__':
