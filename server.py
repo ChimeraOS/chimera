@@ -116,7 +116,7 @@ def shortcut_create():
 	if banner:
 		shortcut['banner'] = banner_path
 	if content:
-		shortcut['params'] = content_path
+		shortcut['params'] = '"' + content_path + '"'
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)	
@@ -171,7 +171,7 @@ def shortcut_update():
 	if banner:
 		shortcut['banner'] = banner_path
 	if content:
-		shortcut['params'] = content_path
+		shortcut['params'] = '"' + content_path + '"'
 
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
