@@ -36,9 +36,9 @@ def platform(platform):
 	output += '<p><a href="/">Platforms</a>  <a href="/platforms/{platform}/new">Add</a></p>'.format(platform=platform)
 	for shortcut in shortcuts:
 		hiddenClass = 'hidden' if shortcut['hidden'] else ''
-		filename = os.path.basename(shortcut['image'])
-		image = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
-		output += '<a href="/platforms/{platform}/edit/{name}"><img class="{hidden}" src="{image}" alt="{name}" title="{name}" width="460" height="215"></img></a>'.format(image=image, name=shortcut['name'], platform=platform, hidden=hiddenClass)
+		filename = os.path.basename(shortcut['banner'])
+		banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
+		output += '<a href="/platforms/{platform}/edit/{name}"><img class="{hidden}" src="{banner}" alt="{name}" title="{name}" width="460" height="215"></img></a>'.format(banner=banner, name=shortcut['name'], platform=platform, hidden=hiddenClass)
 
 	return output
 
@@ -114,7 +114,7 @@ def shortcut_create():
 	shortcut['hidden'] = hidden == 'on'
 	shortcut['dir'] = "{data_dir}/saves/{platform}".format(data_dir=DATA_DIR, platform=platform)
 	if banner:
-		shortcut['image'] = banner_path
+		shortcut['banner'] = banner_path
 	if content:
 		shortcut['params'] = content_path
 
@@ -169,7 +169,7 @@ def shortcut_update():
 	shortcut['hidden'] = hidden == 'on'
 	shortcut['dir'] = "{data_dir}/saves/{platform}".format(data_dir=DATA_DIR, platform=platform)
 	if banner:
-		shortcut['image'] = banner_path
+		shortcut['banner'] = banner_path
 	if content:
 		shortcut['params'] = content_path
 
@@ -192,8 +192,8 @@ def shortcut_delete():
 	if 'params' in shortcut:
 		os.remove(shortcut['params'])
 
-	if 'image' in shortcut:
-		os.remove(shortcut['image'])
+	if 'banner' in shortcut:
+		os.remove(shortcut['banner'])
 
 	shortcuts.remove(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
