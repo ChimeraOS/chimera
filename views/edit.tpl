@@ -31,7 +31,7 @@ select {
 	<input type="hidden" value="{{name}}" name="original_name">
 
 	<div class="header">Name:</div>
-	<input type="text" name="name" value="{{name}}" />
+	<input type="text" name="name" value="{{name}}" readonly />
 
 	<div class="header">Hidden:</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
