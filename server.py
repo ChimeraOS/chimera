@@ -35,8 +35,8 @@ def platform(platform):
 	output = '<style>img { padding : 10px } .hidden { opacity : 0.25 }</style>'
 	output += '<p><a href="/">Platforms</a>  <a href="/platforms/{platform}/new">Add</a></p>'.format(platform=platform)
 	for shortcut in shortcuts:
-		hiddenClass = 'hidden' if shortcut['hidden'] else ''
-		filename = os.path.basename(shortcut['banner'])
+		hiddenClass = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
+		filename = os.path.basename(shortcut['banner']) if 'banner' in shortcut else ''
 		banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
 		output += '<a href="/platforms/{platform}/edit/{name}"><img class="{hidden}" src="{banner}" alt="{name}" title="{name}" width="460" height="215"></img></a>'.format(banner=banner, name=shortcut['name'], platform=platform, hidden=hiddenClass)
 
