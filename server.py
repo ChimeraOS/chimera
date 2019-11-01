@@ -5,6 +5,12 @@ from bottle import route, request, static_file, run, template, redirect
 BASE_DIR='/home/alesh/.local/share'
 DATA_DIR=BASE_DIR + '/prom'
 
+PLATFORMS = {
+	"nes"     : "Nintendo",
+	"snes"    : "Super Nintendo",
+	"genesis" : "Genesis",
+}
+
 
 def load_shortcuts(platform):
 	shortcuts = []
@@ -113,6 +119,7 @@ def shortcut_create():
 	shortcut['cmd'] = platform
 	shortcut['hidden'] = hidden == 'on'
 	shortcut['dir'] = "{data_dir}/saves/{platform}".format(data_dir=DATA_DIR, platform=platform)
+	shortcut['tags'] = [ PLATFORMS[platform] ]
 	if banner:
 		shortcut['banner'] = banner_path
 	if content:
