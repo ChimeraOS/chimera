@@ -31,14 +31,6 @@ select {
 	<input type="text" name="name" value="{{name}}" />
 
 	<input type="hidden" value="{{platform}}" name="platform">
-<!--
-	<div class="header">Platform:</div>
-	<select name="platform">
-		<option value="nes">Nintendo</option>
-		<option value="snes">Super Nintendo</option>
-		<option value="genesis">Sega Genesis</option>
-	</select>
--->
 
 	<div class="header">Hidden:</div>
 	<input type="checkbox" name="hidden" />
