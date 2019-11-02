@@ -1,0 +1,14 @@
+[Unit]
+Description=SteamBuddy
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=steam-buddy
+WorkingDirectory=/usr/share/steam-buddy
+ExecStart=/usr/share/steam-buddy/steam-buddy
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
