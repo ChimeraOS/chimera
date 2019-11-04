@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-DynamicUser=yes
-StateDirectory=steam-buddy
+ProtectSystem=strict
+PrivateTmp=true
+ReadWritePaths=/var/lib/steam-buddy
 WorkingDirectory=/usr/share/steam-buddy
 ExecStart=/usr/share/steam-buddy/steam-buddy
 Restart=on-abort
