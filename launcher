@@ -1,0 +1,27 @@
+#! /bin/bash
+
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+
+SAVE_DIR=${DATA_HOME}/steam-buddy/saves/${1}
+RETRO_CORE_NAME=${2}
+RETRO_CONFIG=/tmp/steam-buddy-retroarch.cfg
+
+shift 2
+
+mkdir -p ${SAVE_DIR}
+
+cp /usr/share/steam-buddy/config/retroarch-common.cfg ${RETRO_CONFIG}
+echo "
+savefile_directory = ${SAVE_DIR}
+savestate_directory = ${SAVE_DIR}
+" >> ${RETRO_CONFIG}
+
+
+mkdir -p ${CONFIG_HOME}/retroarch
+ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
+
+retroarch \
+--appendconfig ${RETRO_CONFIG} \
+--libretro /usr/lib/libretro/${RETRO_CORE_NAME}_libretro.so \
+"$@"
