@@ -3,13 +3,8 @@ Description=SteamBuddy
 After=network.target
 
 [Service]
-Type=simple
 ProtectSystem=strict
-PrivateTmp=true
-ReadWritePaths=/var/lib/steam-buddy
+ReadWritePaths=/var/lib/steam-buddy /tmp
 WorkingDirectory=/usr/share/steam-buddy
 ExecStart=/usr/share/steam-buddy/steam-buddy
 Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
