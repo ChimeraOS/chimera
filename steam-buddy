@@ -31,25 +31,19 @@ def load_shortcuts(platform):
 
 @route('/')
 def root():
-	return '''
-		<style>img { padding : 10px }</style>
-		<a href="/platforms/nes"><img src="images/nes.png" alt="Nintendo"></img></a>
-		<a href="/platforms/snes"><img src="images/snes.png" alt="Super Nintendo"></img></a>
-		<a href="/platforms/genesis"><img src="images/genesis.png" alt="Sega Genesis"></img></a>
-	'''
+	return template('platforms.tpl')
 
 @route('/platforms/<platform>')
 def platform(platform):
 	shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
-	output = '<style>img { padding : 10px } .hidden { opacity : 0.25 }</style>'
-	output += '<p><a href="/">Platforms</a>  <a href="/platforms/{platform}/new">Add</a></p>'.format(platform=platform)
+	data = []
 	for shortcut in shortcuts:
-		hiddenClass = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
+		hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
 		filename = os.path.basename(shortcut['banner']) if 'banner' in shortcut else ''
 		banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
-		output += '<a href="/platforms/{platform}/edit/{name}"><img class="{hidden}" src="{banner}" alt="{name}" title="{name}" width="460" height="215"></img></a>'.format(banner=banner, name=shortcut['name'], platform=platform, hidden=hiddenClass)
+		data.append({ 'hidden' : hidden, 'filename' : filename, 'banner' : banner, 'name' : shortcut['name'] })
 
-	return output
+	return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
 
 @route('/banners/<platform>/<filename>')
 def banners(platform, filename):
@@ -58,7 +52,7 @@ def banners(platform, filename):
 
 @route('/platforms/<platform>/new')
 def new(platform):
-	return template('new.tpl', platform=platform, name='')
+	return template('new.tpl', isNew=True, isEditing=False, platform=platform, platformName=PLATFORMS[platform], name='', hidden='')
 
 @route('/platforms/<platform>/edit/<name>')
 def edit(platform, name):
@@ -68,7 +62,7 @@ def edit(platform, name):
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	shortcut = matches[0]
 
-	return template('edit.tpl', platform=platform, name=name, hidden=shortcut['hidden'])
+	return template('new.tpl', isEditing=True, platform=platform, platformName=PLATFORMS[platform], name=name, hidden=shortcut['hidden'])
 
 @route('/images/<filename>')
 def images(filename):
@@ -82,13 +76,19 @@ def shortcut_create():
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
+	if name == None or name.strip() == '':
+		redirect('/platforms/{platform}/new'.format(platform=platform))
+		return
+
+	name = name.strip()
+
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	if len(matches) > 0:
 		return 'Shortcut already exists'
-	
+
 	if banner:
 		_, ext = os.path.splitext(banner.filename)
 		dir_path = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
@@ -98,7 +98,7 @@ def shortcut_create():
 		if os.path.exists(banner_path):
 			os.remove(banner_path)
 		banner.save(banner_path)
-	
+
 	if content:
 		_, ext = os.path.splitext(content.filename)
 		dir_path = "{content_dir}/{platform}".format(content_dir=CONTENT_DIR, platform=platform)
@@ -121,7 +121,7 @@ def shortcut_create():
 		shortcut['params'] = '"' + content_path + '"'
 
 	shortcuts.append(shortcut)
-	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)	
+	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}'.format(platform=platform))
 
@@ -138,7 +138,7 @@ def shortcut_update():
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
-	
+
 	if banner:
 		_, ext = os.path.splitext(banner.filename)
 		dir_path = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
@@ -148,7 +148,7 @@ def shortcut_update():
 		if os.path.exists(banner_path):
 			os.remove(banner_path)
 		banner.save(banner_path)
-	
+
 	if content:
 		_, ext = os.path.splitext(content.filename)
 		dir_path = "{content_dir}/{platform}".format(content_dir=CONTENT_DIR, platform=platform)
