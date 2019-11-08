@@ -6,6 +6,12 @@
 
 % for s in shortcuts:
     <a href="/platforms/{{platform}}/edit/{{s['name']}}">
-        <img class="{{s['hidden']}}" src="{{s['banner']}}" alt="{{s['name']}}" title="{{s['name']}}"></img>
+        % if s['banner'] == None :
+            <div class="missing {{s['hidden']}}">
+                <img src="/images/add.png" alt="{{s['name']}}" title="{{s['name']}}"></img>
+                <span class="missing-text">{{s['name']}}</span>
+            </div>
+        % else :
+            <img class="{{s['hidden']}}" src="{{s['banner']}}" alt="{{s['name']}}" title="{{s['name']}}"></img>
     </a>
 % end

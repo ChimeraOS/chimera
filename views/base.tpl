@@ -24,7 +24,7 @@
 		}
 
 		.hidden {
-			opacity : 0.25
+			opacity : 0.4
 		}
 
 		.new-shortcut {
@@ -36,8 +36,37 @@
 
 		img {
 			padding : 10px;
-			width : 460px;
-			height : 215px;
+			width : 90%;
+			height : auto;
+			max-width : 460px;
+			max-height : 215px;
+		}
+
+		.missing > img {
+			width : 100%;
+			padding : 0px;
+			opacity : 0;
+			background-color : gray;
+		}
+
+		.missing {
+			position : relative;
+			display : inline-block;
+			margin : 10px;
+			overflow : hidden;
+			padding : 0px;
+			width : 90%;
+			height : auto;
+			max-width : 460px;
+			max-height : 215px;
+			background-color : #333333;
+		}
+
+		.missing-text {
+			position : absolute;
+			top : 50%;
+			left : 50%;
+			transform: translate(-50%, -50%);
 		}
 
 		body {
@@ -48,7 +77,7 @@
 		}
 
 		form {
-			max-width : 50%;
+			max-width : 700px;
 			margin : auto;
 		}
 
@@ -63,7 +92,8 @@
 			color : white;
 			padding-top : 20px;
 			padding-bottom : 20px;
-			margin-top : 40px;
+			margin-top : 30px;
+			margin-bottom : 30px;
 			cursor : pointer;
 			font-size : 24px;
 			width : 100%;
@@ -100,32 +130,24 @@
 		.header {
 			background-color : #10131c;
 			width : 100%;
-			height : 30px;
 			color : white;
-			padding : 20px 0;
-			margin-bottom : 30px;
+			padding : 16px;
+			margin-bottom : 10px;
 		}
-
-		.nav {
-			margin-left : 20px;
-		}
-
 	</style>
 </head>
 <body>
 	<div class="header">
-		<div class="nav">
-			<a href="/">Home</a>
-			% if get('platform') :
-				<em>/</em> <a href="/platforms/{{platform}}">{{platformName}}</a>
+		<a href="/">Home</a>
+		% if get('platform') :
+			<em>/</em> <a href="/platforms/{{platform}}">{{platformName}}</a>
 
-				% if get('name') :
-					<em>/</em> <a href="/platforms/{{platform}}/edit/{{name}}">{{name}}</a>
-				% elif get('isNew') :
-					<em>/</em> <a href="/platforms/{{platform}}/new">New</a>
-				% end
+			% if get('name') :
+				<em>/</em> <a href="/platforms/{{platform}}/edit/{{name}}">{{name}}</a>
+			% elif get('isNew') :
+				<em>/</em> <a href="/platforms/{{platform}}/new">New</a>
 			% end
-		</div>
+		% end
 	</div>
 	<div class="content">
 		{{!base}}

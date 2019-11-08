@@ -38,9 +38,12 @@ def platform(platform):
 	shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
 	data = []
 	for shortcut in shortcuts:
+		filename = None
+		banner = None
 		hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
-		filename = os.path.basename(shortcut['banner']) if 'banner' in shortcut else ''
-		banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
+		if 'banner' in shortcut:
+			filename = os.path.basename(shortcut['banner'])
+			banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
 		data.append({ 'hidden' : hidden, 'filename' : filename, 'banner' : banner, 'name' : shortcut['name'] })
 
 	return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
