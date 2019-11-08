@@ -13,6 +13,7 @@ PLATFORMS = {
 	"nes"     : "Nintendo",
 	"snes"    : "Super Nintendo",
 	"genesis" : "Genesis",
+	"gba"     : "Game Boy Advance"
 }
 
 
