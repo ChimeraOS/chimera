@@ -40,9 +40,9 @@
 			height : auto;
 			max-width : 460px;
 			max-height : 215px;
-			border-width: 10px;
-			border-style: solid;
-			border-image: linear-gradient(to bottom, #01b5ed, #44419a) 1 1;
+			border-width : 4px;
+			border-style : solid;
+			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
 		}
 
 		.missing > img {
@@ -62,9 +62,9 @@
 			max-width : 460px;
 			max-height : 215px;
 			background-color : #333333;
-			border-width: 10px;
-			border-style: solid;
-			border-image: linear-gradient(to bottom, #01b5ed, #44419a) 1 1;
+			border-width : 4px;
+			border-style : solid;
+			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
 		}
 
 		.missing-text {
