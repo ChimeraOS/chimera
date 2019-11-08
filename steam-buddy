@@ -10,11 +10,11 @@ BANNER_DIR=DATA_DIR + '/banners'
 CONTENT_DIR=DATA_DIR + '/content'
 
 PLATFORMS = {
+	"gba"     : "Game Boy Advance",
+	"genesis" : "Genesis",
+	"sms"     : "Master System",
 	"nes"     : "Nintendo",
 	"snes"    : "Super Nintendo",
-	"genesis" : "Genesis",
-	"gba"     : "Game Boy Advance",
-	"sms"     : "Master System",
 }
 
 
