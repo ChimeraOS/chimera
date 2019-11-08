@@ -31,7 +31,7 @@ def load_shortcuts(platform):
 
 @route('/')
 def root():
-	return template('platforms.tpl')
+	return template('platforms.tpl', platforms=PLATFORMS)
 
 @route('/platforms/<platform>')
 def platform(platform):
