@@ -26,7 +26,6 @@
 <form action="/shortcuts/delete" method="post">
 	<input type="hidden" value="{{platform}}" name="platform">
 	<input type="hidden" value="{{name}}" name="name">
-	<!-- <input type="submit" value="Delete" /> -->
 	<button class="delete">Delete</button>
 </form>
 % end
