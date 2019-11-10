@@ -4,7 +4,7 @@
 	<input type="hidden" value="{{platform}}" name="platform">
 
 	<div class="label">Name</div>
-	<input type="text" name="name" value="{{name}}" {{ 'readonly' if isEditing else '' }} />
+	<input type="text" name="name" value="{{name}}" {{ 'disabled' if isEditing else '' }}/>
 
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
