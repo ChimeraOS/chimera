@@ -19,7 +19,10 @@ savestate_directory = ${SAVE_DIR}
 
 
 mkdir -p ${CONFIG_HOME}/retroarch
-ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
+
+if [ ! -e ${CONFIG_HOME}/retroarch/autoconfig ]; then
+	ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
+fi
 
 retroarch \
 --appendconfig ${RETRO_CONFIG} \
