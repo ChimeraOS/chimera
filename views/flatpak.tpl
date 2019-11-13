@@ -7,7 +7,7 @@
 % end
 
 % for app in app_list:
-  <a href="/flatpak/app/{{ app['flatpakAppId'] }}">
-      <img src="https://flathub.org/{{ app['iconDesktopUrl'] }}" alt="{{ app['name'] }}" title="{{ app['name'] }}"></img>
+  <a href="/flatpak/app/{{ app.flatpak_id }}">
+      <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ app }}"></img>
   </a>
 % end

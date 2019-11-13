@@ -2,9 +2,9 @@
 
 import os
 import yaml
-import requests
 import subprocess
 from bottle import route, request, static_file, run, template, redirect
+import flatpak
 
 DATA_DIR='/var/lib/steam-buddy'
 SHORTCUT_DIR=DATA_DIR + '/shortcuts'
@@ -19,11 +19,7 @@ PLATFORMS = {
 	"snes"    : "Super Nintendo",
 }
 
-# This should be the flathub repo
-FLATPAK_REPO_NAME = "flathub"
-FLATPAK_REPO_URL = "https://dl.flathub.org/repo/flathub.flatpakrepo"
-
-FLATHUB_API_URL = "https://flathub.org/api/v1/apps"
+FLATPAK_HANDLER = flatpak.Flatpak()
 
 def load_shortcuts(platform):
 	shortcuts = []
@@ -37,24 +33,6 @@ def load_shortcuts(platform):
 		shortcuts = []
 
 	return shortcuts
-
-def flatpak_add_repo():
-	# This only adds the flatpak repo if it isn't already installed
-	return_value = subprocess.call(["flatpak", "remote-add", "--if-not-exists", FLATPAK_REPO_NAME, FLATPAK_REPO_URL])
-	if return_value != 0:
-		print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=FLATPAK_REPO_NAME, url=FLATPAK_REPO_URL))
-
-def flatpak_get_installed_apps():
-	installed_apps = []
-	for line in subprocess.check_output(["flatpak", "list", "--app"]).splitlines():
-		if isinstance(line, bytes):
-			line = line.decode("utf-8")
-		name_description, flatpak_id, version, _ = line.split("\t", 3)
-		installed_apps.append(flatpak_id)
-	return installed_apps
-
-def flatpak_is_installed(flatpak_id):
-	return flatpak_id in flatpak_get_installed_apps()
 
 @route('/')
 def root():
@@ -227,37 +205,32 @@ def shortcut_delete():
 
 @route('/flatpak')
 def flatpak():
-	app_list = []
-	installed_apps = flatpak_get_installed_apps()
-	available_apps = requests.get(FLATHUB_API_URL)
-	for app in available_apps.json():
-		if app["flatpakAppId"] in installed_apps:
-			app_list.append(app)
-
-	return template('flatpak', app_list=app_list, isInstalledOverview=True)
+	return template('flatpak', app_list=FLATPAK_HANDLER.get_installed_applications(), isInstalledOverview=True)
 
 @route('/flatpak/available')
 def flatpak_available_software():
-	app_list = requests.get(FLATHUB_API_URL)
-	return template('flatpak', app_list=app_list.json(), isInstalledOverview=False)
+	return template('flatpak', app_list=FLATPAK_HANDLER.get_available_applications(), isInstalledOverview=False)
 
 @route('/flatpak/app/<flatpak_id>')
 def flatpak_info(flatpak_id):
-	isInstalled = flatpak_is_installed(flatpak_id)
-	app = requests.get("{}/{}".format(FLATHUB_API_URL, flatpak_id))
-	return template('flatpak_info', isInstalled=isInstalled, app=app.json(), flatpak_id=flatpak_id)
+	application = FLATPAK_HANDLER.get_application(flatpak_id)
+	if application:
+		return template('flatpak_info', app=application)
+	else:
+		# This only happens if there are errors, like a 404
+		redirect('/flatpak')
 
 @route('/flatpak/install/<flatpak_id>')
 def flatpak_install(flatpak_id):
-	subprocess.Popen(["flatpak", "install", "-y", "flathub", flatpak_id],
-							stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-	redirect('/flatpak')
+	application = FLATPAK_HANDLER.get_application(flatpak_id)
+	application.install()
+	redirect('/flatpak/app/{}'.format(flatpak_id))
 
 @route('/flatpak/uninstall/<flatpak_id>')
 def flatpak_uninstall(flatpak_id):
-	subprocess.call(["flatpak", "uninstall", "-y", flatpak_id])
-	redirect('/flatpak')
+	application = FLATPAK_HANDLER.get_application(flatpak_id)
+	application.uninstall()
+	redirect('/flatpak/app/{}'.format(flatpak_id))
 
 if __name__ == '__main__':
-	flatpak_add_repo();
 	run(host='0.0.0.0', port=80)
