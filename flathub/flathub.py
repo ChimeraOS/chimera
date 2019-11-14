@@ -41,14 +41,14 @@ class Flathub:
     def get_available_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
-            if not application.installed:
+            if not application.installed or (application.installed and application.busy):
                 applications.append(application)
         return applications
 
     def get_installed_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
-            if application.installed:
+            if application.installed and not application.busy or not application.installed and application.busy:
                 applications.append(application)
         return applications
 
