@@ -215,7 +215,7 @@ def shortcut_delete():
 @route('/platforms/flathub/progress/<flatpak_id>')
 def flathub_progress(flatpak_id):
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
-	return application.progress
+	return str(application.progress)
 
 if __name__ == '__main__':
 	run(host='0.0.0.0', port=80)
