@@ -2,6 +2,9 @@
 
 <h2>{{app}}</h2>
 % if app.busy:
+<script type="text/JavaScript">
+    window.setTimeout("location.reload(true);", 5000)
+</script>
 <h3>
 % if app.installed:
 Uninstalling...
