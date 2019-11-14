@@ -1,10 +1,10 @@
 import subprocess
 from typing import List
-import flatpak
+import flathub
 import requests
 
 
-class Flatpak:
+class Flathub:
 
     def __init__(self):
         flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
@@ -34,25 +34,25 @@ class Flatpak:
                 if flatpak_id in installed_ids:
                     installed = True
 
-                application = flatpak.Application(flatpak_id, name, description, image_url, installed)
+                application = flathub.Application(flatpak_id, name, description, image_url, installed)
                 applications.append(application)
         return applications
 
-    def get_available_applications(self) -> List[flatpak.Application]:
+    def get_available_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
             if not application.installed:
                 applications.append(application)
         return applications
 
-    def get_installed_applications(self) -> List[flatpak.Application]:
+    def get_installed_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
             if application.installed:
                 applications.append(application)
         return applications
 
-    def get_application(self, flatpak_id: str) -> flatpak.Application:
+    def get_application(self, flatpak_id: str) -> flathub.Application:
         for application in self.__applications:
             if application.flatpak_id == flatpak_id:
                 return application

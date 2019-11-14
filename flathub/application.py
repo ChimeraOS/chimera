@@ -3,7 +3,7 @@ from io import BytesIO
 import threading
 import time
 import subprocess
-import flatpak
+import flathub
 import requests
 
 
@@ -23,9 +23,11 @@ class Application:
         else:
             self.image_url = image_url
 
-    def get_image(self) -> str:
-        filename = os.path.join(BANNER_DIR, self.flatpak_id)
-        if not os.path.exists(filename):
+    def get_image(self, directory: str) -> str:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        filename = os.path.join(directory, "{}.png".format(self.flatpak_id))
+        if not os.path.isfile(filename):
             download = requests.get(self.image_url)
             with open(filename, "wb") as writer:
                 writer.write(download.content)
@@ -52,7 +54,7 @@ class Application:
             print("Error: {} is already installed".format(self.name))
             self.busy = False
             return
-        thread = threading.Thread(target=self.__update_installation_progress, args=(flatpak.Flatpak.install(self.flatpak_id),))
+        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.install(self.flatpak_id),))
         thread.start()
 
     def uninstall(self):
@@ -66,7 +68,7 @@ class Application:
             print("Error: {} is not installed".format(self.name))
             self.busy = False
             return
-        thread = threading.Thread(target=self.__update_installation_progress, args=(flatpak.Flatpak.uninstall(self.flatpak_id),))
+        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.uninstall(self.flatpak_id),))
         thread.start()
 
     def __update_installation_progress(self, sp: subprocess):

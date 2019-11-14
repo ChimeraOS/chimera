@@ -2,10 +2,9 @@
 
 import os
 import yaml
-import subprocess
 import shutil
+import flathub
 from bottle import route, request, static_file, run, template, redirect
-import flatpak
 
 DATA_DIR='/var/lib/steam-buddy'
 SHORTCUT_DIR=DATA_DIR + '/shortcuts'
@@ -18,9 +17,10 @@ PLATFORMS = {
 	"sms"     : "Master System",
 	"nes"     : "Nintendo",
 	"snes"    : "Super Nintendo",
+	"flathub" : "Flathub",
 }
 
-FLATPAK_HANDLER = flatpak.Flatpak()
+FLATHUB_HANDLER = flathub.Flathub()
 
 def load_shortcuts(platform):
 	shortcuts = []
@@ -28,7 +28,7 @@ def load_shortcuts(platform):
 		os.makedirs(SHORTCUT_DIR)
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	if os.path.isfile(shortcuts_file):
-		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.FullLoader)
+		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
 	if not shortcuts:
 		shortcuts = []
@@ -62,6 +62,8 @@ def root():
 
 @route('/platforms/<platform>')
 def platform(platform):
+	if platform == "flathub":
+		return template('flathub', app_list=FLATHUB_HANDLER.get_installed_applications(), isInstalledOverview=True, platform=platform, platformName=PLATFORMS[platform])
 	shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
 	data = []
 	for shortcut in shortcuts:
@@ -82,11 +84,20 @@ def banners(platform, name, filename):
 
 @route('/platforms/<platform>/new')
 def new(platform):
+	if platform == "flathub":
+		return template('flathub', app_list=FLATHUB_HANDLER.get_available_applications(), isInstalledOverview=False, isNew=True, platform=platform, platformName=PLATFORMS[platform])
 	return template('new.tpl', isNew=True, isEditing=False, platform=platform, platformName=PLATFORMS[platform], name='', hidden='')
 
 @route('/platforms/<platform>/edit/<name>')
 def edit(platform, name):
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	if platform == "flathub":
+		application = FLATHUB_HANDLER.get_application(name)
+		if application:
+			return template('flathub_edit', app=application, platform="flathub", platformName="Flathub",
+							name=application.name, )
+		else:
+			# TODO: This should probably be changed to a 404
+			redirect('/platforms/flathub')
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -135,9 +146,14 @@ def shortcut_create():
 	if content:
 		shortcut['dir'] = '"' + content_dir + '"'
 		shortcut['params'] = '"' + content.filename + '"'
+	if platform == "flathub":
+		application = FLATHUB_HANDLER.get_application(name)
+		application.install()
+		shortcut['banner'] = application.get_image(banner_dir)
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+
 
 	redirect('/platforms/{platform}'.format(platform=platform))
 
@@ -178,6 +194,10 @@ def shortcut_delete():
 	name = request.forms.get('name')
 	platform = request.forms.get('platform')
 
+	if platform == "flathub":
+		application = FLATHUB_HANDLER.get_application(name)
+		application.uninstall()
+
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
@@ -192,34 +212,10 @@ def shortcut_delete():
 
 	redirect('/platforms/{platform}'.format(platform=platform))
 
-@route('/flatpak')
-def flatpak():
-	return template('flatpak', app_list=FLATPAK_HANDLER.get_installed_applications(), isInstalledOverview=True)
-
-@route('/flatpak/available')
-def flatpak_available_software():
-	return template('flatpak', app_list=FLATPAK_HANDLER.get_available_applications(), isInstalledOverview=False)
-
-@route('/flatpak/app/<flatpak_id>')
-def flatpak_info(flatpak_id):
-	application = FLATPAK_HANDLER.get_application(flatpak_id)
-	if application:
-		return template('flatpak_info', app=application)
-	else:
-		# This only happens if there are errors, like a 404
-		redirect('/flatpak')
-
-@route('/flatpak/install/<flatpak_id>')
-def flatpak_install(flatpak_id):
-	application = FLATPAK_HANDLER.get_application(flatpak_id)
-	application.install()
-	redirect('/flatpak/app/{}'.format(flatpak_id))
-
-@route('/flatpak/uninstall/<flatpak_id>')
-def flatpak_uninstall(flatpak_id):
-	application = FLATPAK_HANDLER.get_application(flatpak_id)
-	application.uninstall()
-	redirect('/flatpak/app/{}'.format(flatpak_id))
+@route('/platforms/flathub/progress/<flatpak_id>')
+def flathub_progress(flatpak_id):
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	return application.progress
 
 if __name__ == '__main__':
 	run(host='0.0.0.0', port=80)
