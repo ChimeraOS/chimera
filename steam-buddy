@@ -149,7 +149,8 @@ def shortcut_create():
 	if platform == "flathub":
 		application = FLATHUB_HANDLER.get_application(name)
 		application.install()
-		shortcut['banner'] = application.get_image(banner_dir)
+		shortcut['banner'] = application.get_image(os.path.join(BANNER_DIR, platform))
+		shortcut['params'] = application.flatpak_id
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
