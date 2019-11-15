@@ -31,12 +31,6 @@
 		    height : 215px;
 		}
 
-		.flathub-link img {
-		    margin:  0px;
-		    width : 128px;
-		    height : 128px;
-		}
-
 		.flathub-new img {
             margin:  0px;
             width : 100%;
@@ -55,8 +49,8 @@
         .flathub img {
             border-style : hidden;
             border-width : 0px;
-            height :  auto;
-            width : auto;
+            height :  128px;
+            width : 128px;
             margin-top: 10px;
         }
 
