@@ -22,6 +22,29 @@
 		a:active {
 			text-decoration: none;
 		}
+        .flathub {
+            margin : 10px;
+			height : auto;
+			text-align: center;
+			max-width : 460px;
+			max-height : 215px;
+			min-height : 215px;
+			border-width : 4px;
+			border-style : solid;
+			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
+        }
+
+        .flathub img {
+            border-style : hidden;
+            border-width : 0px;
+            height :  auto;
+            width : auto;
+        }
+		.flathub h3 {
+		    color : #000000;
+            position : relative;
+            bottom : 16px;
+		}
 
 		.hidden {
 			opacity : 0.4
