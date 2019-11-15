@@ -1,7 +1,7 @@
 % rebase('base.tpl')
 
 % if isInstalledOverview:
-<a class="flathub-link" href="/platforms/flathub/new">
+<a class="flathub-new" href="/platforms/flathub/new">
     <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut"></img>
 </a>
 % end

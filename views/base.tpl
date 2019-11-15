@@ -23,18 +23,25 @@
 			text-decoration: none;
 		}
 
-		.flathub-link {
-		    display: inline;
-		    float: left;
-		    margin: 10px;
-		    width: 460px;
-		    height: 215px;
+		.flathub-link, .flathub-new {
+		    display : inline;
+		    float : left;
+		    margin : 10px;
+		    width : 460px;
+		    height : 215px;
 		}
 
 		.flathub-link img {
-		    margin: 0px;
-		    width: 100%;
+		    margin:  0px;
+		    width : 128px;
+		    height : 128px;
 		}
+
+		.flathub-new img {
+            margin:  0px;
+            width : 100%;
+            height : 100%;
+        }
 
         .flathub {
             width: 100%;
