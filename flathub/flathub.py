@@ -64,7 +64,11 @@ class Flathub:
         for line in subprocess.check_output(command).splitlines():
             if isinstance(line, bytes):
                 line = line.decode("utf-8")
-            name_description, flatpak_id, _, _ = line.split("\t", 3)
+            try:
+                _, flatpak_id, _, _ = line.split("\t", 3)
+            except:
+                flatpak_id = line
+
             installed_list.append(flatpak_id)
         return installed_list
 
