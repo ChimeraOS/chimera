@@ -22,13 +22,24 @@
 		a:active {
 			text-decoration: none;
 		}
+
+		.flathub-link {
+		    display: inline;
+		    float: left;
+		    margin: 10px;
+		    width: 460px;
+		    height: 215px;
+		}
+
+		.flathub-link img {
+		    margin: 0px;
+		    width: 100%;
+		}
+
         .flathub {
-            margin : 10px;
-			height : auto;
+            width: 100%;
+			height : 100%;
 			text-align: center;
-			max-width : 460px;
-			max-height : 215px;
-			min-height : 215px;
 			border-width : 4px;
 			border-style : solid;
 			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
@@ -39,11 +50,12 @@
             border-width : 0px;
             height :  auto;
             width : auto;
+            margin-top: 10px;
         }
+
 		.flathub h3 {
 		    color : #000000;
             position : relative;
-            bottom : 16px;
 		}
 
 		.hidden {
