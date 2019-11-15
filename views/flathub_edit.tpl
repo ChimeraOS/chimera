@@ -16,7 +16,7 @@ Installing..
 % end
 </h3>
 % end
-<p><img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app }}"></img></p>
+<p ><img class="flathub-edit" src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app }}"></img></p>
 {{!app.get_description()}}
 
 % if app.busy == False:
