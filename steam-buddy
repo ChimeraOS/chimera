@@ -146,11 +146,7 @@ def shortcut_create():
 	if content:
 		shortcut['dir'] = '"' + content_dir + '"'
 		shortcut['params'] = '"' + content.filename + '"'
-	if platform == "flathub":
-		application = FLATHUB_HANDLER.get_application(name)
-		application.install()
-		shortcut['banner'] = application.get_image(os.path.join(BANNER_DIR, platform))
-		shortcut['params'] = application.flatpak_id
+
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
@@ -195,10 +191,6 @@ def shortcut_delete():
 	name = request.forms.get('name')
 	platform = request.forms.get('platform')
 
-	if platform == "flathub":
-		application = FLATHUB_HANDLER.get_application(name)
-		application.uninstall()
-
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
@@ -209,6 +201,50 @@ def shortcut_delete():
 	delete_folder(get_path(BANNER_DIR, platform, name))
 
 	shortcuts.remove(shortcut)
+	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+
+	redirect('/platforms/{platform}'.format(platform=platform))
+
+@route('/flathub/install/<flatpak_id>')
+def flathub_install(flatpak_id):
+	platform = "flathub"
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	if not application:
+		# TODO: add a 404 here
+		redirect('/platforms/{platform}'.format(platform=platform))
+	application.install()
+
+	shortcuts = load_shortcuts(platform)
+	shortcut = {
+		'name': application.name,
+		'hidden': False,
+		'banner': application.get_image(os.path.join(BANNER_DIR, platform)),
+		'params': application.flatpak_id,
+		'cmd': platform,
+		'tags': ["Flathub"],
+	}
+	shortcuts.append(shortcut)
+	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+
+	redirect('/platforms/{platform}'.format(platform=platform))
+
+@route('/flathub/uninstall/<flatpak_id>')
+def flathub_uninstall(flatpak_id):
+	platform = "flathub"
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	if not application:
+		# TODO: add a 404 here
+		redirect('/platforms/{platform}'.format(platform=platform))
+	application.uninstall()
+
+	shortcuts = load_shortcuts(platform)
+	for shortcut in shortcuts:
+		print(str(shortcut))
+		if application.name == shortcut['name']:
+			shortcuts.remove(shortcut)
+			break
+	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}'.format(platform=platform))

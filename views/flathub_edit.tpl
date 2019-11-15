@@ -21,16 +21,11 @@ Installing..
 
 % if app.busy == False:
 % if app.installed:
-<form action="/shortcuts/delete" method="post">
-	<input type="hidden" value="{{platform}}" name="platform">
-	<input type="hidden" value="{{app.flatpak_id}}" name="name">
+<form action="/flathub/uninstall/{{app.flatpak_id}}">
 	<button class="delete">Uninstall</button>
 </form>
 % else:
-<form action="/shortcuts/new" method="post">
-	<input type="hidden" value="{{platform}}" name="platform">
-	<input type="hidden" value="{{app.flatpak_id}}" name="name">
-	<input type="hidden" value="off" name="hidden">
+<form action="/flathub/install/{{app.flatpak_id}}">
 	<button class="add">Install</button>
 </form>
 % end
