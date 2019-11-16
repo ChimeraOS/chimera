@@ -220,7 +220,7 @@ def flathub_install(flatpak_id):
 		'hidden': False,
 		'banner': application.get_image(os.path.join(BANNER_DIR, platform)),
 		'params': application.flatpak_id,
-		'cmd': platform,
+		'cmd': "flatpak run",
 		'tags': ["Flathub"],
 	}
 	shortcuts.append(shortcut)
