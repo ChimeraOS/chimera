@@ -1,6 +1,6 @@
 [Unit]
 Description=SteamBuddy
-After=network.target
+After=network-online.target
 
 [Service]
 ProtectSystem=strict
