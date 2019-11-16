@@ -9,7 +9,7 @@ import requests
 
 class Application:
 
-    def __init__(self, flatpak_id: str, name: str, summary: str, image_url: str, installed: bool = False):
+    def __init__(self, flatpak_id: str, name: str, summary: str, image_url: str, installed: bool = False, version="", available_version=""):
         self.flatpak_id = flatpak_id
         self.name = name
         self.summary = summary
@@ -17,6 +17,8 @@ class Application:
         self.__description = ""
         self.progress = -1
         self.busy = False
+        self.version = version
+        self.available_version = available_version
 
         if image_url.startswith("/"):
             self.image_url = "https://flathub.org{}".format(image_url)
@@ -69,6 +71,23 @@ class Application:
             self.busy = False
             return
         thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.uninstall(self.flatpak_id),))
+        thread.start()
+
+    def update(self):
+        if not self.busy:
+            self.busy = True
+        else:
+            print("Error: {} is currently not updateable".format(self.name))
+            return
+
+        if not self.installed:
+            print("Error: {} is not installed".format(self.name))
+            self.busy = False
+            return
+        # Set the version
+        self.version = self.available_version
+        self.installed = False
+        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.update(self.flatpak_id),))
         thread.start()
 
     def __update_installation_progress(self, sp: subprocess):

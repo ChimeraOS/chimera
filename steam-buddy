@@ -249,5 +249,16 @@ def flathub_uninstall(flatpak_id):
 
 	redirect('/platforms/{platform}'.format(platform=platform))
 
+@route('/flathub/update/<flatpak_id>')
+def flathub_update(flatpak_id):
+	platform = "flathub"
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	if not application:
+		# TODO: add a 404 here
+		redirect('/platforms/{platform}'.format(platform=platform))
+	application.update()
+
+	redirect('/platforms/{platform}'.format(platform=platform))
+
 if __name__ == '__main__':
 	run(host='0.0.0.0', port=80)

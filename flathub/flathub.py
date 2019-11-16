@@ -1,5 +1,5 @@
 import subprocess
-from typing import List
+from typing import List, Dict
 import flathub
 import requests
 
@@ -24,18 +24,22 @@ class Flathub:
         applications = []
         api_response = requests.get(self.__api_url)
         if api_response.status_code == requests.codes.ok:
-            installed_ids = self.__get_installed_ids()
+            installed_list = self.__get_installed_list()
             for entry in api_response.json():
                 flatpak_id = entry['flatpakAppId']
                 name = entry['name']
                 description = entry['summary']
                 image_url = entry['iconDesktopUrl']
+                available_version = entry['currentReleaseVersion']
                 installed = False
+                version = ""
 
-                if flatpak_id in installed_ids:
-                    installed = True
+                for app in installed_list:
+                    if app['flatpak_id'] == flatpak_id:
+                        installed = True
+                        version = app['version']
 
-                application = flathub.Application(flatpak_id, name, description, image_url, installed)
+                application = flathub.Application(flatpak_id, name, description, image_url, installed, version, available_version)
                 applications.append(application)
         return applications
 
@@ -62,18 +66,18 @@ class Flathub:
                 return application
         return None
 
-    def __get_installed_ids(self) -> List[str]:
+    def __get_installed_list(self) -> List[Dict[str, any]]:
         command = ["flatpak", "list", "--app"]
         installed_list = []
         for line in subprocess.check_output(command).splitlines():
             if isinstance(line, bytes):
                 line = line.decode("utf-8")
-            try:
-                _, flatpak_id, _, _ = line.split("\t", 3)
-            except:
-                flatpak_id = line
-
-            installed_list.append(flatpak_id)
+            _, flatpak_id, version, _ = line.split("\t", 3)
+            application_tuple = {
+                'flatpak_id': flatpak_id,
+                'version': version
+            }
+            installed_list.append(application_tuple)
         return installed_list
 
     @staticmethod
@@ -86,5 +90,8 @@ class Flathub:
         return subprocess.Popen(["flatpak", "uninstall", "-y", flatpak_id],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-
+    @staticmethod
+    def update(flatpak_id: str) -> subprocess:
+        return subprocess.Popen(["flatpak", "update", "-y", flatpak_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
