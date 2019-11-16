@@ -147,10 +147,8 @@ def shortcut_create():
 		shortcut['dir'] = '"' + content_dir + '"'
 		shortcut['params'] = '"' + content.filename + '"'
 
-
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
-
 
 	redirect('/platforms/{platform}'.format(platform=platform))
 
