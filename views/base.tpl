@@ -23,6 +23,19 @@
 			text-decoration: none;
 		}
 
+        @media (max-width:509px) {
+            .flathub-link, .flathub-new {
+                max-width : 90%;
+                margin : 0px;
+                min-height : 215px !important;
+                height: auto !important;
+            }
+
+            .flathub {
+                height: auto !important;
+            }
+        }
+
 		.flathub-link, .flathub-new {
 		    display : inline;
 		    float : left;
@@ -32,18 +45,18 @@
 		}
 
 		.flathub-new img {
-            margin:  0px;
+            margin :  0px;
             width : 100%;
             height : 100%;
         }
 
         .flathub {
-            width: 100%;
-			height : 100%;
-			text-align: center;
-			border-width : 4px;
-			border-style : solid;
-			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
+            width : 100%;
+            height : 100%;
+            text-align : center;
+            border-width : 4px;
+            border-style : solid;
+            border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
         }
 
         .flathub img {
