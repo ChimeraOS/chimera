@@ -23,6 +23,10 @@
 			text-decoration: none;
 		}
 
+		#progress {
+		    display : inline;
+		}
+
 		.flathub-link, .flathub-new {
 		    display : inline;
 		    float : left;
