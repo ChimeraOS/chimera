@@ -1,7 +1,9 @@
 % rebase('base.tpl')
 
 <h2>{{app}}</h2>
+% if app.version:
 <h3>Version: {{app.version}}</h3>
+% end
 % if app.busy:
 <script type="text/JavaScript">
     window.setTimeout("location.reload(true);", 5000)
@@ -25,6 +27,11 @@ Installing..
 % if app.version != app.available_version:
 <form action="/flathub/update/{{app.flatpak_id}}">
 	<button class="add">Update to version {{app.available_version}}</button>
+</form>
+% end
+% if not app.version:
+<form action="/flathub/update/{{app.flatpak_id}}">
+	<button class="add">Check for updates</button>
 </form>
 % end
 <form action="/flathub/uninstall/{{app.flatpak_id}}">
