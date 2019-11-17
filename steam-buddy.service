@@ -1,10 +1,10 @@
 [Unit]
 Description=SteamBuddy
-After=network.target
+After=network-online.target
 
 [Service]
 ProtectSystem=strict
-ReadWritePaths=/var/lib/steam-buddy /tmp
+ReadWritePaths=/var/lib/steam-buddy /tmp /var/lib/flatpak /var/tmp
 WorkingDirectory=/usr/share/steam-buddy
 ExecStart=/usr/share/steam-buddy/steam-buddy
 Restart=on-abort
