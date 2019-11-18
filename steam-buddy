@@ -2,9 +2,10 @@
 
 import os
 import yaml
+import json
 import shutil
 import flathub
-from bottle import route, request, static_file, run, template, redirect
+from bottle import route, request, static_file, run, template, redirect, response
 
 DATA_DIR='/var/lib/steam-buddy'
 SHORTCUT_DIR=DATA_DIR + '/shortcuts'
@@ -94,7 +95,7 @@ def edit(platform, name):
 		application = FLATHUB_HANDLER.get_application(name)
 		if application:
 			return template('flathub_edit', app=application, platform="flathub", platformName="Flathub",
-							name=application.name, )
+							name=name, )
 		else:
 			# TODO: This should probably be changed to a 404
 			redirect('/platforms/flathub')
@@ -225,7 +226,7 @@ def flathub_install(flatpak_id):
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-	redirect('/platforms/{platform}'.format(platform=platform))
+	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 @route('/flathub/uninstall/<flatpak_id>')
 def flathub_uninstall(flatpak_id):
@@ -245,7 +246,7 @@ def flathub_uninstall(flatpak_id):
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-	redirect('/platforms/{platform}'.format(platform=platform))
+	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 @route('/flathub/update/<flatpak_id>')
 def flathub_update(flatpak_id):
@@ -256,7 +257,23 @@ def flathub_update(flatpak_id):
 		redirect('/platforms/{platform}'.format(platform=platform))
 	application.update()
 
-	redirect('/platforms/{platform}'.format(platform=platform))
+	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
+
+@route('/flathub/progress/<flatpak_id>')
+def flathub_update(flatpak_id):
+	platform = "flathub"
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	if not application:
+		# TODO: add a 404 here
+		redirect('/platforms/{platform}'.format(platform=platform))
+
+	response.content_type = 'application/json'
+	values = {
+		"busy": application.busy,
+		"progress": application.progress
+	}
+
+	return json.dumps(values)
 
 if __name__ == '__main__':
 	run(host='0.0.0.0', port=80)

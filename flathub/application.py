@@ -20,6 +20,9 @@ class Application:
         self.version = version
         self.available_version = available_version
 
+        if not self.version:
+            self.version = self.available_version
+
         if image_url.startswith("/"):
             self.image_url = "https://flathub.org{}".format(image_url)
         else:

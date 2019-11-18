@@ -23,7 +23,7 @@
 			text-decoration: none;
 		}
 
-        @media (max-width:509px) {
+    @media (max-width:509px) {
             .flathub-link, .flathub-new {
                 max-width : 90%;
                 margin : 0px;
@@ -34,7 +34,11 @@
             .flathub {
                 height: auto !important;
             }
-        }
+    }
+
+		#progress {
+		    display : inline;
+		}
 
 		.flathub-link, .flathub-new {
 		    display : inline;
