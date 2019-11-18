@@ -94,7 +94,7 @@ def edit(platform, name):
 		application = FLATHUB_HANDLER.get_application(name)
 		if application:
 			return template('flathub_edit', app=application, platform="flathub", platformName="Flathub",
-							name=application.name, )
+							name=name, )
 		else:
 			# TODO: This should probably be changed to a 404
 			redirect('/platforms/flathub')
