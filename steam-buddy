@@ -7,7 +7,13 @@ import shutil
 import flathub
 from bottle import route, request, static_file, run, template, redirect, response
 
-DATA_DIR='/var/lib/steam-buddy'
+if os.geteuid() == 0:
+	HOST_PORT = 80
+	DATA_DIR = '/var/lib/steam-buddy'
+else:
+	HOST_PORT = 8080
+	DATA_DIR = os.path.join(os.path.expanduser('~'),'/.local/share/steam-buddy')
+
 SHORTCUT_DIR=DATA_DIR + '/shortcuts'
 BANNER_DIR=DATA_DIR + '/banners'
 CONTENT_DIR=DATA_DIR + '/content'
@@ -276,4 +282,4 @@ def flathub_update(flatpak_id):
 	return json.dumps(values)
 
 if __name__ == '__main__':
-	run(host='0.0.0.0', port=80)
+	run(host='0.0.0.0', port=HOST_PORT)
