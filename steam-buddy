@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import yaml
@@ -29,7 +29,7 @@ def load_shortcuts(platform):
 		os.makedirs(SHORTCUT_DIR)
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	if os.path.isfile(shortcuts_file):
-		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.FullLoader)
+		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
 	if not shortcuts:
 		shortcuts = []
