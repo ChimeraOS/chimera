@@ -1,0 +1,16 @@
+[Unit]
+Description=SteamBuddy for %I
+After=network-online.target
+
+[Service]
+User=%I
+WorkingDirectory=/usr/share/steam-buddy
+ExecStart=/usr/share/steam-buddy/steam-buddy
+Restart=on-abort
+PrivateTmp=yes
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateDevices=true
+
+[Install]
+WantedBy=multi-user.target
