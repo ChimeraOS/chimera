@@ -4,8 +4,7 @@
 % if app.busy:
 <script type="text/JavaScript">
 async function reloadWhenDone() {
-	base_url = location.protocol + "//" + window.location.hostname;
-	url = base_url + "/flathub/progress/" + "{{app.flatpak_id}}";
+	url = "/flathub/progress/" + "{{app.flatpak_id}}";
 	response = await fetch(url);
 	values = await response.json();
 	if (!values.busy) {

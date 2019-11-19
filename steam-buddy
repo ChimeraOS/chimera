@@ -266,7 +266,7 @@ def flathub_update(flatpak_id):
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 @route('/flathub/progress/<flatpak_id>')
-def flathub_update(flatpak_id):
+def flathub_progress(flatpak_id):
 	platform = "flathub"
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
 	if not application:
