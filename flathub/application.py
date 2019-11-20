@@ -18,7 +18,10 @@ class Application:
         self.progress = -1
         self.busy = False
         self.version = version
-        self.available_version = available_version
+        if self.version or not self.installed:
+            self.available_version = available_version
+        else:
+            self.available_version = ""
 
         if not self.version:
             self.version = self.available_version

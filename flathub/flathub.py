@@ -35,7 +35,7 @@ class Flathub:
                 version = ""
 
                 for app in installed_list:
-                    if app['flatpak_id'] == flatpak_id:
+                    if app['flatpak_id'].strip() == flatpak_id:
                         installed = True
                         version = app['version']
 
@@ -72,7 +72,11 @@ class Flathub:
         for line in subprocess.check_output(command).splitlines():
             if isinstance(line, bytes):
                 line = line.decode("utf-8")
-            _, flatpak_id, version, _ = line.split("\t", 3)
+            try:
+                _, flatpak_id, version, _ = line.split("\t", 3)
+            except ValueError:
+                flatpak_id = line
+                version = ""
             application_tuple = {
                 'flatpak_id': flatpak_id,
                 'version': version
