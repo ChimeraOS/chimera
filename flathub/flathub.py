@@ -1,5 +1,6 @@
 import subprocess
 from typing import List, Dict
+import os
 import flathub
 import requests
 
@@ -14,9 +15,12 @@ class Flathub:
         self.__applications = self.__get_application_list()
 
     def __add_repo(self, name: str, url: str) -> None:
+        if os.geteuid() == 0:
+            command = ["flatpak", "remote-add", "--if-not-exists", name, url]
+        else:
+            command = ["flatpak", "remote-add", "--user", "--if-not-exists", name, url]
         # This only adds the flatpak repo if it isn't already installed
-        return_value = subprocess.call(
-            ["flatpak", "remote-add", "--if-not-exists", name, url])
+        return_value = subprocess.call(command)
         if return_value != 0:
             print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=name, url=url))
 
@@ -67,7 +71,10 @@ class Flathub:
         return None
 
     def __get_installed_list(self) -> List[Dict[str, any]]:
-        command = ["flatpak", "list", "--app"]
+        if os.geteuid() == 0:
+            command = ["flatpak", "list", "--app"]
+        else:
+            command = ["flatpak", "list", "--user", "--app"]
         installed_list = []
         for line in subprocess.check_output(command).splitlines():
             if isinstance(line, bytes):
@@ -86,16 +93,25 @@ class Flathub:
 
     @staticmethod
     def install(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "install", "-y", "flathub", flatpak_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if os.geteuid() == 0:
+            command = ["flatpak", "install", "-y", "flathub", flatpak_id]
+        else:
+            command = ["flatpak", "install", "--user", "-y", "flathub", flatpak_id]
+        return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     @staticmethod
     def uninstall(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "uninstall", "-y", flatpak_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if os.geteuid() == 0:
+            command = ["flatpak", "uninstall", "-y", flatpak_id]
+        else:
+            command = ["flatpak", "uninstall", "--user", "-y", flatpak_id]
+        return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     @staticmethod
     def update(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "update", "-y", flatpak_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if os.geteuid() == 0:
+            command = ["flatpak", "update", "-y", flatpak_id]
+        else:
+            command = ["flatpak", "update", "--user", "-y", flatpak_id]
+        return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
