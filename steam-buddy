@@ -12,7 +12,7 @@ if os.geteuid() == 0:
 	DATA_DIR = '/var/lib/steam-buddy'
 else:
 	HOST_PORT = 8080
-	DATA_DIR = os.path.join(os.path.expanduser('~'), '.local/share/steam-buddy')
+	DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy')
 
 SHORTCUT_DIR=DATA_DIR + '/shortcuts'
 BANNER_DIR=DATA_DIR + '/banners'
