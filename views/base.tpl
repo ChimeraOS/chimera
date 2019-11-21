@@ -23,36 +23,9 @@
 			text-decoration: none;
 		}
 
-    @media (max-width:509px) {
-            .flathub-link, .flathub-new {
-                max-width : 90%;
-                margin : 0px;
-                min-height : 215px !important;
-                height: auto !important;
-            }
-
-            .flathub {
-                height: auto !important;
-            }
-    }
-
 		#progress {
 		    display : inline;
 		}
-
-		.flathub-link, .flathub-new {
-		    display : inline;
-		    float : left;
-		    margin : 10px;
-		    width : 460px;
-		    height : 215px;
-		}
-
-		.flathub-new img {
-            margin :  0px;
-            width : 100%;
-            height : 100%;
-        }
 
         .flathub {
             width : 100%;
@@ -61,14 +34,6 @@
             border-width : 4px;
             border-style : solid;
             border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
-        }
-
-        .flathub img {
-            border-style : hidden;
-            border-width : 0px;
-            height :  128px;
-            width : 128px;
-            margin-top: 10px;
         }
 
 		.flathub h3 {
