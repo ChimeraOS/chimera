@@ -13,12 +13,12 @@ BANNER_DIR=DATA_DIR + '/banners'
 CONTENT_DIR=DATA_DIR + '/content'
 
 PLATFORMS = {
+	"flathub" : "Flathub",
 	"gba"     : "Game Boy Advance",
 	"genesis" : "Genesis",
 	"sms"     : "Master System",
 	"nes"     : "Nintendo",
 	"snes"    : "Super Nintendo",
-	"flathub" : "Flathub",
 }
 
 FLATHUB_HANDLER = flathub.Flathub()
@@ -105,6 +105,10 @@ def edit(platform, name):
 	shortcut = matches[0]
 
 	return template('new.tpl', isEditing=True, platform=platform, platformName=PLATFORMS[platform], name=name, hidden=shortcut['hidden'])
+
+@route('/images/flathub/<filename>')
+def flathub_images(filename):
+	return static_file('images/flathub/' + filename, root='.')
 
 @route('/images/<filename>')
 def images(filename):
@@ -239,7 +243,6 @@ def flathub_uninstall(flatpak_id):
 
 	shortcuts = load_shortcuts(platform)
 	for shortcut in shortcuts:
-		print(str(shortcut))
 		if application.name == shortcut['name']:
 			shortcuts.remove(shortcut)
 			break

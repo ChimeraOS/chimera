@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from shutil import copyfile
 import threading
 import time
 import subprocess
@@ -34,13 +35,10 @@ class Application:
     def get_image(self, directory: str) -> str:
         if not os.path.exists(directory):
             os.makedirs(directory)
-        filename = os.path.join(directory, "{}.png".format(self.flatpak_id))
-        if not os.path.isfile(filename):
-            download = requests.get(self.image_url)
-            with open(filename, "wb") as writer:
-                writer.write(download.content)
-                writer.close()
-        return filename
+        src = "images/flathub/{}.png".format(self.flatpak_id)
+        dst = os.path.join(directory, "{}.png".format(self.flatpak_id))
+        copyfile(src, dst)
+        return dst
 
     def get_description(self) -> str:
         if not self.__description:
