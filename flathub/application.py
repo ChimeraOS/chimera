@@ -37,7 +37,8 @@ class Application:
             os.makedirs(directory)
         src = "images/flathub/{}.png".format(self.flatpak_id)
         dst = os.path.join(directory, "{}.png".format(self.flatpak_id))
-        copyfile(src, dst)
+        if os.path.isfile(src):
+            copyfile(src, dst)
         return dst
 
     def get_description(self) -> str:

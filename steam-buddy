@@ -109,7 +109,12 @@ def edit(platform, name):
 
 @route('/images/flathub/<filename>')
 def flathub_images(filename):
-	return static_file('images/flathub/' + filename, root='.')
+	path  = os.getcwd() + '/images/flathub/' + filename
+	local = DATA_DIR + '/banners/flathub/' + filename
+	if os.path.isfile(local):
+		path = local
+
+	return static_file(path, root='/')
 
 @route('/images/<filename>')
 def images(filename):

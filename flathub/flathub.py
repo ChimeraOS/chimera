@@ -7,11 +7,10 @@ import requests
 
 class Flathub:
 
-    def __init__(self, use_whitelist=True):
+    def __init__(self):
         flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
         self.__add_repo("flathub", flathub_url)
         self.__api_url = "https://flathub.org/api/v1/apps"
-        self.use_whitelist = use_whitelist
         self.__applications = self.__get_application_list()
 
     def __add_repo(self, name: str, url: str) -> None:
@@ -50,17 +49,17 @@ class Flathub:
     def get_available_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
+            # Don't add if the whitelist is enabled and the app isn't in it
+            if application.flatpak_id not in flathub.whitelist:
+                continue
             if not application.installed or (application.installed and application.busy):
-                # Don't add if the whitelist is enabled and the app isn't in it
-                if self.use_whitelist and application.flatpak_id not in flathub.whitelist:
-                    continue
                 applications.append(application)
         return applications
 
     def get_installed_applications(self) -> List[flathub.Application]:
         applications = []
         for application in self.__applications:
-            if application.installed and not application.busy or not application.installed and application.busy:
+            if application.installed and application.flatpak_id in flathub.whitelist and not application.busy:
                 applications.append(application)
         return applications
 
