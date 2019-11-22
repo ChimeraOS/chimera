@@ -1,9 +1,10 @@
 [Unit]
-Description=SteamBuddy for %I
+Description=SteamBuddy for %i
 After=network-online.target
 
 [Service]
-User=%I
+Service=steam-buddy
+User=%i
 WorkingDirectory=/usr/share/steam-buddy
 ExecStart=/usr/share/steam-buddy/steam-buddy
 Restart=on-abort
@@ -13,4 +14,4 @@ NoNewPrivileges=true
 PrivateDevices=true
 
 [Install]
-WantedBy=multi-user.target
+RequiredBy=steam-buddy-proxy@%i.service

@@ -1,0 +1,9 @@
+[Unit]
+Description=SteamBuddy socket
+
+[Socket]
+ListenStream=80
+Service=steam-buddy-proxy@%i.service
+
+[Install]
+WantedBy=sockets.target

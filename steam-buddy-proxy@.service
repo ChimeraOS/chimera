@@ -1,0 +1,9 @@
+[Unit]
+Requires=steam-buddy@%i.service
+After=steam-buddy@%i.service
+
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd 127.0.0.1:8844
+
+[Install]
+WantedBy=sockets.target
