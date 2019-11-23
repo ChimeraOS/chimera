@@ -4,6 +4,7 @@ import os
 import yaml
 import json
 import shutil
+import subprocess
 import flathub
 from bottle import route, request, static_file, run, template, redirect, response
 
@@ -283,6 +284,11 @@ def flathub_progress(flatpak_id):
 	}
 
 	return json.dumps(values)
+
+@route('/steam/restart')
+def steam_restart():
+	subprocess.call(["pkill", "steam"])
+	redirect('/')
 
 if __name__ == '__main__':
 	run(host='localhost', port=8844)

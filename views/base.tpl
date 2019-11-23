@@ -130,6 +130,10 @@
 			border-radius : 5px;
 		}
 
+		.right {
+		    float : right;
+		}
+
 		.delete {
 			background-color : #ff3333;
 		}
@@ -163,6 +167,7 @@
 			color : white;
 			padding : 16px;
 			margin-bottom : 10px;
+			box-sizing : border-box;
 		}
 	</style>
 </head>
@@ -178,6 +183,7 @@
 				<em>/</em> <a href="/platforms/{{platform}}/new">New</a>
 			% end
 		% end
+		<a class="right" href="/steam/restart">Restart Steam</a>
 	</div>
 	<div class="content">
 		{{!base}}
