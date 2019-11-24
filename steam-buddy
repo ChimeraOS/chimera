@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 import flathub
+from glob import glob
 from bottle import route, request, static_file, run, template, redirect, response
 
 DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy')
@@ -38,25 +39,49 @@ def load_shortcuts(platform):
 
 	return shortcuts
 
-def get_path(base_dir, platform, name):
-	return "{base_dir}/{platform}/{name}".format(base_dir=base_dir, platform=platform, name=name)
 
-def upsert_file(data, base_dir):
+def delete_file_link(base_dir, platform, name):
+	links = glob("{base_dir}/{platform}/{name}.*".format(base_dir=base_dir, platform=platform, name=name))
+
+	if len(links) < 1:
+		return
+
+	for link in links:
+		if os.path.islink(link) or os.path.exists(link):
+			os.remove(link)
+
+
+def upsert_file(base_dir, platform, name, data):
 	if not data:
 		return
 
-	if not os.path.exists(base_dir):
-		os.makedirs(base_dir)
+	file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
 
-	file_path = "{base_dir}/{filename}".format(base_dir=base_dir, filename=data.filename)
+	if not os.path.exists(file_dir):
+		os.makedirs(file_dir)
+
+	file_path = "{file_dir}/{filename}".format(file_dir=file_dir, filename=data.filename)
 	if os.path.exists(file_path):
 		os.remove(file_path)
 
 	data.save(file_path)
 
-def delete_folder(target_dir):
-	if os.path.exists(target_dir):
-		shutil.rmtree(target_dir)
+	_, ext = os.path.splitext(data.filename)
+	dst = "{base_dir}/{platform}/{name}{ext}".format(base_dir=base_dir, platform=platform, name=name, ext=ext)
+
+	delete_file_link(base_dir, platform, name)
+	os.symlink(file_path, dst)
+
+	return dst
+
+
+def delete_file(base_dir, platform, name):
+	file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
+
+	if os.path.exists(file_dir):
+		shutil.rmtree(file_dir)
+
+	delete_file_link(base_dir, platform, name)
 
 
 @route('/')
@@ -75,14 +100,14 @@ def platform(platform):
 		hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
 		if 'banner' in shortcut:
 			filename = os.path.basename(shortcut['banner'])
-			banner = '/banners/{platform}/{name}/{filename}'.format(platform=platform, name=shortcut['name'], filename=filename)
+			banner = '/banners/{platform}/{filename}'.format(platform=platform, name=shortcut['name'], filename=filename)
 		data.append({ 'hidden' : hidden, 'filename' : filename, 'banner' : banner, 'name' : shortcut['name'] })
 
 	return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
 
-@route('/banners/<platform>/<name>/<filename>')
-def banners(platform, name, filename):
-	base = "{banner_dir}/{platform}/{name}".format(banner_dir=BANNER_DIR, platform=platform, name=name)
+@route('/banners/<platform>/<filename>')
+def banners(platform, filename):
+	base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
 	return static_file(filename, root='{base}'.format(base=base))
 
 @route('/platforms/<platform>/new')
@@ -142,11 +167,8 @@ def shortcut_create():
 	if len(matches) > 0:
 		return 'Shortcut already exists'
 
-	banner_dir = get_path(BANNER_DIR, platform, name)
-	upsert_file(banner, banner_dir)
-
-	content_dir = get_path(CONTENT_DIR, platform, name)
-	upsert_file(content, content_dir)
+	banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+	content_path = upsert_file(CONTENT_DIR, platform, name, content)
 
 	shortcut = {}
 	shortcut['name'] = name
@@ -154,10 +176,10 @@ def shortcut_create():
 	shortcut['hidden'] = hidden == 'on'
 	shortcut['tags'] = [ PLATFORMS[platform] ]
 	if banner:
-		shortcut['banner'] = '{banner_dir}/{filename}'.format(banner_dir=banner_dir, filename=banner.filename)
+		shortcut['banner'] = banner_path
 	if content:
-		shortcut['dir'] = '"' + content_dir + '"'
-		shortcut['params'] = '"' + content.filename + '"'
+		shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+		shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
@@ -175,22 +197,20 @@ def shortcut_update():
 	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
-	banner_dir = get_path(BANNER_DIR, platform, name)
-	upsert_file(banner, banner_dir)
-
-	content_dir = get_path(CONTENT_DIR, platform, name)
-	upsert_file(content, content_dir)
-
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	shortcut = matches[0]
+
+	banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+	content_path = upsert_file(CONTENT_DIR, platform, name, content)
+
 	shortcut['name'] = name
 	shortcut['cmd'] = platform
 	shortcut['hidden'] = hidden == 'on'
 	if banner:
-		shortcut['banner'] = '{banner_dir}/{filename}'.format(banner_dir=banner_dir, filename=banner.filename)
+		shortcut['banner'] = banner_path
 	if content:
-		shortcut['dir'] = '"' + content_dir + '"'
-		shortcut['params'] = '"' + content.filename + '"'
+		shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+		shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
@@ -207,8 +227,8 @@ def shortcut_delete():
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	shortcut = matches[0]
 
-	delete_folder(get_path(CONTENT_DIR, platform, name))
-	delete_folder(get_path(BANNER_DIR, platform, name))
+	delete_file(CONTENT_DIR, platform, name)
+	delete_file(BANNER_DIR, platform, name)
 
 	shortcuts.remove(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
