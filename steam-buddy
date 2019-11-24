@@ -9,11 +9,11 @@ import flathub
 from glob import glob
 from bottle import route, request, static_file, run, template, redirect, response
 
-DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy')
+DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
-SHORTCUT_DIR=DATA_DIR + '/shortcuts'
-BANNER_DIR=DATA_DIR + '/banners'
-CONTENT_DIR=DATA_DIR + '/content'
+SHORTCUT_DIR=DATA_DIR + '/steam-shortcuts'
+BANNER_DIR=DATA_DIR + '/steam-buddy/banners'
+CONTENT_DIR=DATA_DIR + '/steam-buddy/content'
 
 PLATFORMS = {
 	"flathub" : "Flathub",
@@ -30,7 +30,7 @@ def load_shortcuts(platform):
 	shortcuts = []
 	if not os.path.exists(SHORTCUT_DIR):
 		os.makedirs(SHORTCUT_DIR)
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	if os.path.isfile(shortcuts_file):
 		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
@@ -160,7 +160,7 @@ def shortcut_create():
 
 	name = name.strip()
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -194,7 +194,7 @@ def shortcut_update():
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -221,7 +221,7 @@ def shortcut_delete():
 	name = request.forms.get('name')
 	platform = request.forms.get('platform')
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -254,7 +254,7 @@ def flathub_install(flatpak_id):
 		'tags': ["Flathub"],
 	}
 	shortcuts.append(shortcut)
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
@@ -273,7 +273,7 @@ def flathub_uninstall(flatpak_id):
 		if application.name == shortcut['name']:
 			shortcuts.remove(shortcut)
 			break
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
