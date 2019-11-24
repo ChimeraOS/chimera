@@ -26,6 +26,12 @@ PLATFORMS = {
 
 FLATHUB_HANDLER = flathub.Flathub()
 
+def sanitize(string):
+	if isinstance(string, str):
+		return string.strip('.').replace('\n', '_').replace('\r', '_').replace('/', '_').replace('\\', '_').replace('\0', '_').replace('"', '')
+
+	return string
+
 def load_shortcuts(platform):
 	shortcuts = []
 	if not os.path.exists(SHORTCUT_DIR):
@@ -55,18 +61,19 @@ def upsert_file(base_dir, platform, name, data):
 	if not data:
 		return
 
+	filename = sanitize(data.filename)
 	file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
 
 	if not os.path.exists(file_dir):
 		os.makedirs(file_dir)
 
-	file_path = "{file_dir}/{filename}".format(file_dir=file_dir, filename=data.filename)
+	file_path = "{file_dir}/{filename}".format(file_dir=file_dir, filename=filename)
 	if os.path.exists(file_path):
 		os.remove(file_path)
 
 	data.save(file_path)
 
-	_, ext = os.path.splitext(data.filename)
+	_, ext = os.path.splitext(filename)
 	dst = "{base_dir}/{platform}/{name}{ext}".format(base_dir=base_dir, platform=platform, name=name, ext=ext)
 
 	delete_file_link(base_dir, platform, name)
@@ -148,9 +155,9 @@ def images(filename):
 
 @route('/shortcuts/new', method='POST')
 def shortcut_create():
-	name = request.forms.get('name')
-	platform = request.forms.get('platform')
-	hidden = request.forms.get('hidden')
+	name = sanitize(request.forms.get('name'))
+	platform = sanitize(request.forms.get('platform'))
+	hidden = sanitize(request.forms.get('hidden'))
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
@@ -188,9 +195,9 @@ def shortcut_create():
 
 @route('/shortcuts/edit', method='POST')
 def shortcut_update():
-	name = request.forms.get('original_name') # do not allow editing name
-	platform = request.forms.get('platform')
-	hidden = request.forms.get('hidden')
+	name = sanitize(request.forms.get('original_name')) # do not allow editing name
+	platform = sanitize(request.forms.get('platform'))
+	hidden = sanitize(request.forms.get('hidden'))
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
@@ -218,8 +225,8 @@ def shortcut_update():
 
 @route('/shortcuts/delete', method='POST')
 def shortcut_delete():
-	name = request.forms.get('name')
-	platform = request.forms.get('platform')
+	name = sanitize(request.forms.get('name'))
+	platform = sanitize(request.forms.get('platform'))
 
 	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
