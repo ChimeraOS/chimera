@@ -8,10 +8,14 @@ import requests
 class Flathub:
 
     def __init__(self):
-        flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
-        self.__add_repo("flathub", flathub_url)
-        self.__api_url = "https://flathub.org/api/v1/apps"
-        self.__applications = self.__get_application_list()
+        try:
+            flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
+            self.__add_repo("flathub", flathub_url)
+            self.__api_url = "https://flathub.org/api/v1/apps"
+            self.__applications = self.__get_application_list()
+        except:
+            self.__applications = []
+            print('Failed to initialize flathub support')
 
     def __add_repo(self, name: str, url: str) -> None:
         # This only adds the flatpak repo if it isn't already installed
