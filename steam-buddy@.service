@@ -3,7 +3,6 @@ Description=SteamBuddy for %i
 After=network-online.target
 
 [Service]
-Service=steam-buddy
 User=%i
 WorkingDirectory=/usr/share/steam-buddy
 ExecStart=/usr/share/steam-buddy/steam-buddy
