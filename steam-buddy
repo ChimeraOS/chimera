@@ -6,17 +6,21 @@ import json
 import shutil
 import subprocess
 import flathub
+from glob import glob
 from bottle import route, request, static_file, run, template, redirect, response
 
-DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy')
+DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
-SHORTCUT_DIR=DATA_DIR + '/shortcuts'
-BANNER_DIR=DATA_DIR + '/banners'
-CONTENT_DIR=DATA_DIR + '/content'
+SHORTCUT_DIR=DATA_DIR + '/steam-shortcuts'
+BANNER_DIR=DATA_DIR + '/steam-buddy/banners'
+CONTENT_DIR=DATA_DIR + '/steam-buddy/content'
 
 PLATFORMS = {
 	"flathub" : "Flathub",
+	"gb"      : "Game Boy",
 	"gba"     : "Game Boy Advance",
+	"gbc"     : "Game Boy Color",
+	"sgg"     : "Game Gear",
 	"genesis" : "Genesis",
 	"sms"     : "Master System",
 	"nes"     : "Nintendo",
@@ -25,11 +29,17 @@ PLATFORMS = {
 
 FLATHUB_HANDLER = flathub.Flathub()
 
+def sanitize(string):
+	if isinstance(string, str):
+		return string.strip('.').replace('\n', '_').replace('\r', '_').replace('/', '_').replace('\\', '_').replace('\0', '_').replace('"', '')
+
+	return string
+
 def load_shortcuts(platform):
 	shortcuts = []
 	if not os.path.exists(SHORTCUT_DIR):
 		os.makedirs(SHORTCUT_DIR)
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	if os.path.isfile(shortcuts_file):
 		shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
@@ -38,25 +48,50 @@ def load_shortcuts(platform):
 
 	return shortcuts
 
-def get_path(base_dir, platform, name):
-	return "{base_dir}/{platform}/{name}".format(base_dir=base_dir, platform=platform, name=name)
 
-def upsert_file(data, base_dir):
+def delete_file_link(base_dir, platform, name):
+	links = glob("{base_dir}/{platform}/{name}.*".format(base_dir=base_dir, platform=platform, name=name))
+
+	if len(links) < 1:
+		return
+
+	for link in links:
+		if os.path.islink(link) or os.path.exists(link):
+			os.remove(link)
+
+
+def upsert_file(base_dir, platform, name, data):
 	if not data:
 		return
 
-	if not os.path.exists(base_dir):
-		os.makedirs(base_dir)
+	filename = sanitize(data.filename)
+	file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
 
-	file_path = "{base_dir}/{filename}".format(base_dir=base_dir, filename=data.filename)
+	if not os.path.exists(file_dir):
+		os.makedirs(file_dir)
+
+	file_path = "{file_dir}/{filename}".format(file_dir=file_dir, filename=filename)
 	if os.path.exists(file_path):
 		os.remove(file_path)
 
 	data.save(file_path)
 
-def delete_folder(target_dir):
-	if os.path.exists(target_dir):
-		shutil.rmtree(target_dir)
+	_, ext = os.path.splitext(filename)
+	dst = "{base_dir}/{platform}/{name}{ext}".format(base_dir=base_dir, platform=platform, name=name, ext=ext)
+
+	delete_file_link(base_dir, platform, name)
+	os.symlink(file_path, dst)
+
+	return dst
+
+
+def delete_file(base_dir, platform, name):
+	file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
+
+	if os.path.exists(file_dir):
+		shutil.rmtree(file_dir)
+
+	delete_file_link(base_dir, platform, name)
 
 
 @route('/')
@@ -75,14 +110,14 @@ def platform(platform):
 		hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
 		if 'banner' in shortcut:
 			filename = os.path.basename(shortcut['banner'])
-			banner = '/banners/{platform}/{name}/{filename}'.format(platform=platform, name=shortcut['name'], filename=filename)
+			banner = '/banners/{platform}/{filename}'.format(platform=platform, name=shortcut['name'], filename=filename)
 		data.append({ 'hidden' : hidden, 'filename' : filename, 'banner' : banner, 'name' : shortcut['name'] })
 
 	return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
 
-@route('/banners/<platform>/<name>/<filename>')
-def banners(platform, name, filename):
-	base = "{banner_dir}/{platform}/{name}".format(banner_dir=BANNER_DIR, platform=platform, name=name)
+@route('/banners/<platform>/<filename>')
+def banners(platform, filename):
+	base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
 	return static_file(filename, root='{base}'.format(base=base))
 
 @route('/platforms/<platform>/new')
@@ -123,9 +158,9 @@ def images(filename):
 
 @route('/shortcuts/new', method='POST')
 def shortcut_create():
-	name = request.forms.get('name')
-	platform = request.forms.get('platform')
-	hidden = request.forms.get('hidden')
+	name = sanitize(request.forms.get('name'))
+	platform = sanitize(request.forms.get('platform'))
+	hidden = sanitize(request.forms.get('hidden'))
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
@@ -135,18 +170,15 @@ def shortcut_create():
 
 	name = name.strip()
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	if len(matches) > 0:
 		return 'Shortcut already exists'
 
-	banner_dir = get_path(BANNER_DIR, platform, name)
-	upsert_file(banner, banner_dir)
-
-	content_dir = get_path(CONTENT_DIR, platform, name)
-	upsert_file(content, content_dir)
+	banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+	content_path = upsert_file(CONTENT_DIR, platform, name, content)
 
 	shortcut = {}
 	shortcut['name'] = name
@@ -154,10 +186,10 @@ def shortcut_create():
 	shortcut['hidden'] = hidden == 'on'
 	shortcut['tags'] = [ PLATFORMS[platform] ]
 	if banner:
-		shortcut['banner'] = '{banner_dir}/{filename}'.format(banner_dir=banner_dir, filename=banner.filename)
+		shortcut['banner'] = banner_path
 	if content:
-		shortcut['dir'] = '"' + content_dir + '"'
-		shortcut['params'] = '"' + content.filename + '"'
+		shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+		shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
 	shortcuts.append(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
@@ -166,31 +198,29 @@ def shortcut_create():
 
 @route('/shortcuts/edit', method='POST')
 def shortcut_update():
-	name = request.forms.get('original_name') # do not allow editing name
-	platform = request.forms.get('platform')
-	hidden = request.forms.get('hidden')
+	name = sanitize(request.forms.get('original_name')) # do not allow editing name
+	platform = sanitize(request.forms.get('platform'))
+	hidden = sanitize(request.forms.get('hidden'))
 	banner = request.files.get('banner')
 	content = request.files.get('content')
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
-
-	banner_dir = get_path(BANNER_DIR, platform, name)
-	upsert_file(banner, banner_dir)
-
-	content_dir = get_path(CONTENT_DIR, platform, name)
-	upsert_file(content, content_dir)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	shortcut = matches[0]
+
+	banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+	content_path = upsert_file(CONTENT_DIR, platform, name, content)
+
 	shortcut['name'] = name
 	shortcut['cmd'] = platform
 	shortcut['hidden'] = hidden == 'on'
 	if banner:
-		shortcut['banner'] = '{banner_dir}/{filename}'.format(banner_dir=banner_dir, filename=banner.filename)
+		shortcut['banner'] = banner_path
 	if content:
-		shortcut['dir'] = '"' + content_dir + '"'
-		shortcut['params'] = '"' + content.filename + '"'
+		shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+		shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
@@ -198,17 +228,17 @@ def shortcut_update():
 
 @route('/shortcuts/delete', method='POST')
 def shortcut_delete():
-	name = request.forms.get('name')
-	platform = request.forms.get('platform')
+	name = sanitize(request.forms.get('name'))
+	platform = sanitize(request.forms.get('platform'))
 
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
 	shortcut = matches[0]
 
-	delete_folder(get_path(CONTENT_DIR, platform, name))
-	delete_folder(get_path(BANNER_DIR, platform, name))
+	delete_file(CONTENT_DIR, platform, name)
+	delete_file(BANNER_DIR, platform, name)
 
 	shortcuts.remove(shortcut)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
@@ -234,7 +264,7 @@ def flathub_install(flatpak_id):
 		'tags': ["Flathub"],
 	}
 	shortcuts.append(shortcut)
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
@@ -253,7 +283,7 @@ def flathub_uninstall(flatpak_id):
 		if application.name == shortcut['name']:
 			shortcuts.remove(shortcut)
 			break
-	shortcuts_file = "{shortcuts_dir}/{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+	shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
 	yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
