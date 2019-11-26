@@ -1,5 +1,16 @@
 % rebase('base.tpl')
-
+<script>
+async function getDescription() {
+    url = '/flathub/description/{{app.flatpak_id}}';
+    response = await fetch(url);
+    values = await response.json();
+    console.log(values);
+    if (values) {
+        document.getElementById('description').innerHTML = values.description;
+    }
+}
+getDescription();
+</script>
 <h2>{{app}}</h2>
 % if app.busy:
 <script type="text/JavaScript">
@@ -11,7 +22,7 @@ async function reloadWhenDone() {
 	    location.reload(true);
 	} else {
 	    if (values.progress != -1) {
-	        document.getElementById('progress').innerHTML = values.progress + "%"
+	        document.getElementById('progress').innerHTML = values.progress + "%";
 	    }
 	    setTimeout(reloadWhenDone, 100);
 	}
@@ -31,7 +42,8 @@ Installing.. <div id="progress"></div>
 % end
 % end
 <p ><img class="flathub-edit" src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app }}"></img></p>
-{{!app.get_description()}}
+<p>{{app.summary}}<p>
+<p id="description"></p>
 
 % if app.busy == False:
 % if app.installed:

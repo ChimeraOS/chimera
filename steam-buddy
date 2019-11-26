@@ -315,6 +315,14 @@ def flathub_progress(flatpak_id):
 
 	return json.dumps(values)
 
+@route('/flathub/description/<flatpak_id>')
+def flathub_description(flatpak_id):
+	application = FLATHUB_HANDLER.get_application(flatpak_id)
+	values = {
+		"description": application.get_description()
+	}
+	return json.dumps(values)
+
 @route('/steam/restart')
 def steam_restart():
 	subprocess.call(["pkill", "steam"])
