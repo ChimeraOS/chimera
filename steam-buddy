@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import yaml
 import json
 import shutil
@@ -50,7 +51,11 @@ def load_shortcuts(platform):
 
 
 def delete_file_link(base_dir, platform, name):
-	links = glob("{base_dir}/{platform}/{name}.*".format(base_dir=base_dir, platform=platform, name=name))
+	e = re.escape(name) + r"\.[^.]+$"
+	d = os.path.join(base_dir, platform)
+	links = []
+	if os.path.isdir(d):
+		links = [os.path.join(d, l) for l in os.listdir(d) if re.match(e, l)]
 
 	if len(links) < 1:
 		return
