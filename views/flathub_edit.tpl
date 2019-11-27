@@ -4,7 +4,6 @@ async function getDescription() {
     url = '/flathub/description/{{app.flatpak_id}}';
     response = await fetch(url);
     values = await response.json();
-    console.log(values);
     if (values) {
         document.getElementById('description').innerHTML = values.description;
     }
