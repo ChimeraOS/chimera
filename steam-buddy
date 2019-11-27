@@ -31,7 +31,7 @@ FLATHUB_HANDLER = flathub.Flathub()
 
 def sanitize(string):
 	if isinstance(string, str):
-		return string.strip('.').replace('\n', '_').replace('\r', '_').replace('/', '_').replace('\\', '_').replace('\0', '_').replace('"', '')
+		return string.replace('\n', '_').replace('\r', '_').replace('/', '_').replace('\\', '_').replace('\0', '_').replace('"', '')
 
 	return string
 
