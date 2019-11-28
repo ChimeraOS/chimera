@@ -131,7 +131,7 @@
 		}
 
 		.right {
-		    float : right;
+		    text-align : right;
 		}
 
 		.delete {
@@ -169,9 +169,34 @@
 			margin-bottom : 10px;
 			box-sizing : border-box;
 		}
+
+		#menuitems {
+		    display : none;
+		}
+		#menuitems a {
+		    display : block;
+		}
+
+		.icon {
+		    display : block;
+		    position : absolute;
+		    right : 16;
+		    top : 16;
+		}
 	</style>
 </head>
 <body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script>
+	    function toggleMenu() {
+	        var x = document.getElementById("menuitems");
+	        if (x.style.display == "block") {
+	            x.style.display = "none";
+	        } else {
+	            x.style.display = "block";
+	        }
+	    }
+	</script>
 	<div class="header">
 		<a href="/">Home</a>
 		% if get('platform') :
@@ -183,7 +208,14 @@
 				<em>/</em> <a href="/platforms/{{platform}}/new">New</a>
 			% end
 		% end
-		<a class="right" href="/steam/restart">Restart Steam</a>
+		<div class="right">
+            <div id="menuitems">
+                <a href="/steam/restart">Restart Steam</a>
+            </div>
+            <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+                <i class="fa fa-cog"></i>
+            </a>
+		</div>
 	</div>
 	<div class="content">
 		{{!base}}
