@@ -249,7 +249,7 @@ def flathub_install(flatpak_id):
 	platform = "flathub"
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
 	if not application:
-		abort(404, '{} wasn\'t found in the Flathub API'.format(flatpak_id))
+		abort(404, '{} not found in Flathub'.format(flatpak_id))
 	application.install()
 
 	shortcuts = load_shortcuts(platform)
@@ -272,7 +272,7 @@ def flathub_uninstall(flatpak_id):
 	platform = "flathub"
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
 	if not application:
-		abort(404, '{} wasn\'t found in the Flathub API'.format(flatpak_id))
+		abort(404, '{} not found in Flathub'.format(flatpak_id))
 	application.uninstall()
 
 	shortcuts = load_shortcuts(platform)
@@ -290,7 +290,7 @@ def flathub_update(flatpak_id):
 	platform = "flathub"
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
 	if not application:
-		abort(404, '{} wasn\'t found in the Flathub API'.format(flatpak_id))
+		abort(404, '{} not found in Flathub'.format(flatpak_id))
 	application.update()
 
 	redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
@@ -299,7 +299,7 @@ def flathub_update(flatpak_id):
 def flathub_progress(flatpak_id):
 	application = FLATHUB_HANDLER.get_application(flatpak_id)
 	if not application:
-		abort(404, '{} wasn\'t found in the Flathub API'.format(flatpak_id))
+		abort(404, '{} not found in Flathub'.format(flatpak_id))
 
 	response.content_type = 'application/json'
 	values = {
