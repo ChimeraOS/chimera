@@ -1,4 +1,6 @@
 from setuptools import setup, find_packages
+from glob import glob
+
 setup(
     name="Steam-Buddy",
     version="0.1.5",
@@ -6,11 +8,10 @@ setup(
     scripts=['steam-buddy'],
 
     data_files=[
-        ('share/steam-buddy/images', ['images/*.png']),
-        ('share/steam-buddy/views', ['views/*.tpl']),
-        ('share/steam-buddy/css', ['css/*.css']),
-        ('share/steam-buddy/javascript', ['javascript/*.js']),
-        ('bin', ['bin/gb', 'bin/gba', 'bin/gbc', 'bin/genesis', 'bin/nes', 'bin/sgg', 'bin/sms', 'bin/snes']),
+        ('share/steam-buddy/images', glob('images/*.png')),
+        ('share/steam-buddy/images/flathub', glob('images/flathub/*.png')),
+        ('share/steam-buddy/views', glob('views/*.tpl')),
+        ('bin', glob('bin/*')),
         ('share/doc/steam-buddy', ['README.md']),
     ],
 
