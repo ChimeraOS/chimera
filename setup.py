@@ -15,6 +15,7 @@ setup(
         ('share/steam-buddy', ['launcher']),
         ('bin', glob('bin/*')),
         ('share/doc/steam-buddy', ['README.md']),
+        ('share/doc/steam-buddy', ['LICENSE.md']),
     ],
 
     # Project uses reStructuredText, so ensure that the docutils get
