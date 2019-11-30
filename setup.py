@@ -5,7 +5,7 @@ setup(
     packages=find_packages(),
     scripts=['steam-buddy'],
 
-    data_file=[
+    data_files=[
         ('share/steam-buddy', ['views', 'images']),
         ('bin', ['bin/gb', 'bin/gba', 'bin/gbc', 'bin/genesis', 'bin/nes', 'bin/sgg', 'bin/sms', 'bin/snes']),
         ('share/doc/steam-buddy', ['README.md']),
