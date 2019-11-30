@@ -1,7 +1,7 @@
 import subprocess
 from typing import List, Dict
-import os
-import flathub
+from steam_buddy.flathub.whitelist import whitelist
+from steam_buddy.flathub.application import Application
 import requests
 
 
@@ -15,11 +15,12 @@ class Flathub:
             self.__applications = self.__get_application_list()
         except:
             self.__applications = []
-            print('Failed to initialize flathub support')
+            print('Error: Failed to initialize flathub support')
 
     def __add_repo(self, name: str, url: str) -> None:
         # This only adds the flatpak repo if it isn't already installed
         return_value = subprocess.call(["flatpak", "remote-add", "--user", "--if-not-exists", name, url])
+
         if return_value != 0:
             print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=name, url=url))
 
@@ -42,28 +43,28 @@ class Flathub:
                         installed = True
                         version = app['version']
 
-                application = flathub.Application(flatpak_id, name, description, image_url, installed, version, available_version)
+                application = Application(flatpak_id, name, description, image_url, installed, version, available_version)
                 applications.append(application)
         return applications
 
-    def get_available_applications(self) -> List[flathub.Application]:
+    def get_available_applications(self) -> List[Application]:
         applications = []
         for application in self.__applications:
             # Don't add if the whitelist is enabled and the app isn't in it
-            if application.flatpak_id not in flathub.whitelist:
+            if application.flatpak_id not in whitelist:
                 continue
             if not application.installed or (application.installed and application.busy):
                 applications.append(application)
         return applications
 
-    def get_installed_applications(self) -> List[flathub.Application]:
+    def get_installed_applications(self) -> List[Application]:
         applications = []
         for application in self.__applications:
-            if application.installed and application.flatpak_id in flathub.whitelist and not application.busy:
+            if application.installed and application.flatpak_id in whitelist and not application.busy:
                 applications.append(application)
         return applications
 
-    def get_application(self, flatpak_id: str) -> flathub.Application:
+    def get_application(self, flatpak_id: str) -> Application:
         for application in self.__applications:
             if application.flatpak_id == flatpak_id:
                 return application
@@ -85,16 +86,4 @@ class Flathub:
             }
             installed_list.append(application_tuple)
         return installed_list
-
-    @staticmethod
-    def install(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "install", "--user", "-y", "flathub", flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    @staticmethod
-    def uninstall(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "uninstall", "--user", "-y", flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    @staticmethod
-    def update(flatpak_id: str) -> subprocess:
-        return subprocess.Popen(["flatpak", "update", "--user", "-y", flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 

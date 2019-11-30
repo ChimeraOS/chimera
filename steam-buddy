@@ -6,7 +6,7 @@ import yaml
 import json
 import shutil
 import subprocess
-import flathub
+from steam_buddy.flathub import Flathub
 from bottle import route, request, static_file, run, template, redirect, response
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
@@ -31,7 +31,7 @@ PLATFORMS = {
 	"snes"    : "Super Nintendo",
 }
 
-FLATHUB_HANDLER = flathub.Flathub()
+FLATHUB_HANDLER = Flathub()
 
 def sanitize(string):
 	if isinstance(string, str):
