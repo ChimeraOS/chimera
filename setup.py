@@ -6,7 +6,10 @@ setup(
     scripts=['steam-buddy'],
 
     data_files=[
-        ('share/steam-buddy', ['views', 'images']),
+        ('share/steam-buddy/images', ['images/*.png']),
+        ('share/steam-buddy/views', ['views/*.tpl']),
+        ('share/steam-buddy/css', ['css/*.css']),
+        ('share/steam-buddy/javascript', ['javascript/*.js']),
         ('bin', ['bin/gb', 'bin/gba', 'bin/gbc', 'bin/genesis', 'bin/nes', 'bin/sgg', 'bin/sms', 'bin/snes']),
         ('share/doc/steam-buddy', ['README.md']),
     ],
