@@ -7,8 +7,6 @@ Steam Buddy is a web based tool for installing non-Steam software to your Linux 
 ### install flathub apps
 A limited set of applications from flathub are available for immediate installation. This set of applications will be expanded over time.
 
-You may, however, whitelist additional applications by adding a Steam grid image file at `~/.local/share/steam-buddy/flathub/banners/<flathub id>.png`. If you do, please report how well the application works.
-
 
 ### upload roms
 
