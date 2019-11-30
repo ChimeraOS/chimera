@@ -7,10 +7,12 @@ import json
 import shutil
 import subprocess
 import flathub
-from glob import glob
 from bottle import route, request, static_file, run, template, redirect, response
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
+RESOURCE_DIR = os.getcwd()
+if not os.path.isdir(os.path.join(RESOURCE_DIR, 'views')):
+	RESOURCE_DIR = "/usr/share/steam-buddy"
 
 SHORTCUT_DIR=DATA_DIR + '/steam-shortcuts'
 BANNER_DIR=DATA_DIR + '/steam-buddy/banners'
@@ -334,4 +336,5 @@ def steam_restart():
 	redirect('/')
 
 if __name__ == '__main__':
+	os.chdir(RESOURCE_DIR)
 	run(host='localhost', port=8844)
