@@ -134,7 +134,7 @@ def edit(platform, name):
 			return template('flathub_edit', app=application, platform="flathub", platformName="Flathub",
 							name=name, )
 		else:
-			abort(404, '{} wasn\'t found in the Flathub API'.format(name))
+			abort(404, '{} not found in Flathub'.format(name))
 	shortcuts = load_shortcuts(platform)
 
 	matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
