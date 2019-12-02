@@ -28,9 +28,11 @@ More platforms will be added over time.
 
 Steam Buddy is available out of the box on GamerOS. It is available in the AUR as `steam-buddy`.
 After installing the `steam-buddy` package, you must run the following commands as root to enable it and then restart your system:
-    `systemctl enable steam-buddy@<your username>.service`
-    `systemctl enable steam-buddy-proxy@<your username>.service`
-    `systemctl enable steam-buddy-proxy@<your username>.socket`
+```
+    systemctl enable steam-buddy@<your username>.service
+    systemctl enable steam-buddy-proxy@<your username>.service
+    systemctl enable steam-buddy-proxy@<your username>.socket
+```
 
 ## Usage
 You can connect to GamerOS by opening a browser on another computer not running GamerOS and entering `gameros.local`. If that does not work, then determine the ip address of your GamerOS system by looking at the network settings and enter the ip address as is into your browser.
