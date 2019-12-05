@@ -35,7 +35,7 @@ After installing the `steam-buddy` package, you must run the following commands 
 ```
 
 ## Usage
-You can connect to GamerOS by opening a browser on another computer not running GamerOS and entering `gameros.local`. If that does not work, then determine the ip address of your GamerOS system by looking at the network settings and enter the ip address as is into your browser.
+You can connect to Steam Buddy on GamerOS by opening a browser on another computer and entering `gameros.local`. If that does not work, then determine the ip address of your GamerOS system by looking at the network settings and enter the ip address as is into your browser.
 
 After installing any app, you must restart Steam for the newly installed application or game to appear.
 To restart Steam you can click on the cog icon in the top right of the Steam Buddy UI and select the "Restart Steam" option.
