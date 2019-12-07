@@ -4,7 +4,6 @@ from shutil import copyfile
 import threading
 import time
 import subprocess
-import flathub
 import requests
 
 
@@ -61,7 +60,7 @@ class Application:
             print("Error: {} is already installed".format(self.name))
             self.busy = False
             return
-        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.install(self.flatpak_id),))
+        thread = threading.Thread(target=self.__update_installation_progress, args=(self.__install(),))
         thread.start()
 
     def uninstall(self):
@@ -75,7 +74,7 @@ class Application:
             print("Error: {} is not installed".format(self.name))
             self.busy = False
             return
-        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.uninstall(self.flatpak_id),))
+        thread = threading.Thread(target=self.__update_installation_progress, args=(self.__uninstall(),))
         thread.start()
 
     def update(self):
@@ -92,7 +91,7 @@ class Application:
         # Set the version
         self.version = self.available_version
         self.installed = False
-        thread = threading.Thread(target=self.__update_installation_progress, args=(flathub.Flathub.update(self.flatpak_id),))
+        thread = threading.Thread(target=self.__update_installation_progress, args=(self.__update(),))
         thread.start()
 
     def __update_installation_progress(self, sp: subprocess):
@@ -126,3 +125,12 @@ class Application:
             return True
         else:
             return False
+
+    def __install(self) -> subprocess:
+        return subprocess.Popen(["flatpak", "install", "--user", "-y", "flathub", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def __uninstall(self) -> subprocess:
+        return subprocess.Popen(["flatpak", "uninstall", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def __update(self) -> subprocess:
+        return subprocess.Popen(["flatpak", "update", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

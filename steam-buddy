@@ -6,11 +6,14 @@ import yaml
 import json
 import shutil
 import subprocess
-import flathub
-from glob import glob
+from steam_buddy.flathub import Flathub
 from bottle import route, request, static_file, run, template, redirect, response, abort
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
+
+RESOURCE_DIR = os.getcwd()
+if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
+	RESOURCE_DIR = "/usr/share/steam-buddy"
 
 SHORTCUT_DIR=DATA_DIR + '/steam-shortcuts'
 BANNER_DIR=DATA_DIR + '/steam-buddy/banners'
@@ -28,7 +31,7 @@ PLATFORMS = {
 	"snes"    : "Super Nintendo",
 }
 
-FLATHUB_HANDLER = flathub.Flathub()
+FLATHUB_HANDLER = Flathub()
 
 def sanitize(string):
 	if isinstance(string, str):
@@ -149,16 +152,16 @@ def edit(platform, name):
 
 @route('/images/flathub/<filename>')
 def flathub_images(filename):
-	path  = os.getcwd() + '/images/flathub/' + filename
-	local = DATA_DIR + '/banners/flathub/' + filename
-	if os.path.isfile(local):
+	path = os.path.join(RESOURCE_DIR, 'images/flathub')
+	local = os.path.join(BANNER_DIR, 'flathub')
+	if os.path.isfile(os.path.join(local, filename)):
 		path = local
 
-	return static_file(path, root='/')
+	return static_file(filename, root=path)
 
 @route('/images/<filename>')
 def images(filename):
-	return static_file('images/' + filename, root='.')
+	return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
 
 @route('/shortcuts/new', method='POST')
 def shortcut_create():
@@ -328,4 +331,5 @@ def steam_restart():
 	redirect('/')
 
 if __name__ == '__main__':
+	os.chdir(RESOURCE_DIR)
 	run(host='localhost', port=8844)

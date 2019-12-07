@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 User=%i
 WorkingDirectory=/usr/share/steam-buddy
-ExecStart=/usr/share/steam-buddy/steam-buddy
+ExecStart=/usr/bin/steam-buddy
 Restart=on-abort
 PrivateTmp=yes
 ProtectSystem=full
