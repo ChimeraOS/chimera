@@ -19,9 +19,9 @@ jobs:
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
-        pip install flake8
+        pip install flake8 > /dev/null
         flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics
     - name: Test with webtest
       run: |
-        pip install WebTest
+        pip install WebTest > /dev/null
         python -m unittest tests
