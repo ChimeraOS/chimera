@@ -1,0 +1,4 @@
+pyyaml
+bottle
+requests
+wheel
