@@ -20,7 +20,7 @@ jobs:
     - name: Lint with flake8
       run: |
         pip install flake8
-        flake8 . --count --max-complexity=10 --show-source --statistics
+        flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics
     - name: Test with webtest
       run: |
         pip install WebTest
