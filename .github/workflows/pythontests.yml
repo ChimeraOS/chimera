@@ -16,12 +16,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements.txt flake 8 WebTest
     - name: Lint with flake8
       run: |
-        pip install flake8 > /dev/null
         flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics
     - name: Test with webtest
       run: |
-        pip install WebTest > /dev/null
         python -m unittest tests
