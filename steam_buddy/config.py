@@ -21,7 +21,7 @@ PLATFORMS = {
 	"sms": 		"Master System",
 	"nes": 		"Nintendo",
 	"snes": 	"Super Nintendo",
-	"pce":		"PC Engine"
+	"tg-16":	"TurboGrafx-16"
 }
 
 FLATHUB_HANDLER = Flathub()
