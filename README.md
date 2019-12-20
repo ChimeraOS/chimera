@@ -21,6 +21,7 @@ The following platforms are currently supported:
 - Master System
 - Nintendo
 - Super Nintendo
+- TurboGrafx-16
 
 More platforms will be added over time.
 
