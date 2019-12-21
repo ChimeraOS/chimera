@@ -7,6 +7,8 @@ SAVE_DIR=${DATA_HOME}/steam-buddy/saves/${1}
 RETRO_CORE_NAME=${2}
 RETRO_CONFIG=/tmp/steam-buddy-retroarch.cfg
 
+CORE_CONFIG=/usr/share/steam-buddy/config/${1}.cfg
+
 shift 2
 
 mkdir -p ${SAVE_DIR}
@@ -22,6 +24,10 @@ mkdir -p ${CONFIG_HOME}/retroarch
 
 if [ ! -e ${CONFIG_HOME}/retroarch/autoconfig ]; then
 	ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
+fi
+
+if [ -e ${CORE_CONFIG} ]; then
+	cp ${CORE_CONFIG} ${CONFIG_HOME}/retroarch/retroarch-core-options.cfg
 fi
 
 retroarch \

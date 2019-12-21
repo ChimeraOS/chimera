@@ -1,0 +1,3 @@
+#! /bin/bash
+
+/usr/share/steam-buddy/launcher n64 mupen64plus_next "$@"

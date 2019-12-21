@@ -20,6 +20,7 @@ PLATFORMS = {
 	"genesis": 	"Genesis",
 	"sms": 		"Master System",
 	"nes": 		"Nintendo",
+	"n64": 		"Nintendo 64",
 	"snes": 	"Super Nintendo",
 	"tg-16":	"TurboGrafx-16"
 }
