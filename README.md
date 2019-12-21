@@ -20,7 +20,9 @@ The following platforms are currently supported:
 - Genesis/Mega Drive
 - Master System
 - Nintendo
+- Nintendo 64
 - Super Nintendo
+- TurboGrafx-16
 
 More platforms will be added over time.
 
