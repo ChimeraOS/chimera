@@ -1,0 +1,16 @@
+#! /bin/bash
+
+wkill() {
+	while pgrep $1; do
+		pkill $1
+		sleep 1
+	done
+}
+
+if pgrep steamcompmgr > /dev/null; then
+	wkill steamcompmgr
+	DISPLAY=:0.0 openbox &
+elif pgrep openbox > /dev/null; then
+	wkill openbox
+	DISPLAY=:0.0 steamcompmgr &
+fi

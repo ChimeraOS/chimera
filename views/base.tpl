@@ -211,6 +211,7 @@
 		<div class="right">
             <div id="menuitems">
                 <a href="/steam/restart">Restart Steam</a>
+                <a href="/steam/compositor">Toggle Compositor</a>
             </div>
             <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
                 <i class="fa fa-cog"></i>

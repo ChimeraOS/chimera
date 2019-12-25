@@ -14,6 +14,7 @@ setup(
         ('share/steam-buddy/config', glob('config/*.cfg')),
         ('share/steam-buddy', ['launcher']),
         ('bin', glob('bin/*')),
+        ('bin', ['toggle-steamos-compositor']),
         ('share/doc/steam-buddy', ['README.md']),
         ('share/doc/steam-buddy', ['LICENSE']),
     ],
