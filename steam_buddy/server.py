@@ -254,11 +254,15 @@ def flathub_description(flatpak_id):
 
 @server.route('/steam/restart')
 def steam_restart():
-    subprocess.call(["pkill", "steam"])
-    redirect('/')
+	try:
+		subprocess.call(["pkill", "steam"])
+	finally:
+		redirect('/')
 
 
 @server.route('/steam/compositor')
 def steam_compositor():
-    subprocess.call(["toggle-steamos-compositor"])
-    redirect('/')
+	try:
+		subprocess.call(["toggle-steamos-compositor"])
+	finally:
+		redirect('/')
