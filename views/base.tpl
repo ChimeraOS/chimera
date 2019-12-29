@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>SteamBuddy</title>
+	<title>Steam Buddy</title>
 	<meta name="viewport" content="width=device-width">
 	<style>
 
