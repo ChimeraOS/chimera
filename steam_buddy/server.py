@@ -255,7 +255,7 @@ def flathub_description(flatpak_id):
 @server.route('/steam/restart')
 def steam_restart():
 	try:
-		subprocess.call(["pkill", "^steam$"])
+		subprocess.call(["pkill", "steamos-session"])
 	finally:
 		redirect('/')
 
