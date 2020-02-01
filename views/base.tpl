@@ -210,6 +210,7 @@
 		% end
 		<div class="right">
             <div id="menuitems">
+                <a href="/settings">Settings</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
             </div>

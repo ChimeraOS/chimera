@@ -3,7 +3,7 @@ import subprocess
 import json
 import yaml
 from bottle import Bottle, template, static_file, redirect, abort, request, response
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 
 server = Bottle()
@@ -252,17 +252,37 @@ def flathub_description(flatpak_id):
     return json.dumps(values)
 
 
+@server.route('/settings')
+def settings():
+    current_settings = SETTINGS_HANDLER.get_settings()
+    return template('settings.tpl', settings=current_settings)
+
+
+@server.route('/settings/update', method='POST')
+def settings_update():
+    SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
+    SETTINGS_HANDLER.set_setting("ftp_username", sanitize(request.forms.get('ftp_username')))
+    SETTINGS_HANDLER.set_setting("ftp_password", sanitize(request.forms.get('ftp_password')))
+
+    # port number for FTP server
+    ftp_port = int(sanitize(request.forms.get('ftp_port')))
+    if ftp_port and 1024 < ftp_port < 65536 and ftp_port != 8844:
+        SETTINGS_HANDLER.set_setting("ftp_port", ftp_port)
+
+    redirect('/settings')
+
+
 @server.route('/steam/restart')
 def steam_restart():
-	try:
-		subprocess.call(["pkill", "steamos-session"])
-	finally:
-		redirect('/')
+    try:
+        subprocess.call(["pkill", "steamos-session"])
+    finally:
+        redirect('/')
 
 
 @server.route('/steam/compositor')
 def steam_compositor():
-	try:
-		subprocess.call(["toggle-steamos-compositor"])
-	finally:
-		redirect('/')
+    try:
+        subprocess.call(["toggle-steamos-compositor"])
+    finally:
+        redirect('/')
