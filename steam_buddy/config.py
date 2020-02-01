@@ -1,6 +1,7 @@
 import os
 from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
+from steam_buddy.ftp.server import Server as FTPServer
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
@@ -37,3 +38,5 @@ SETTINGS_DEFAULT = {
 FLATHUB_HANDLER = Flathub()
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
+
+FTP_SERVER = FTPServer(SETTINGS_HANDLER)

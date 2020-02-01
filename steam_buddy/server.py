@@ -3,7 +3,7 @@ import subprocess
 import json
 import yaml
 from bottle import Bottle, template, static_file, redirect, abort, request, response
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 
 server = Bottle()
@@ -268,6 +268,8 @@ def settings_update():
     ftp_port = int(sanitize(request.forms.get('ftp_port')))
     if ftp_port and 1024 < ftp_port < 65536 and ftp_port != 8844:
         SETTINGS_HANDLER.set_setting("ftp_port", ftp_port)
+
+    FTP_SERVER.reload()
 
     redirect('/settings')
 
