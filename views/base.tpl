@@ -180,13 +180,13 @@
 		.icon {
 		    display : block;
 		    position : absolute;
-		    right : 16;
-		    top : 16;
+		    right : 15px;
+		    top : 5px;
+		    font-size: 40px;
 		}
 	</style>
 </head>
 <body>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script>
 	    function toggleMenu() {
 	        var x = document.getElementById("menuitems");
@@ -213,9 +213,7 @@
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
             </div>
-            <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
-                <i class="fa fa-cog"></i>
-            </a>
+            <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">&#9881;</a>
 		</div>
 	</div>
 	<div class="content">
