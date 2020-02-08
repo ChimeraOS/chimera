@@ -15,17 +15,18 @@ CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
-	"flathub": 	"Flathub",
-	"gb":		"Game Boy",
-	"gba":		"Game Boy Advance",
-	"gbc":		"Game Boy Color",
-	"sgg":		"Game Gear",
-	"genesis": 	"Genesis",
-	"sms": 		"Master System",
-	"nes": 		"Nintendo",
-	"n64": 		"Nintendo 64",
-	"snes": 	"Super Nintendo",
-	"tg-16":	"TurboGrafx-16"
+	"atari-2600" : "Atari 2600",
+	"flathub"    : "Flathub",
+	"gb"         : "Game Boy",
+	"gba"        : "Game Boy Advance",
+	"gbc"        : "Game Boy Color",
+	"sgg"        : "Game Gear",
+	"genesis"    : "Genesis",
+	"sms"        : "Master System",
+	"nes"        : "Nintendo",
+	"n64"        : "Nintendo 64",
+	"snes"       : "Super Nintendo",
+	"tg-16"      : "TurboGrafx-16"
 }
 
 SETTINGS_DEFAULT = {
