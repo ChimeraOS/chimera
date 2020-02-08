@@ -2,3 +2,4 @@ wheel
 pyyaml
 bottle
 requests
+pyftpdlib
