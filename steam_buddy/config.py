@@ -15,8 +15,8 @@ CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
-	"atari-2600" : "Atari 2600",
 	"flathub"    : "Flathub",
+	"atari-2600" : "Atari 2600",
 	"gb"         : "Game Boy",
 	"gba"        : "Game Boy Advance",
 	"gbc"        : "Game Boy Color",
