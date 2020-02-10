@@ -13,6 +13,7 @@ A limited set of applications from flathub are available for immediate installat
 You can upload roms and banner images to Steam Buddy and they will be added to Steam. The emulators are pre-configured and ready to play out of the box with almost any controller.
 
 The following platforms are currently supported:
+- Atari 2600
 - Game Boy
 - Game Boy Advance
 - Game Boy Color
