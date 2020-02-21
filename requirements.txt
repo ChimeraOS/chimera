@@ -3,3 +3,4 @@ pyyaml
 bottle
 requests
 pyftpdlib
+beaker

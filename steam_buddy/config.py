@@ -1,4 +1,5 @@
 import os
+import secrets
 from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
@@ -34,6 +35,15 @@ SETTINGS_DEFAULT = {
 	"ftp_username": "gamer",
 	"ftp_password": "gamer",
 	"ftp_port": 2121
+}
+
+SESSION_OPTIONS = {
+	'session.cookie_expires': True,
+	'session.encrypt_key': secrets.token_urlsafe(64),
+	'session.httponly': True,
+	'session.timeout': 3600 * 2,
+	'session.type': 'cookie',
+	'session.validate_key': True,
 }
 
 FLATHUB_HANDLER = Flathub()

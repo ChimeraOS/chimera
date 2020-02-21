@@ -2,19 +2,35 @@ import os
 import subprocess
 import json
 import yaml
-from bottle import Bottle, template, static_file, redirect, abort, request, response
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR
+from bottle import app, route, template, static_file, redirect, abort, request, response
+from beaker.middleware import SessionMiddleware
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 
-server = Bottle()
+server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 
-@server.route('/')
+def authenticate(func):
+    def wrapper(*args, **kwargs):
+        authenticated = True
+        session = request.environ.get('beaker.session')
+        print(session.get('Cookie'))
+        if not session.get('User-Agent') or session.get('User-Agent') != request.headers.get('User-Agent'):
+            authenticated = False
+        if not authenticated:
+            return redirect('/login')
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@route('/')
+@authenticate
 def root():
     return template('platforms.tpl', platforms=PLATFORMS)
 
 
-@server.route('/platforms/<platform>')
+@route('/platforms/<platform>')
+@authenticate
 def platform(platform):
     if platform == "flathub":
         return template('flathub', app_list=FLATHUB_HANDLER.get_installed_applications(), isInstalledOverview=True,
@@ -34,13 +50,15 @@ def platform(platform):
     return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
 
 
-@server.route('/banners/<platform>/<filename>')
+@route('/banners/<platform>/<filename>')
+@authenticate
 def banners(platform, filename):
     base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
     return static_file(filename, root='{base}'.format(base=base))
 
 
-@server.route('/platforms/<platform>/new')
+@route('/platforms/<platform>/new')
+@authenticate
 def new(platform):
     if platform == "flathub":
         return template('flathub', app_list=FLATHUB_HANDLER.get_available_applications(), isInstalledOverview=False,
@@ -49,7 +67,8 @@ def new(platform):
                     name='', hidden='')
 
 
-@server.route('/platforms/<platform>/edit/<name>')
+@route('/platforms/<platform>/edit/<name>')
+@authenticate
 def edit(platform, name):
     if platform == "flathub":
         application = FLATHUB_HANDLER.get_application(name)
@@ -67,7 +86,8 @@ def edit(platform, name):
                     hidden=shortcut['hidden'])
 
 
-@server.route('/images/flathub/<filename>')
+@route('/images/flathub/<filename>')
+@authenticate
 def flathub_images(filename):
     path = os.path.join(RESOURCE_DIR, 'images/flathub')
     local = os.path.join(BANNER_DIR, 'flathub')
@@ -77,12 +97,14 @@ def flathub_images(filename):
     return static_file(filename, root=path)
 
 
-@server.route('/images/<filename>')
+@route('/images/<filename>')
+@authenticate
 def images(filename):
     return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
 
 
-@server.route('/shortcuts/new', method='POST')
+@route('/shortcuts/new', method='POST')
+@authenticate
 def shortcut_create():
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
@@ -123,7 +145,8 @@ def shortcut_create():
     redirect('/platforms/{platform}'.format(platform=platform))
 
 
-@server.route('/shortcuts/edit', method='POST')
+@route('/shortcuts/edit', method='POST')
+@authenticate
 def shortcut_update():
     name = sanitize(request.forms.get('original_name'))  # do not allow editing name
     platform = sanitize(request.forms.get('platform'))
@@ -154,7 +177,8 @@ def shortcut_update():
     redirect('/platforms/{platform}'.format(platform=platform))
 
 
-@server.route('/shortcuts/delete', method='POST')
+@route('/shortcuts/delete', method='POST')
+@authenticate
 def shortcut_delete():
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
@@ -174,7 +198,8 @@ def shortcut_delete():
     redirect('/platforms/{platform}'.format(platform=platform))
 
 
-@server.route('/flathub/install/<flatpak_id>')
+@route('/flathub/install/<flatpak_id>')
+@authenticate
 def flathub_install(flatpak_id):
     platform = "flathub"
     application = FLATHUB_HANDLER.get_application(flatpak_id)
@@ -198,7 +223,8 @@ def flathub_install(flatpak_id):
     redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 
-@server.route('/flathub/uninstall/<flatpak_id>')
+@route('/flathub/uninstall/<flatpak_id>')
+@authenticate
 def flathub_uninstall(flatpak_id):
     platform = "flathub"
     application = FLATHUB_HANDLER.get_application(flatpak_id)
@@ -217,7 +243,8 @@ def flathub_uninstall(flatpak_id):
     redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 
-@server.route('/flathub/update/<flatpak_id>')
+@route('/flathub/update/<flatpak_id>')
+@authenticate
 def flathub_update(flatpak_id):
     platform = "flathub"
     application = FLATHUB_HANDLER.get_application(flatpak_id)
@@ -228,7 +255,8 @@ def flathub_update(flatpak_id):
     redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
 
 
-@server.route('/flathub/progress/<flatpak_id>')
+@route('/flathub/progress/<flatpak_id>')
+@authenticate
 def flathub_progress(flatpak_id):
     application = FLATHUB_HANDLER.get_application(flatpak_id)
     if not application:
@@ -243,7 +271,8 @@ def flathub_progress(flatpak_id):
     return json.dumps(values)
 
 
-@server.route('/flathub/description/<flatpak_id>')
+@route('/flathub/description/<flatpak_id>')
+@authenticate
 def flathub_description(flatpak_id):
     application = FLATHUB_HANDLER.get_application(flatpak_id)
     values = {
@@ -252,13 +281,15 @@ def flathub_description(flatpak_id):
     return json.dumps(values)
 
 
-@server.route('/settings')
+@route('/settings')
+@authenticate
 def settings():
     current_settings = SETTINGS_HANDLER.get_settings()
     return template('settings.tpl', settings=current_settings)
 
 
-@server.route('/settings/update', method='POST')
+@route('/settings/update', method='POST')
+@authenticate
 def settings_update():
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
     SETTINGS_HANDLER.set_setting("ftp_username", sanitize(request.forms.get('ftp_username')))
@@ -274,7 +305,8 @@ def settings_update():
     redirect('/settings')
 
 
-@server.route('/steam/restart')
+@route('/steam/restart')
+@authenticate
 def steam_restart():
     try:
         subprocess.call(["pkill", "steamos-session"])
@@ -282,9 +314,28 @@ def steam_restart():
         redirect('/')
 
 
-@server.route('/steam/compositor')
+@route('/steam/compositor')
+@authenticate
 def steam_compositor():
     try:
         subprocess.call(["toggle-steamos-compositor"])
     finally:
         redirect('/')
+
+
+@route('/login')
+def login():
+    return template('login')
+
+
+@route('/authenticate', method='POST')
+def authenticate():
+    password = request.forms.get('password')
+    expected_password = SETTINGS_HANDLER.get_setting("password")
+    if expected_password and password == expected_password:
+        session = request.environ.get('beaker.session')
+        session['User-Agent'] = request.headers.get('User-Agent')
+        session.save()
+        redirect('/')
+    else:
+        redirect('/login')
