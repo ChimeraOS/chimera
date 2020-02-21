@@ -34,7 +34,8 @@ SETTINGS_DEFAULT = {
 	"enable_ftp_server": False,
 	"ftp_username": "gamer",
 	"ftp_password": "gamer",
-	"ftp_port": 2121
+	"ftp_port": 2121,
+	"keep_password": False
 }
 
 SESSION_OPTIONS = {

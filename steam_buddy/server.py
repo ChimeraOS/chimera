@@ -2,6 +2,8 @@ import os
 import subprocess
 import json
 import yaml
+import secrets
+import string
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
@@ -16,7 +18,10 @@ def authenticate(func):
         session = request.environ.get('beaker.session')
         if not session.get('Logged-In') or not session['Logged-In']:
             authenticated = False
+            session['Logged-In'] = False
+            session.save()
         elif not session.get('User-Agent') or session['User-Agent'] != request.headers.get('User-Agent'):
+            session.delete()
             authenticated = False
         if not authenticated:
             return redirect('/login')
@@ -326,14 +331,18 @@ def steam_compositor():
 
 @route('/login')
 def login():
+    session = request.environ.get('beaker.session')
+    if session.get('Logged-In', True) and not SETTINGS_HANDLER.get_setting('keep_password'):
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for i in range(8))
+        SETTINGS_HANDLER.set_setting('password', password)
     return template('login')
 
 
 @route('/logout')
 def logout():
     session = request.environ.get('beaker.session')
-    session['Logged-In'] = False
-    session.save()
+    session.delete()
     return redirect('/login')
 
 
@@ -341,11 +350,14 @@ def logout():
 def authenticate():
     password = request.forms.get('password')
     expected_password = SETTINGS_HANDLER.get_setting("password")
+    session = request.environ.get('beaker.session')
     if expected_password and password == expected_password:
-        session = request.environ.get('beaker.session')
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
         redirect('/')
     else:
+        if session.get('Logged-In', True):
+            session['Logged-In'] = False
+            session.save()
         redirect('/login')
