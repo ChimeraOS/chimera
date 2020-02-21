@@ -4,3 +4,4 @@ bottle
 requests
 pyftpdlib
 beaker
+pygame
