@@ -336,7 +336,7 @@ def login():
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for i in range(8))
         SETTINGS_HANDLER.set_setting('password', password)
-    return template('login')
+    return template('login', keep_password=SETTINGS_HANDLER.get_setting("password"))
 
 
 @route('/logout')
