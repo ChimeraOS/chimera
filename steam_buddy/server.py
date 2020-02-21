@@ -14,8 +14,9 @@ def authenticate(func):
     def wrapper(*args, **kwargs):
         authenticated = True
         session = request.environ.get('beaker.session')
-        print(session.get('Cookie'))
-        if not session.get('User-Agent') or session.get('User-Agent') != request.headers.get('User-Agent'):
+        if not session.get('Logged-In') or not session['Logged-In']:
+            authenticated = False
+        elif not session.get('User-Agent') or session['User-Agent'] != request.headers.get('User-Agent'):
             authenticated = False
         if not authenticated:
             return redirect('/login')
@@ -328,6 +329,14 @@ def login():
     return template('login')
 
 
+@route('/logout')
+def logout():
+    session = request.environ.get('beaker.session')
+    session['Logged-In'] = False
+    session.save()
+    return redirect('/login')
+
+
 @route('/authenticate', method='POST')
 def authenticate():
     password = request.forms.get('password')
@@ -335,6 +344,7 @@ def authenticate():
     if expected_password and password == expected_password:
         session = request.environ.get('beaker.session')
         session['User-Agent'] = request.headers.get('User-Agent')
+        session['Logged-In'] = True
         session.save()
         redirect('/')
     else:
