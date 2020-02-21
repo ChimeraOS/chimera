@@ -332,14 +332,15 @@ def steam_compositor():
 
 @route('/login')
 def login():
+    keep_password = SETTINGS_HANDLER.get_setting('keep_password')
     session = request.environ.get('beaker.session')
-    if not SETTINGS_HANDLER.get_setting('keep_password'):
+    if not keep_password:
         if session.get('Logged-In', True):
             alphabet = string.ascii_letters + string.digits
             password = ''.join(secrets.choice(alphabet) for i in range(8))
             SETTINGS_HANDLER.set_setting('password', password)
         launch_authenticator()
-    return template('login', keep_password=SETTINGS_HANDLER.get_setting("password"))
+    return template('login', keep_password=keep_password)
 
 
 @route('/logout')
