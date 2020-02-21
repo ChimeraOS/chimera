@@ -38,5 +38,3 @@ class Settings:
             with open(self.settings_file, "r") as file:
                 return json.loads(file.read())
         return {}
-
-
