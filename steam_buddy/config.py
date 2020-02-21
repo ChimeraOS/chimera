@@ -10,6 +10,10 @@ RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
 	RESOURCE_DIR = "/usr/share/steam-buddy"
 
+AUTHENTICATOR_PATH = os.path.abspath('steam-buddy-authenticator')
+if not os.path.isfile(AUTHENTICATOR_PATH):
+	AUTHENTICATOR_PATH = "/usr/share/steam-buddy/bin/steam-buddy-authenticator"
+
 SHORTCUT_DIR = DATA_DIR + '/steam-shortcuts'
 BANNER_DIR = DATA_DIR + '/steam-buddy/banners'
 CONTENT_DIR = DATA_DIR + '/steam-buddy/content'

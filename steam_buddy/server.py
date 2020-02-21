@@ -8,6 +8,7 @@ from bottle import app, route, template, static_file, redirect, abort, request, 
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
+from steam_buddy.authenticator import launch_authenticator
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -332,10 +333,12 @@ def steam_compositor():
 @route('/login')
 def login():
     session = request.environ.get('beaker.session')
-    if session.get('Logged-In', True) and not SETTINGS_HANDLER.get_setting('keep_password'):
-        alphabet = string.ascii_letters + string.digits
-        password = ''.join(secrets.choice(alphabet) for i in range(8))
-        SETTINGS_HANDLER.set_setting('password', password)
+    if not SETTINGS_HANDLER.get_setting('keep_password'):
+        if session.get('Logged-In', True):
+            alphabet = string.ascii_letters + string.digits
+            password = ''.join(secrets.choice(alphabet) for i in range(8))
+            SETTINGS_HANDLER.set_setting('password', password)
+        launch_authenticator()
     return template('login', keep_password=SETTINGS_HANDLER.get_setting("password"))
 
 
