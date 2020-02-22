@@ -5,19 +5,21 @@ import subprocess
 import psutil
 
 
+def generate_password(length: int) -> str:
+    alphabet = string.ascii_letters + string.digits
+    password = ''.join(secrets.choice(alphabet) for i in range(length))
+    return password
+
+
 class Authenticator:
     def __init__(self, authenticator_path: str, password_length: int):
         self.__app = authenticator_path
         self.__password_length = password_length
-        self.__password = self.__make_password()
+        self.__password = generate_password(self.__password_length)
 
-    def __make_password(self) -> str:
-        alphabet = string.ascii_letters + string.digits
-        password = ''.join(secrets.choice(alphabet) for i in range(self.__password_length))
-        return password
 
     def reset_password(self) -> None:
-        self.__password = self.__make_password()
+        self.__password = generate_password(self.__password_length)
 
     def matches_password(self, password):
         if password == self.__password:

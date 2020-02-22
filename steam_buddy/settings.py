@@ -31,7 +31,10 @@ class Settings:
     def get_setting(self, setting: str) -> any:
         with open(self.settings_file, "r") as file:
             settings = json.loads(file.read())
-            return settings[setting]
+            try:
+                return settings[setting]
+            except KeyError:
+                return None
 
     def get_settings(self) -> dict:
         if os.path.isfile(self.settings_file):

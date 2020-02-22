@@ -2,7 +2,7 @@ import os
 from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
-from steam_buddy.authenticator import Authenticator
+from steam_buddy.authenticator import Authenticator, generate_password
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
@@ -39,7 +39,8 @@ SETTINGS_DEFAULT = {
 	"ftp_username": "gamer",
 	"ftp_password": "gamer",
 	"ftp_port": 2121,
-	"keep_password": False
+	"keep_password": False,
+	"password": generate_password(12),
 }
 
 SESSION_OPTIONS = {

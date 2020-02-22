@@ -296,6 +296,8 @@ def settings():
 @route('/settings/update', method='POST')
 @authenticate
 def settings_update():
+    SETTINGS_HANDLER.set_setting("keep_password", sanitize(request.forms.get('generate_password')) != 'on')
+    SETTINGS_HANDLER.set_setting("password", sanitize(request.forms.get('login_password')))
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
     SETTINGS_HANDLER.set_setting("ftp_username", sanitize(request.forms.get('ftp_username')))
     SETTINGS_HANDLER.set_setting("ftp_password", sanitize(request.forms.get('ftp_password')))
@@ -349,7 +351,9 @@ def authenticate():
     AUTHENTICATOR.kill()
     password = request.forms.get('password')
     session = request.environ.get('beaker.session')
-    if AUTHENTICATOR.matches_password(password):
+    keep_password = SETTINGS_HANDLER.get_setting('keep_password')
+    expected_password = SETTINGS_HANDLER.get_setting('password')
+    if AUTHENTICATOR.matches_password(password) or keep_password and password == expected_password:
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
