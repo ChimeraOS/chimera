@@ -11,9 +11,10 @@ class Color:
 # init pygame
 pygame.init()
 clock = pygame.time.Clock()
-font = pygame.font.SysFont('dejavusans', 96)
-large_font = pygame.font.SysFont('dejavusans', 128, bold=True)
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+font_size = int(screen.get_width()/26)
+font = pygame.font.SysFont('dejavusans', font_size)
+large_font = pygame.font.SysFont('dejavusans', font_size*2, bold=True)
 
 # Setup joystick
 pygame.joystick.init()
@@ -25,24 +26,24 @@ for joystick in joysticks:
 password = SETTINGS_HANDLER.get_setting('password')
 password_text = large_font.render(password, True, Color.TEXT)
 password_text_rect = pygame.Rect(
-    screen.get_width() / 2 - password_text.get_width() / 2,
-    screen.get_height() / 2 - password_text.get_height() / 2,
+    int(screen.get_width() / 2 - password_text.get_width() / 2),
+    int(screen.get_height() / 2 - password_text.get_height() / 2),
     password_text.get_width(),
     password_text.get_height()
 )
 
 instructions_text = font.render("Your password for http://gameros.local/ is:", True, Color.TEXT)
 instructions_text_rect = pygame.Rect(
-    screen.get_width() / 2 - instructions_text.get_width() / 2,
-    96,
+    int(screen.get_width() / 2 - instructions_text.get_width() / 2),
+    font_size,
     instructions_text.get_width(),
     instructions_text.get_height()
 )
 
 quit_text = font.render("Press any button to exit this screen", True, Color.TEXT)
 quit_text_rect = pygame.Rect(
-    screen.get_width() / 2 - quit_text.get_width() / 2,
-    screen.get_height() - quit_text.get_height()*1.5 - 96,
+    int(screen.get_width() / 2 - quit_text.get_width() / 2),
+    int(screen.get_height() - quit_text.get_height()*1.5 - font_size),
     instructions_text.get_width(),
     instructions_text.get_height()
 )
