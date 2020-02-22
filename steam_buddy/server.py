@@ -354,7 +354,7 @@ def login():
     if not keep_password:
         AUTHENTICATOR.reset_password()
         AUTHENTICATOR.launch()
-    return template('login', keep_password=keep_password)
+    return template('login', keep_password=keep_password, failed=False)
 
 
 @route('/logout')
@@ -380,4 +380,4 @@ def authenticate():
         if session.get('Logged-In', True):
             session['Logged-In'] = False
             session.save()
-        redirect('/login')
+        return template('login', keep_password=keep_password, failed=True)
