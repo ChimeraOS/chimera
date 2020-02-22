@@ -105,7 +105,6 @@ def flathub_images(filename):
 
 
 @route('/images/<filename>')
-@authenticate
 def images(filename):
     return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
 
