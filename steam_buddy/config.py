@@ -1,8 +1,8 @@
 import os
-import secrets
 from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
+from steam_buddy.authenticator import Authenticator
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
@@ -53,5 +53,7 @@ SESSION_OPTIONS = {
 FLATHUB_HANDLER = Flathub()
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
+
+AUTHENTICATOR = Authenticator(AUTHENTICATOR_PATH, password_length=8)
 
 FTP_SERVER = FTPServer(SETTINGS_HANDLER)

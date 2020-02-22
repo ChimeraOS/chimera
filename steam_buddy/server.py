@@ -6,9 +6,8 @@ import secrets
 import string
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
-from steam_buddy.authenticator import launch_authenticator, kill_authenticator
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -332,13 +331,9 @@ def steam_compositor():
 @route('/login')
 def login():
     keep_password = SETTINGS_HANDLER.get_setting('keep_password')
-    session = request.environ.get('beaker.session')
     if not keep_password:
-        if session.get('Logged-In', True):
-            alphabet = string.ascii_letters + string.digits
-            password = ''.join(secrets.choice(alphabet) for i in range(8))
-            SETTINGS_HANDLER.set_setting('password', password)
-        launch_authenticator()
+        AUTHENTICATOR.reset_password()
+        AUTHENTICATOR.launch()
     return template('login', keep_password=keep_password)
 
 
@@ -351,11 +346,10 @@ def logout():
 
 @route('/authenticate', method='POST')
 def authenticate():
-    kill_authenticator()
+    AUTHENTICATOR.kill()
     password = request.forms.get('password')
-    expected_password = SETTINGS_HANDLER.get_setting("password")
     session = request.environ.get('beaker.session')
-    if expected_password and password == expected_password:
+    if AUTHENTICATOR.matches_password(password):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()

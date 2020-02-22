@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
+import sys
 import pygame
-from steam_buddy.config import SETTINGS_HANDLER
 
 
 class Color:
     TEXT = 252, 252, 252
     BACKGROUND = 15, 47, 78
+
+
+# Load the password from the command line arguments
+if len(sys.argv) > 1:
+    password = sys.argv[1]
+else:
+    print("No password to show specified")
+    exit(1)
 
 
 # init pygame
@@ -23,7 +31,6 @@ for joystick in joysticks:
     joystick.init()
 
 # Create text to display on screen
-password = SETTINGS_HANDLER.get_setting('password')
 password_text = large_font.render(password, True, Color.TEXT)
 password_text_rect = pygame.Rect(
     int(screen.get_width() / 2 - password_text.get_width() / 2),
