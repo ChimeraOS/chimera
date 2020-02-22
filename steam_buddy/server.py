@@ -290,15 +290,20 @@ def flathub_description(flatpak_id):
 @authenticate
 def settings():
     current_settings = SETTINGS_HANDLER.get_settings()
-    return template('settings.tpl', settings=current_settings)
+    password_field = SETTINGS_HANDLER.get_setting('password')
+    password_is_set = password_field and len(password_field) > 7
+    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set)
 
 
 @route('/settings/update', method='POST')
 @authenticate
 def settings_update():
-    SETTINGS_HANDLER.set_setting("keep_password", sanitize(request.forms.get('generate_password')) != 'on')
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
-    SETTINGS_HANDLER.set_setting("ftp_username", sanitize(request.forms.get('ftp_username')))
+
+    # Make sure the FTP username is not set to empty
+    ftp_username = sanitize(request.forms.get('ftp_username'))
+    if ftp_username:
+        SETTINGS_HANDLER.set_setting("ftp_username", ftp_username)
 
     # Make sure the FTP password is long enough
     ftp_password = sanitize(request.forms.get('ftp_password'))
@@ -309,6 +314,11 @@ def settings_update():
     login_password = sanitize(request.forms.get('login_password'))
     if len(login_password) > 7:
         SETTINGS_HANDLER.set_setting("password", login_password)
+
+    # Only allow enabling keep password if a password is set
+    keep_password = sanitize(request.forms.get('generate_password')) != 'on'
+    if keep_password and SETTINGS_HANDLER.get_setting('password'):
+        SETTINGS_HANDLER.set_setting("keep_password", keep_password)
 
     # port number for FTP server
     ftp_port = int(sanitize(request.forms.get('ftp_port')))
