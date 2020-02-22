@@ -7,3 +7,4 @@ beaker
 psutil
 flake8
 WebTest
+bcrypt

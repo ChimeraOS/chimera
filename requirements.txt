@@ -6,3 +6,4 @@ pyftpdlib
 beaker
 pygame
 psutil
+bcrypt

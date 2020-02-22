@@ -2,8 +2,7 @@ import os
 import subprocess
 import json
 import yaml
-import secrets
-import string
+import bcrypt
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
@@ -313,7 +312,8 @@ def settings_update():
     # Make sure the FTP password is long enough
     login_password = sanitize(request.forms.get('login_password'))
     if len(login_password) > 7:
-        SETTINGS_HANDLER.set_setting("password", login_password)
+        password = bcrypt.hashpw(login_password.encode('utf-8'), bcrypt.gensalt())
+        SETTINGS_HANDLER.set_setting("password", password.decode('utf-8'))
 
     # Only allow enabling keep password if a password is set
     keep_password = sanitize(request.forms.get('generate_password')) != 'on'
@@ -370,8 +370,8 @@ def authenticate():
     password = request.forms.get('password')
     session = request.environ.get('beaker.session')
     keep_password = SETTINGS_HANDLER.get_setting('keep_password')
-    expected_password = SETTINGS_HANDLER.get_setting('password')
-    if AUTHENTICATOR.matches_password(password) or keep_password and password == expected_password:
+    stored_hash = SETTINGS_HANDLER.get_setting('password').encode('utf-8')
+    if AUTHENTICATOR.matches_password(password) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
