@@ -8,7 +8,7 @@ from bottle import app, route, template, static_file, redirect, abort, request, 
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
-from steam_buddy.authenticator import launch_authenticator
+from steam_buddy.authenticator import launch_authenticator, kill_authenticator
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -352,6 +352,7 @@ def logout():
 
 @route('/authenticate', method='POST')
 def authenticate():
+    kill_authenticator()
     password = request.forms.get('password')
     expected_password = SETTINGS_HANDLER.get_setting("password")
     session = request.environ.get('beaker.session')
