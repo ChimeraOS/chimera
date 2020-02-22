@@ -297,10 +297,18 @@ def settings():
 @authenticate
 def settings_update():
     SETTINGS_HANDLER.set_setting("keep_password", sanitize(request.forms.get('generate_password')) != 'on')
-    SETTINGS_HANDLER.set_setting("password", sanitize(request.forms.get('login_password')))
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
     SETTINGS_HANDLER.set_setting("ftp_username", sanitize(request.forms.get('ftp_username')))
-    SETTINGS_HANDLER.set_setting("ftp_password", sanitize(request.forms.get('ftp_password')))
+
+    # Make sure the FTP password is long enough
+    ftp_password = sanitize(request.forms.get('ftp_password'))
+    if len(ftp_password) > 7:
+        SETTINGS_HANDLER.set_setting("ftp_password", ftp_password)
+
+    # Make sure the FTP password is long enough
+    login_password = sanitize(request.forms.get('login_password'))
+    if len(login_password) > 7:
+        SETTINGS_HANDLER.set_setting("password", login_password)
 
     # port number for FTP server
     ftp_port = int(sanitize(request.forms.get('ftp_port')))
