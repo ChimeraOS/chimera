@@ -1,0 +1,9 @@
+wheel
+pyyaml
+bottle
+requests
+pyftpdlib
+beaker
+psutil
+flake8
+WebTest
