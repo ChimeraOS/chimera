@@ -44,10 +44,9 @@ SETTINGS_DEFAULT = {
 
 SESSION_OPTIONS = {
 	'session.cookie_expires': True,
-	'session.encrypt_key': secrets.token_urlsafe(64),
 	'session.httponly': True,
 	'session.timeout': 3600 * 2,
-	'session.type': 'cookie',
+	'session.type': 'memory',
 	'session.validate_key': True,
 }
 
