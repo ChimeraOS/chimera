@@ -7,4 +7,4 @@ from steam_buddy.config import RESOURCE_DIR, FTP_SERVER
 if __name__ == '__main__':
 	os.chdir(RESOURCE_DIR)
 	FTP_SERVER.run()
-	bottle.run(app=server, host='localhost', port=8844)
+	bottle.run(app=server, host='0.0.0.0', port=8844)
