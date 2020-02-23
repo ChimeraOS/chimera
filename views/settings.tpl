@@ -28,6 +28,28 @@
         <input type="number" name="ftp_port" value="{{settings["ftp_port"]}}" min="1025" max="65535"/>
     </div>
 
+	<h4>SSH</h4>
+    <hr>
+
+    <div class="label">Add public key</div>
+    <input name="ssh_key"/>
+
+    % if len(ssh_key_ids) > 0:
+    <div class="label">Current public keys</div>
+        <table class="settings">
+            <thead>
+                <th>ID</th>
+                <th>Delete</th>
+            </thead>
+            % for key_id in ssh_key_ids:
+                <tr>
+                    <td>{{key_id}}</td>
+                    <td><input type="checkbox" name="{{key_id}}" /></td>
+                </tr>
+            % end
+        </table>
+    % end
+
 	<button>Save</button>
 </form>
 <script>

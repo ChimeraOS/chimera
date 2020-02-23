@@ -155,6 +155,14 @@
 			transform: scale(2.0);
 		}
 
+		table[class=settings] {
+		    width: 100%;
+		    font-size: 24px;
+		}
+		table[class=settings] th {
+		    text-align: left;
+		}
+
 		.label {
 			padding : 40px 0px 10px 0px;
 			color : #4d4e4f;
