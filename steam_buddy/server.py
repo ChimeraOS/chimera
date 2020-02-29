@@ -369,9 +369,9 @@ def authenticate():
     AUTHENTICATOR.kill()
     password = request.forms.get('password')
     session = request.environ.get('beaker.session')
-    keep_password = SETTINGS_HANDLER.get_setting('keep_password')
-    stored_hash = SETTINGS_HANDLER.get_setting('password').encode('utf-8')
-    if AUTHENTICATOR.matches_password(password) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash):
+    keep_password = SETTINGS_HANDLER.get_setting('keep_password') or False
+    stored_hash = SETTINGS_HANDLER.get_setting('password')
+    if AUTHENTICATOR.matches_password(password) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
@@ -380,4 +380,7 @@ def authenticate():
         if session.get('Logged-In', True):
             session['Logged-In'] = False
             session.save()
+        if not keep_password:
+            AUTHENTICATOR.reset_password()
+            AUTHENTICATOR.launch()
         return template('login', keep_password=keep_password, failed=True)
