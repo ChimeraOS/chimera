@@ -7,10 +7,11 @@ import psutil
 
 def generate_password(length: int) -> str:
     alphabet = string.ascii_uppercase + string.digits
-    # Exclude the O, I and 0
+    # Exclude the O, I, J and 0
     alphabet = alphabet.replace("O", "")
     alphabet = alphabet.replace("I", "")
     alphabet = alphabet.replace("0", "")
+    alphabet = alphabet.replace("J", "")  # Looks too much like a lowercase letter
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
