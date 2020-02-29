@@ -2,12 +2,17 @@ import os
 from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
+from steam_buddy.authenticator import Authenticator, generate_password
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
 	RESOURCE_DIR = "/usr/share/steam-buddy"
+
+AUTHENTICATOR_PATH = os.path.abspath('steam-buddy-authenticator')
+if not os.path.isfile(AUTHENTICATOR_PATH):
+	AUTHENTICATOR_PATH = "/usr/share/steam-buddy/bin/steam-buddy-authenticator"
 
 SHORTCUT_DIR = DATA_DIR + '/steam-shortcuts'
 BANNER_DIR = DATA_DIR + '/steam-buddy/banners'
@@ -32,12 +37,23 @@ PLATFORMS = {
 SETTINGS_DEFAULT = {
 	"enable_ftp_server": False,
 	"ftp_username": "gamer",
-	"ftp_password": "gamer",
-	"ftp_port": 2121
+	"ftp_password": generate_password(12),
+	"ftp_port": 2121,
+	"keep_password": False
+}
+
+SESSION_OPTIONS = {
+	'session.cookie_expires': True,
+	'session.httponly': True,
+	'session.timeout': 3600 * 2,
+	'session.type': 'memory',
+	'session.validate_key': True,
 }
 
 FLATHUB_HANDLER = Flathub()
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
+
+AUTHENTICATOR = Authenticator(AUTHENTICATOR_PATH, password_length=8)
 
 FTP_SERVER = FTPServer(SETTINGS_HANDLER)

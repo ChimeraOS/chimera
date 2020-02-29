@@ -4,6 +4,7 @@ bottle
 requests
 pyftpdlib
 beaker
-pygame
 psutil
+flake8
+WebTest
 bcrypt

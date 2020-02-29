@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+import sys
+import pygame
+
+
+class Color:
+    TEXT = 252, 252, 252
+    BACKGROUND = 15, 47, 78
+
+
+# Load the password from the command line arguments
+if len(sys.argv) > 1:
+    password = sys.argv[1]
+else:
+    print("No password to show specified")
+    exit(1)
+
+
+# init pygame
+pygame.init()
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+font_size = int(screen.get_width()/26)
+font = pygame.font.SysFont('dejavusans', font_size)
+large_font = pygame.font.SysFont('dejavusans', font_size*2, bold=True)
+
+# Setup joystick
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+for joystick in joysticks:
+    joystick.init()
+
+# Create text to display on screen
+password_text = large_font.render(password, True, Color.TEXT)
+password_text_rect = pygame.Rect(
+    int(screen.get_width() / 2 - password_text.get_width() / 2),
+    int(screen.get_height() / 2 - password_text.get_height() / 2),
+    password_text.get_width(),
+    password_text.get_height()
+)
+
+instructions_text = font.render("Your password for the web interface is:", True, Color.TEXT)
+instructions_text_rect = pygame.Rect(
+    int(screen.get_width() / 2 - instructions_text.get_width() / 2),
+    font_size,
+    instructions_text.get_width(),
+    instructions_text.get_height()
+)
+
+quit_text = font.render("Press any button to exit this screen", True, Color.TEXT)
+quit_text_rect = pygame.Rect(
+    int(screen.get_width() / 2 - quit_text.get_width() / 2),
+    int(screen.get_height() - quit_text.get_height()*1.5 - font_size),
+    instructions_text.get_width(),
+    instructions_text.get_height()
+)
+
+
+def exit_button_was_pressed() -> bool:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return True
+        elif event.type == pygame.KEYDOWN:
+            return True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            return True
+        elif event.type == pygame.JOYBUTTONDOWN:
+            if event.button in range(0, 11):
+                return True
+        return False
+
+
+def main():
+    while 1:
+        if exit_button_was_pressed():
+            break
+        screen.fill(Color.BACKGROUND)
+        screen.blit(instructions_text, instructions_text_rect)
+        screen.blit(password_text, password_text_rect)
+        screen.blit(quit_text, quit_text_rect)
+        pygame.display.update()
+        clock.tick(30)
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()

@@ -213,6 +213,7 @@
                 <a href="/settings">Settings</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
+                <a href="/logout">Log Out</a>
             </div>
             <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">&#9881;</a>
 		</div>

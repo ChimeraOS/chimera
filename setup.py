@@ -3,7 +3,7 @@ from glob import glob
 
 setup(
     name="Steam-Buddy",
-    version="0.1.5",
+    version="0.4.0",
     packages=find_packages(),
     scripts=['steam-buddy'],
 
@@ -15,6 +15,7 @@ setup(
         ('share/steam-buddy', ['launcher']),
         ('bin', glob('bin/*')),
         ('bin', ['toggle-steamos-compositor']),
+        ('share/steam-buddy/bin', ['steam-buddy-authenticator']),
         ('share/doc/steam-buddy', ['README.md']),
         ('share/doc/steam-buddy', ['LICENSE']),
     ],
@@ -25,6 +26,9 @@ setup(
         'bottle',
         'pyyaml',
         'requests',
+        'beaker',
+        'pygame',
+        'psutil',
     ],
 
     # metadata to display on PyPI
