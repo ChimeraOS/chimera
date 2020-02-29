@@ -39,7 +39,7 @@ password_text_rect = pygame.Rect(
     password_text.get_height()
 )
 
-instructions_text = font.render("Your password for http://gameros.local/ is:", True, Color.TEXT)
+instructions_text = font.render("Your password for the web interface is:", True, Color.TEXT)
 instructions_text_rect = pygame.Rect(
     int(screen.get_width() / 2 - instructions_text.get_width() / 2),
     font_size,
