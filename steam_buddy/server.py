@@ -361,7 +361,7 @@ def login():
 def logout():
     session = request.environ.get('beaker.session')
     session.delete()
-    return redirect('/login')
+    return template('logout')
 
 
 @route('/authenticate', method='POST')
