@@ -317,7 +317,7 @@ def settings_update():
 
     # Only allow enabling keep password if a password is set
     keep_password = sanitize(request.forms.get('generate_password')) != 'on'
-    if keep_password and SETTINGS_HANDLER.get_setting('password'):
+    if keep_password and SETTINGS_HANDLER.get_setting('password') or not keep_password:
         SETTINGS_HANDLER.set_setting("keep_password", keep_password)
 
     # port number for FTP server
