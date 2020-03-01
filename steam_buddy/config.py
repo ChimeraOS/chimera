@@ -5,6 +5,7 @@ from steam_buddy.ftp.server import Server as FTPServer
 from steam_buddy.authenticator import Authenticator, generate_password
 from steam_buddy.ssh_keys import SSHKeys
 
+
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
 RESOURCE_DIR = os.getcwd()
