@@ -1,11 +1,12 @@
 import os
 import subprocess
 import json
+import html
 import yaml
 import bcrypt
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
@@ -291,13 +292,25 @@ def settings():
     current_settings = SETTINGS_HANDLER.get_settings()
     password_field = SETTINGS_HANDLER.get_setting('password')
     password_is_set = password_field and len(password_field) > 7
-    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set)
+    ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
+    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set, ssh_key_ids=ssh_key_ids)
 
 
 @route('/settings/update', method='POST')
 @authenticate
 def settings_update():
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
+
+    # Make sure the login password is long enough
+    login_password = sanitize(request.forms.get('login_password'))
+    if len(login_password) > 7:
+        password = bcrypt.hashpw(login_password.encode('utf-8'), bcrypt.gensalt())
+        SETTINGS_HANDLER.set_setting("password", password.decode('utf-8'))
+
+    # Only allow enabling keep password if a password is set
+    keep_password = sanitize(request.forms.get('generate_password')) != 'on'
+    if keep_password and SETTINGS_HANDLER.get_setting('password') or not keep_password:
+        SETTINGS_HANDLER.set_setting("keep_password", keep_password)
 
     # Make sure the FTP username is not set to empty
     ftp_username = sanitize(request.forms.get('ftp_username'))
@@ -309,21 +322,20 @@ def settings_update():
     if len(ftp_password) > 7:
         SETTINGS_HANDLER.set_setting("ftp_password", ftp_password)
 
-    # Make sure the FTP password is long enough
-    login_password = sanitize(request.forms.get('login_password'))
-    if len(login_password) > 7:
-        password = bcrypt.hashpw(login_password.encode('utf-8'), bcrypt.gensalt())
-        SETTINGS_HANDLER.set_setting("password", password.decode('utf-8'))
-
-    # Only allow enabling keep password if a password is set
-    keep_password = sanitize(request.forms.get('generate_password')) != 'on'
-    if keep_password and SETTINGS_HANDLER.get_setting('password') or not keep_password:
-        SETTINGS_HANDLER.set_setting("keep_password", keep_password)
-
     # port number for FTP server
     ftp_port = int(sanitize(request.forms.get('ftp_port')))
     if ftp_port and 1024 < ftp_port < 65536 and ftp_port != 8844:
         SETTINGS_HANDLER.set_setting("ftp_port", ftp_port)
+
+    # Delete SSH keys if asked
+    ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
+    for key_id in ssh_key_ids:
+        if sanitize(request.forms.get(html.escape(key_id)) == 'on'):
+            SSH_KEY_HANDLER.remove_key(key_id)
+
+    # After we are done deleting the selected ssh keys, add a new key if specified
+    # The add_key function makes sanitization not needed
+    SSH_KEY_HANDLER.add_key(request.forms.get('ssh_key'))
 
     FTP_SERVER.reload()
 
