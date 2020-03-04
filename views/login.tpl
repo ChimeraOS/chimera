@@ -13,3 +13,9 @@
 
 	<button>Login</button>
 </form>
+
+% if failed and keep_password:
+<form action="/forgotpassword">
+	<button class="delete">Forgot password</button>
+</form>
+% end

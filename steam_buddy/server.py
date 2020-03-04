@@ -396,3 +396,9 @@ def authenticate():
             AUTHENTICATOR.reset_password()
             AUTHENTICATOR.launch()
         return template('login', keep_password=keep_password, failed=True)
+
+
+@route('/forgotpassword')
+def forgot_password():
+    SETTINGS_HANDLER.set_setting('keep_password', False)
+    return redirect('/login')
