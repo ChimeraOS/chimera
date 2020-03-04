@@ -293,7 +293,9 @@ def settings():
     password_field = SETTINGS_HANDLER.get_setting('password')
     password_is_set = password_field and len(password_field) > 7
     ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
-    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set, ssh_key_ids=ssh_key_ids)
+    hostname = request.environ.get('HTTP_HOST').split(":")[0] or request.environ.get('SERVER_NAME')
+    username = os.getlogin()
+    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set, ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
 
 
 @route('/settings/update', method='POST')

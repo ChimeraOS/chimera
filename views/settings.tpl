@@ -2,6 +2,8 @@
 <form action="/settings/update" method="post" enctype="multipart/form-data">
     <h4>Logging in</h4>
     <hr>
+    By default a random password is shown on your TV every time you try to log in here. This can be disabled by configuring a set password.
+
     <div class="label">Generate a new password for each login</div>
 	<input type="checkbox" name="generate_password" id="generate_password" onclick="setShowPasswordField()" {{'checked' if not settings["keep_password"] else ''}} />
 
@@ -14,6 +16,8 @@
 
     <h4>FTP Server</h4>
     <hr>
+    FTP can be used for transferring files to and from this machine. You can connect to use with an FTP client at ftp://{{hostname}}:{{settings["ftp_port"]}}/ if enabled.<br>
+
 	<div class="label">Enable FTP server</div>
 	<input type="checkbox" name="enable_ftp_server" id="enable_ftp_server" onclick="setShowFTPSettings()" {{'checked' if settings["enable_ftp_server"] else ''}} />
 
@@ -30,6 +34,7 @@
 
 	<h4>SSH</h4>
     <hr>
+    SSH allows you to access the command line of this machine remotely. Once your SSH public key has been added, you can connect to this server with "ssh {{username}}@{{hostname}}".<br>
 
     <div class="label">Add public key</div>
     <input name="ssh_key"/>
