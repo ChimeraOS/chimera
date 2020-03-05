@@ -40,6 +40,8 @@
     function setImage(url) {
         let field = document.getElementById("banner-url")
         field.value = url
+        let gameImages = document.getElementById("game-images");
+        gameImages.innerHTML = '';
     }
     async function setGameName(gameName, gameId) {
         let field = await document.getElementById("gamename");
