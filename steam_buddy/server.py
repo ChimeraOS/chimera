@@ -6,7 +6,7 @@ import yaml
 import bcrypt
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
+from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
@@ -402,3 +402,13 @@ def authenticate():
 def forgot_password():
     SETTINGS_HANDLER.set_setting('keep_password', False)
     return redirect('/login')
+
+
+@route('/steamgrid/search/<search_string>')
+def steamgrid_search(search_string):
+    return STEAMGRID_HANDLER.search_games(search_string)
+
+
+@route('/steamgrid/images/<game_id>')
+def steamgrid_get_images(game_id):
+    return STEAMGRID_HANDLER.get_images(game_id)

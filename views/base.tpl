@@ -192,6 +192,30 @@
 		    top : 5px;
 		    font-size: 40px;
 		}
+		.game-name-suggestion {
+          position: relative;
+          display: inline-block:
+          width: 100%;
+          background: #3268a8;
+		  color: white;
+          border: none;
+          z-index: 99;
+          /*position the autocomplete items to be the same width as the container:*/
+          top: 100%;
+          left: 0;
+          right: 0;
+          cursor: pointer;
+        }
+        .game-image-suggestion {
+          cursor: pointer;
+        }
+        .game-name-suggestion:hover {
+            background: #10131c;
+        }
+        .steamgridapi {
+           position: relative;
+            display: inline-block;
+        }
 	</style>
 </head>
 <body>
