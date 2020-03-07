@@ -4,6 +4,7 @@ import json
 import html
 import yaml
 import bcrypt
+import requests
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
@@ -114,6 +115,7 @@ def shortcut_create():
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
+    banner_url = request.forms.get('banner-url')
     banner = request.files.get('banner')
     content = request.files.get('content')
 
@@ -130,7 +132,17 @@ def shortcut_create():
     if len(matches) > 0:
         return 'Shortcut already exists'
 
-    banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+    banner_path = None
+    if banner:
+        banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+    elif banner_url:
+        banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
+        if not os.path.isdir(os.path.dirname(banner_path)):
+            os.makedirs(os.path.dirname(banner_path))
+        download = requests.get(banner_url)
+        with open(banner_path, "wb") as banner_file:
+            banner_file.write(download.content)
+
     content_path = upsert_file(CONTENT_DIR, platform, name, content)
 
     shortcut = {}
@@ -138,7 +150,7 @@ def shortcut_create():
     shortcut['cmd'] = platform
     shortcut['hidden'] = hidden == 'on'
     shortcut['tags'] = [PLATFORMS[platform]]
-    if banner:
+    if banner or banner_url:
         shortcut['banner'] = banner_path
     if content:
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
@@ -156,6 +168,7 @@ def shortcut_update():
     name = sanitize(request.forms.get('original_name'))  # do not allow editing name
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
+    banner_url = request.forms.get('banner-url')
     banner = request.files.get('banner')
     content = request.files.get('content')
 
@@ -165,13 +178,20 @@ def shortcut_update():
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
     shortcut = matches[0]
 
-    banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+    banner_path = None
+    if banner:
+        banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+    elif banner_url:
+        banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
+        download = requests.get(banner_url)
+        with open(banner_path, "wb") as banner_file:
+            banner_file.write(download.content)
     content_path = upsert_file(CONTENT_DIR, platform, name, content)
 
     shortcut['name'] = name
     shortcut['cmd'] = platform
     shortcut['hidden'] = hidden == 'on'
-    if banner:
+    if banner or banner_url:
         shortcut['banner'] = banner_path
     if content:
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'

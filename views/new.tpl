@@ -5,17 +5,20 @@
 
 	<div class="label">Name</div>
 	<div class="steamgridapi">
-	    <input id="gamename" type="text" name="name" oninput="completeGameName(this)" value="{{name}}" {{ 'disabled' if isEditing else '' }}/>
+	    <input id="gamename" type="text" name="name" oninput="completeGameName(this)" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
 	    <div id="game-options"></div>
 	</div>
 
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 
-	<div class="label">Banner</div>
-	<input type="file" name="banner" />
+	<div class="label">Banner URL</div>
 	<input id="banner-url" name="banner-url" />
 	<div id="game-images"></div>
+
+
+	<div class="label">Banner upload</div>
+	<input type="file" name="banner" />
 
 	<div class="label">Content</div>
 	<input type="file" name="content" />
