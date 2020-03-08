@@ -82,7 +82,6 @@
         url = "/steamgrid/search/" + input.value;
         response = await fetch(url);
         games = await response.json();
-        console.log(games);
         if (!games.success) {
             return;
         }
