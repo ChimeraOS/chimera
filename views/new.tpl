@@ -67,6 +67,18 @@
         });
     }
     async function completeGameName(input) {
+        if (input.value.length < 3) {
+            return;
+        }
+        let value = input.value
+        let promise = new Promise((res, rej) => {
+            setTimeout(() => res("Now it's done!"), 250)
+        });
+        await promise;
+        if (value != input.value) {
+            return;
+        }
+
         url = "/steamgrid/search/" + input.value;
         response = await fetch(url);
         games = await response.json();
