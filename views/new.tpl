@@ -95,4 +95,28 @@
             gameOptions.appendChild(entry);
         });
     }
+
+    async function suggestImagesOnEdit() {
+        let field = document.getElementById("gamename")
+        if (field.value) {
+            url = "/steamgrid/search/" + field.value;
+            response = await fetch(url);
+            games = await response.json();
+
+            if (!games.success) {
+            return;
+            }
+
+            games.data.forEach(function (game) {
+                if (game.name == field.value) {
+                    setGameName(game.name, game.id);
+                }
+            });
+        }
+    }
+    // When clicking somewhere, close the suggestions
+    document.addEventListener("click", function (e) {
+        document.getElementById("game-options").innerHTML = '';
+    });
+    suggestImagesOnEdit();
 </script>

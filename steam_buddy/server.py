@@ -183,6 +183,8 @@ def shortcut_update():
         banner_path = upsert_file(BANNER_DIR, platform, name, banner)
     elif banner_url:
         banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
+        if not os.path.isdir(os.path.dirname(banner_path)):
+            os.makedirs(os.path.dirname(banner_path))
         download = requests.get(banner_url)
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
