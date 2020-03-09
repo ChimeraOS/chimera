@@ -4,6 +4,7 @@ from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
 from steam_buddy.authenticator import Authenticator, generate_password
 from steam_buddy.ssh_keys import SSHKeys
+from steam_buddy.steamgrid.steamgrid import Steamgrid
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 
@@ -60,3 +61,5 @@ AUTHENTICATOR = Authenticator(AUTHENTICATOR_PATH, password_length=8)
 FTP_SERVER = FTPServer(SETTINGS_HANDLER)
 
 SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
+
+STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
