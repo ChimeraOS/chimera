@@ -4,7 +4,7 @@ from glob import glob
 setup(
     name="Steam-Buddy",
     version="0.4.0",
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     scripts=['steam-buddy'],
 
     data_files=[
