@@ -68,6 +68,7 @@
 			border-width : 4px;
 			border-style : solid;
 			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
+			background-color : black;
 		}
 
 		.missing > img {
