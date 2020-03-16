@@ -46,6 +46,7 @@
 		    height : initial;
 		    border-style : hidden;
 		    border-width : 0px;
+		    background-color : transparent;
 		}
 
 		.hidden {
