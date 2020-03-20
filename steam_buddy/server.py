@@ -262,12 +262,12 @@ def upload_file_chunk():
 
 @route('/shortcuts/file-upload', method='HEAD')
 @authenticate
-def check_file():
+def check_file_upload():
     return 0
 
 @route('/shortcuts/file-upload', method='DELETE')
 @authenticate
-def delete_file():
+def delete_file_upload():
     key = request.body.read().decode('utf8')
     path = tmpfiles[key][0]
     if not path:
