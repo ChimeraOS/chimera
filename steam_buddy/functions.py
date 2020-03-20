@@ -41,11 +41,11 @@ def delete_file_link(base_dir, platform, name):
             os.remove(link)
 
 
-def upsert_file(base_dir, platform, name, data):
-    if not data:
+def upsert_file(src_path, base_dir, platform, name, dst_name):
+    if not src_path:
         return
 
-    filename = sanitize(data.filename)
+    filename = sanitize(dst_name)
     file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
 
     if not os.path.exists(file_dir):
@@ -55,7 +55,7 @@ def upsert_file(base_dir, platform, name, data):
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    data.save(file_path)
+    shutil.move(src_path, file_path)
 
     _, ext = os.path.splitext(filename)
     dst = "{base_dir}/{platform}/{name}{ext}".format(base_dir=base_dir, platform=platform, name=name, ext=ext)

@@ -1,5 +1,6 @@
 import os
 import subprocess
+import tempfile
 import json
 import html
 import yaml
@@ -12,6 +13,7 @@ from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
+tmpfiles = {}
 
 def authenticate(func):
     def wrapper(*args, **kwargs):
@@ -116,8 +118,8 @@ def shortcut_create():
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
     banner_url = request.forms.get('banner-url')
-    banner = request.files.get('banner')
-    content = request.files.get('content')
+    banner = request.forms.get('banner')
+    content = request.forms.get('content')
 
     if not name or name.strip() == '':
         redirect('/platforms/{platform}/new'.format(platform=platform))
@@ -134,7 +136,9 @@ def shortcut_create():
 
     banner_path = None
     if banner:
-        banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+        ( banner_src_path, banner_dst_name ) = tmpfiles[banner]
+        del tmpfiles[banner]
+        banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
     elif banner_url:
         banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
         if not os.path.isdir(os.path.dirname(banner_path)):
@@ -143,7 +147,10 @@ def shortcut_create():
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
 
-    content_path = upsert_file(CONTENT_DIR, platform, name, content)
+    if content:
+        ( content_src_path, content_dst_name ) = tmpfiles[content]
+        del tmpfiles[content]
+        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
 
     shortcut = {}
     shortcut['name'] = name
@@ -169,8 +176,8 @@ def shortcut_update():
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
     banner_url = request.forms.get('banner-url')
-    banner = request.files.get('banner')
-    content = request.files.get('content')
+    banner = request.forms.get('banner')
+    content = request.forms.get('content')
 
     shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     shortcuts = load_shortcuts(platform)
@@ -180,7 +187,9 @@ def shortcut_update():
 
     banner_path = None
     if banner:
-        banner_path = upsert_file(BANNER_DIR, platform, name, banner)
+        ( banner_src_path, banner_dst_name ) = tmpfiles[banner]
+        del tmpfiles[banner]
+        banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
     elif banner_url:
         banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
         if not os.path.isdir(os.path.dirname(banner_path)):
@@ -188,7 +197,11 @@ def shortcut_update():
         download = requests.get(banner_url)
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
-    content_path = upsert_file(CONTENT_DIR, platform, name, content)
+
+    if content:
+        ( content_src_path, content_dst_name ) = tmpfiles[content]
+        del tmpfiles[content]
+        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
 
     shortcut['name'] = name
     shortcut['cmd'] = platform
@@ -224,6 +237,44 @@ def shortcut_delete():
 
     redirect('/platforms/{platform}'.format(platform=platform))
 
+@route('/shortcuts/file-upload', method='POST')
+@authenticate
+def start_file_upload():
+    ( _, path ) = tempfile.mkstemp()
+    key = os.path.basename(path)
+    tmpfiles[key] = ( path, None )
+    return key
+
+@route('/shortcuts/file-upload', method='PATCH')
+@authenticate
+def upload_file_chunk():
+    key = request.query.get('patch')
+    path = tmpfiles[key][0]
+    if not path:
+        abort(400)
+
+    tmpfiles[key] = ( path, request.headers.get('Upload-Name') )
+
+    f = open(path, 'ab')
+    f.seek(int(request.headers.get('Upload-Offset')))
+    f.write(request.body.read())
+    f.close()
+
+@route('/shortcuts/file-upload', method='HEAD')
+@authenticate
+def check_file():
+    return 0
+
+@route('/shortcuts/file-upload', method='DELETE')
+@authenticate
+def delete_file():
+    key = request.body.read().decode('utf8')
+    path = tmpfiles[key][0]
+    if not path:
+        abort(400)
+
+    del tmpfiles[key]
+    os.remove(path)
 
 @route('/flathub/install/<flatpak_id>')
 @authenticate

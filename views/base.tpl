@@ -124,7 +124,7 @@
 			color : white;
 			padding-top : 20px;
 			padding-bottom : 20px;
-			margin-top : 30px;
+			margin-top : 50px;
 			margin-bottom : 30px;
 			cursor : pointer;
 			font-size : 24px;
@@ -163,6 +163,10 @@
 		}
 		table[class=settings] th {
 		    text-align: left;
+		}
+
+		.filepond {
+			padding-bottom: 40px;
 		}
 
 		.label {
@@ -219,6 +223,9 @@
             display: inline-block;
         }
 	</style>
+
+	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+	<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 </head>
 <body>
 	<script>

@@ -18,10 +18,10 @@
 
 
 	<div class="label">Banner upload</div>
-	<input type="file" name="banner" />
+	<input type="file" class="filepond" name="banner" />
 
 	<div class="label">Content</div>
-	<input type="file" name="content" />
+	<input type="file" class="filepond" name="content" />
 
 	% if isEditing :
 		<button>Update</button>
@@ -29,6 +29,16 @@
 		<button>Add</button>
 	% end
 </form>
+
+<script>
+FilePond.parse(document.body);
+FilePond.setOptions({
+	server : '/shortcuts/file-upload',
+	chunkUploads : true,
+	chunkSize : 1000000 // 1 MB
+});
+</script>
+
 
 % if isEditing:
 <form action="/shortcuts/delete" method="post">
