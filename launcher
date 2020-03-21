@@ -20,7 +20,13 @@ shift 2
 
 mkdir -p ${SAVE_DIR}
 
-cp /usr/share/steam-buddy/config/retroarch-common.cfg ${RETRO_CONFIG}
+COMMON_CONFIG=/usr/share/steam-buddy/config/retroarch-common.cfg
+LOCAL_COMMON_CONFIG=${CONFIG_HOME}/steam-buddy/retroarch-common.cfg
+if [ -f ${LOCAL_COMMON_CONFIG} ]; then
+	COMMON_CONFIG=${LOCAL_COMMON_CONFIG}
+fi
+
+cp ${COMMON_CONFIG} ${RETRO_CONFIG}
 echo "
 savefile_directory = ${SAVE_DIR}
 savestate_directory = ${SAVE_DIR}
