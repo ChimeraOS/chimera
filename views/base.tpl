@@ -192,7 +192,7 @@
 
 		#menuitems a {
 			margin-top : 24px;
-			font-size : 48px;
+			font-size : 36px;
 			display : block;
 		}
 
