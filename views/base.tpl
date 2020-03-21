@@ -185,10 +185,15 @@
 		}
 
 		#menuitems {
-		    display : none;
+			margin-top : 64px;
+			height : 100%;
+			display : none;
 		}
+
 		#menuitems a {
-		    display : block;
+			margin-top : 24px;
+			font-size : 48px;
+			display : block;
 		}
 
 		.icon {
@@ -200,7 +205,7 @@
 		}
 		.game-name-suggestion {
           position: relative;
-          display: inline-block:
+          display: inline-block;
           width: 100%;
           background: #3268a8;
 		  color: white;
