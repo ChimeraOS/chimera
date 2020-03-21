@@ -3,8 +3,11 @@
 DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
 CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 
+if [ -z ${RETRO_CORE} ]; then
+	RETRO_CORE=${2}
+fi
+
 SAVE_DIR=${DATA_HOME}/steam-buddy/saves/${1}
-RETRO_CORE_NAME=${2}
 RETRO_CONFIG=/tmp/steam-buddy-retroarch.cfg
 
 CORE_CONFIG=/usr/share/steam-buddy/config/${1}.cfg
@@ -32,5 +35,5 @@ fi
 
 retroarch \
 --appendconfig ${RETRO_CONFIG} \
---libretro /usr/lib/libretro/${RETRO_CORE_NAME}_libretro.so \
+--libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
 "$@"
