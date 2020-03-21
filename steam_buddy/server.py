@@ -435,6 +435,15 @@ def steam_compositor():
         redirect('/')
 
 
+@route('/mangohud')
+@authenticate
+def mangohud():
+	try:
+		subprocess.call(["xdotool", "key", "F3"])
+	finally:
+		redirect('/')
+
+
 @route('/login')
 def login():
     keep_password = SETTINGS_HANDLER.get_setting('keep_password')
