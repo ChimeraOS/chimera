@@ -1,0 +1,3 @@
+#! /bin/bash
+
+/usr/share/steam-buddy/launcher ps1 mednafen_psx_hw "$@"

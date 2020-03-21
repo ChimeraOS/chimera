@@ -23,6 +23,7 @@ SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
 	"atari-2600" : "Atari 2600",
+	"dreamcast"  : "Dreamcast",
 	"flathub"    : "Flathub",
 	"gb"         : "Game Boy",
 	"gba"        : "Game Boy Advance",
@@ -32,6 +33,9 @@ PLATFORMS = {
 	"sms"        : "Master System",
 	"nes"        : "Nintendo",
 	"n64"        : "Nintendo 64",
+	"ps1"        : "PlayStation",
+	"ps2"        : "PlayStation 2",
+	"saturn"     : "Saturn",
 	"snes"       : "Super Nintendo",
 	"tg-16"      : "TurboGrafx-16"
 }
