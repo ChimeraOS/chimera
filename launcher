@@ -11,6 +11,10 @@ SAVE_DIR=${DATA_HOME}/steam-buddy/saves/${1}
 RETRO_CONFIG=/tmp/steam-buddy-retroarch.cfg
 
 CORE_CONFIG=/usr/share/steam-buddy/config/${1}.cfg
+LOCAL_CONFIG=${CONFIG_HOME}/steam-buddy/${1}.cfg
+if [ -f ${LOCAL_CONFIG} ]; then
+	CORE_CONFIG=${LOCAL_CONFIG}
+fi
 
 shift 2
 
