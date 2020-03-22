@@ -184,25 +184,34 @@
 			box-sizing : border-box;
 		}
 
-		#menuitems {
+		.menuitems {
 			margin-top : 64px;
 			height : 100%;
 			display : none;
 		}
 
-		#menuitems a {
+		.menuitems a {
 			margin-top : 24px;
 			font-size : 36px;
 			display : block;
 		}
 
-		.icon {
+		#mainmenuicon {
 		    display : block;
 		    position : absolute;
 		    right : 15px;
 		    top : 5px;
 		    font-size: 40px;
 		}
+
+		#audiomenuicon {
+			display : block;
+			position : absolute;
+			right : 70px;
+			top : 5px;
+			font-size: 40px;
+		}
+
 		.game-name-suggestion {
           position: relative;
           display: inline-block;
@@ -234,14 +243,20 @@
 </head>
 <body>
 	<script>
-	    function toggleMenu() {
-	        var x = document.getElementById("menuitems");
-	        if (x.style.display == "block") {
-	            x.style.display = "none";
-	        } else {
-	            x.style.display = "block";
-	        }
-	    }
+	    function toggleMenu(id) {
+			var target = document.getElementById(id);
+			var elements = document.getElementsByClassName('menuitems');
+			for (element of elements) {
+				if (element !== target) {
+					element.style.display = "none";
+				}
+			}
+			if (target.style.display == "block") {
+				target.style.display = "none";
+			} else {
+				target.style.display = "block";
+			}
+		}
 	</script>
 	<div class="header">
 		<a href="/">Home</a>
@@ -255,14 +270,33 @@
 			% end
 		% end
 		<div class="right">
-            <div id="menuitems">
+			% if get('audio'):
+				<div class="menuitems" id="audiomenu">
+					<a href="/audio/volume_up">Volume Up</a>
+					% if get('audio')['muted']:
+						<a style="color : lightgreen" href="/audio/toggle_mute">{{get('audio')['volume']}}</a>
+					% else:
+						<a style="color : crimson; text-decoration : line-through" href="/audio/toggle_mute">{{get('audio')['volume']}}</a>
+					% end
+					<a href="/audio/volume_down">Volume Down</a>
+					% for output in get('audio')['options']:
+						% if get('audio')['active'] == output[0]:
+							<a style="text-decoration : underline" href="/audio/{{output[0]}}">{{output[1]}}</a>
+						% else:
+							<a href="/audio/{{output[0]}}">{{output[1]}}</a>
+						% end
+					% end
+				</div>
+				<a href="javascript:void(0);" id="audiomenuicon" onclick="toggleMenu('audiomenu')">&#9835;</a>
+			% end
+            <div class="menuitems" id="mainmenu">
                 <a href="/settings">Settings</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/mangohud">Toggle Mangohud</a>
                 <a href="/logout">Log Out</a>
             </div>
-            <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">&#9881;</a>
+            <a href="javascript:void(0);" id="mainmenuicon" onclick="toggleMenu('mainmenu')">&#9881;</a>
 		</div>
 	</div>
 	<div class="content">

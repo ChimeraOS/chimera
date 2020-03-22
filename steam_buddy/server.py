@@ -35,7 +35,8 @@ def authenticate(func):
 @route('/')
 @authenticate
 def root():
-    return template('platforms.tpl', platforms=PLATFORMS)
+    audio = get_audio()
+    return template('platforms.tpl', platforms=PLATFORMS, audio=audio)
 
 
 @route('/platforms/<platform>')
@@ -442,6 +443,70 @@ def mangohud():
 		subprocess.call(["xdotool", "key", "F3"])
 	finally:
 		redirect('/')
+
+
+def get_audio():
+    raw = subprocess.check_output([ "ponymix", "list-profiles" ])
+    entries = raw.decode('utf8').split('\n')
+
+    volume = subprocess.check_output([ "ponymix", "get-volume" ])
+    volume = volume.decode('utf8')
+
+    muted = subprocess.call([ "ponymix", "is-muted" ])
+    print(muted)
+
+    active = None
+    grouped = []
+    for i in range(0, len(entries), 2):
+        if '[active]' in entries[i]:
+            active = entries[i].replace(' [active]', '')
+            grouped.append((active, entries[i+1].strip()))
+        elif entries[i]:
+            grouped.append((entries[i], entries[i+1].strip()))
+
+    results = [ e for e in grouped if 'input' not in e[0] and e[0] != 'off' ]
+
+    return {
+        'active' : active,
+        'options' : results,
+        'volume' : volume,
+        'muted' : muted != 0
+    };
+
+
+@route('/audio/toggle_mute')
+@authenticate
+def volume_up():
+    try:
+        subprocess.call([ "ponymix", "toggle" ])
+    finally:
+        redirect('/')
+
+@route('/audio/volume_up')
+@authenticate
+def volume_up():
+    try:
+        subprocess.call([ "ponymix", "increase", "10" ])
+    finally:
+        redirect('/')
+
+
+@route('/audio/volume_down')
+@authenticate
+def volume_down():
+    try:
+        subprocess.call([ "ponymix", "decrease", "10" ])
+    finally:
+        redirect('/')
+
+
+@route('/audio/<profile>')
+@authenticate
+def audio(profile):
+    try:
+        subprocess.call([ "ponymix", "set-profile", profile ])
+    finally:
+        redirect('/')
 
 
 @route('/login')
