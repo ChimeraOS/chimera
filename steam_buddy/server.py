@@ -6,6 +6,7 @@ import html
 import yaml
 import bcrypt
 import requests
+import shutil
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
@@ -446,6 +447,8 @@ def mangohud():
 
 
 def get_audio():
+    if not shutil.which('ponymix'):
+        return None
     raw = subprocess.check_output([ "ponymix", "list-profiles" ])
     entries = raw.decode('utf8').split('\n')
 
