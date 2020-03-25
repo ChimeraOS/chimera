@@ -12,6 +12,9 @@
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 
+	<div class="label">Content</div>
+	<input type="file" class="filepond" name="content" />
+
 	<div class="label">Banner</div>
 	<div class="tabs">
 		<div id="banner_upload_tab" class="tab left" onclick="show('banner_upload')">
@@ -34,9 +37,6 @@
 	<div id="banner_steamgriddb_content">
 		<div id="game-images"></div>
 	</div>
-
-	<div class="label">Content</div>
-	<input type="file" class="filepond" name="content" />
 
 	% if isEditing :
 		<button>Update</button>
@@ -65,11 +65,17 @@ FilePond.setOptions({
 
 <script>
     let games = [];
-    function setImage(url) {
-        let field = document.getElementById("banner-url")
-        field.value = url
-        let gameImages = document.getElementById("game-images");
-        gameImages.innerHTML = '';
+    function setImage(url, selectedID) {
+        let field = document.getElementById("banner-url");
+        field.value = url;
+        const gameImages = document.getElementsByClassName("game-image-suggestion");
+		for (const img of gameImages) {
+			if (img.id === selectedID) {
+				img.classList.add("selected");
+			} else {
+				img.classList.remove("selected");
+			}
+		}
     }
 
 	const banner_upload_content = document.getElementById("banner_upload_content");
@@ -112,11 +118,12 @@ FilePond.setOptions({
         response = await fetch(url);
         images = await response.json();
         imagesElement = await document.getElementById("game-images");
-        images.data.forEach(function (image) {
+        images.data.forEach(function (image, i) {
             entry = document.createElement("IMG");
+			entry.setAttribute("id", `img-${i}`);
             entry.setAttribute("class", "game-image-suggestion");
             entry.setAttribute("src", image.thumb);
-            entry.setAttribute("onclick", "setImage(\"" + image.url + "\")");
+            entry.setAttribute("onclick", `setImage('${image.url}', 'img-${i}')`);
             imagesElement.appendChild(entry);
         });
     }

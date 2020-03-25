@@ -72,6 +72,12 @@
 			background-color : black;
 		}
 
+		img.selected {
+			border-image : none;
+			border-color : #0075ff;
+			border-width : 12px;
+		}
+
 		.missing > img {
 			width : 100%;
 			opacity : 0;
@@ -282,7 +288,7 @@
 	    function toggleMenu(id) {
 			var target = document.getElementById(id);
 			var elements = document.getElementsByClassName('menuitems');
-			for (element of elements) {
+			for (const element of elements) {
 				if (element !== target) {
 					element.style.display = "none";
 				}
