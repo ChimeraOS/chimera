@@ -5,20 +5,35 @@
 
 	<div class="label">Name</div>
 	<div class="steamgridapi">
-	    <input id="gamename" type="text" name="name" oninput="completeGameName(this)" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
+	    <input id="gamename" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
 	    <div id="game-options"></div>
 	</div>
 
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 
-	<div class="label">Banner URL</div>
-	<input id="banner-url" name="banner-url" />
-	<div id="game-images"></div>
+	<div class="label">Banner</div>
+	<div class="tabs">
+		<div id="banner_upload_tab" class="tab left" onclick="show('banner_upload')">
+			Upload
+		</div><div id="banner_url_tab" class="tab" onclick="show('banner_url')">
+			URL
+		</div><div id="banner_steamgriddb_tab" class="tab right" onclick="show('banner_steamgriddb')">
+			SteamGridDB
+		</div>
+	</div>
 
+	<div id="banner_upload_content">
+		<input type="file" class="filepond" name="banner" />
+	</div>
 
-	<div class="label">Banner upload</div>
-	<input type="file" class="filepond" name="banner" />
+	<div id="banner_url_content">
+		<input id="banner-url" name="banner-url" />
+	</div>
+
+	<div id="banner_steamgriddb_content">
+		<div id="game-images"></div>
+	</div>
 
 	<div class="label">Content</div>
 	<input type="file" class="filepond" name="content" />
@@ -49,13 +64,42 @@ FilePond.setOptions({
 % end
 
 <script>
-    let games = ["Super Mario 64", "Super Mario Bros", "Super Mario World", "Super Gradius"];
+    let games = [];
     function setImage(url) {
         let field = document.getElementById("banner-url")
         field.value = url
         let gameImages = document.getElementById("game-images");
         gameImages.innerHTML = '';
     }
+
+	const banner_upload_content = document.getElementById("banner_upload_content");
+	const banner_url_content = document.getElementById("banner_url_content");
+	const banner_steamgriddb_content = document.getElementById("banner_steamgriddb_content");
+	const banner_content_elements = [ banner_upload_content, banner_url_content, banner_steamgriddb_content ];
+
+	const banner_upload_tab = document.getElementById("banner_upload_tab");
+	const banner_url_tab = document.getElementById("banner_url_tab");
+	const banner_steamgriddb_tab = document.getElementById("banner_steamgriddb_tab");
+
+	const banner_tab_elements = [ banner_upload_tab, banner_url_tab, banner_steamgriddb_tab ];
+
+	function show(id) {
+		for (element of banner_content_elements) {
+			element.style.display = "none";
+		}
+
+		for (element of banner_tab_elements) {
+			element.classList.remove("selected");
+		}
+
+		var target_tab = document.getElementById(id+'_tab');
+		var target_content = document.getElementById(id+'_content');
+		target_content.style.display = "block";
+		target_tab.classList.add("selected");
+	}
+
+	show('banner_upload');
+
     async function setGameName(gameName, gameId) {
         let field = await document.getElementById("gamename");
         let gameOptions = await document.getElementById("game-options");
@@ -76,20 +120,21 @@ FilePond.setOptions({
             imagesElement.appendChild(entry);
         });
     }
-    async function completeGameName(input) {
-        if (input.value.length < 3) {
-            return;
-        }
-        let value = input.value
-        let promise = new Promise((res, rej) => {
-            setTimeout(() => res("Now it's done!"), 250)
-        });
-        await promise;
-        if (value != input.value) {
-            return;
-        }
 
-        url = "/steamgrid/search/" + input.value;
+
+	let timer;
+	let lastSearch = '';
+	const nameInput = document.getElementById('gamename');
+	nameInput.addEventListener('keyup', () => {
+	    clearTimeout(timer);
+	    if (nameInput.value && nameInput.value !== lastSearch) {
+	        timer = setTimeout(completeGameName, 700);
+	    }
+	});
+
+	async function completeGameName() {
+		lastSearch = nameInput.value;
+        url = "/steamgrid/search/" + lastSearch;
         response = await fetch(url);
         games = await response.json();
         if (!games.success) {
@@ -104,7 +149,7 @@ FilePond.setOptions({
             entry.innerHTML = game.name;
             gameOptions.appendChild(entry);
         });
-    }
+	}
 
     async function suggestImagesOnEdit() {
         let field = document.getElementById("gamename")

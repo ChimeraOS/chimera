@@ -233,9 +233,45 @@
             background: #10131c;
         }
         .steamgridapi {
-           position: relative;
+			position: relative;
             display: inline-block;
         }
+
+		.tabs {
+			margin-bottom: 20px;
+		}
+
+		.tab {
+			width: 33.3%;
+			background: #548aca;
+			display: inline-block;
+			text-align: center;
+			color: white;
+			cursor: pointer;
+			font-size: 18px;
+			padding-top: 12px;
+			padding-bottom: 12px;
+		}
+
+		#game-images {
+			text-align: center;
+		}
+
+		.tab.selected {
+			background: #3268a8;
+		}
+
+		.tab.left {
+			border-radius: 5px 0px 0px 5px;
+		}
+
+		.tab.right {
+			border-radius: 0px 5px 5px 0px;
+		}
+
+		#banner-url {
+			width: 100%;
+		}
 	</style>
 
 	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
