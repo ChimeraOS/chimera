@@ -135,7 +135,7 @@
 			color : white;
 			padding-top : 20px;
 			padding-bottom : 20px;
-			margin-top : 50px;
+			margin-top : 100px;
 			margin-bottom : 30px;
 			cursor : pointer;
 			font-size : 24px;
@@ -148,6 +148,7 @@
 		}
 
 		.delete {
+			margin-top : 30px;
 			background-color : #ff3333;
 		}
 
