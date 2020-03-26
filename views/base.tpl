@@ -23,6 +23,11 @@
 			text-decoration: none;
 		}
 
+		p.placeholder {
+			color : #666666;
+			font-size : 22px;
+		}
+
 		#progress {
 		    display : inline;
 		}

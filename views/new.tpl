@@ -35,7 +35,11 @@
 	</div>
 
 	<div id="banner_steamgriddb_content">
-		<div id="game-images"></div>
+		<div id="game-images">
+			% if not isEditing:
+				<p class="placeholder">No banner images found. Enter a valid game name.</p>
+			% end
+		</div>
 	</div>
 
 	% if isEditing :
