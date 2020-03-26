@@ -197,13 +197,13 @@
 
 		.menuitems {
 			margin-top : 64px;
-			height : 100%;
+			min-height : 100%;
 			display : none;
 		}
 
 		.menuitems a {
-			margin-top : 24px;
-			font-size : 36px;
+			margin-top : 28px;
+			font-size : 28px;
 			display : block;
 		}
 
@@ -220,7 +220,7 @@
 			position : absolute;
 			right : 70px;
 			top : 5px;
-			font-size: 40px;
+			font-size: 36px;
 		}
 
 		.game-name-suggestion {
