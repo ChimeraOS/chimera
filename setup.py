@@ -11,6 +11,8 @@ setup(
         ('share/steam-buddy/images', glob('images/*.png')),
         ('share/steam-buddy/images/flathub', glob('images/flathub/*.png')),
         ('share/steam-buddy/views', glob('views/*.tpl')),
+        ('share/steam-buddy/public', glob('public/*.js')),
+        ('share/steam-buddy/public', glob('public/*.css')),
         ('share/steam-buddy/config', glob('config/*.cfg')),
         ('share/steam-buddy', ['launcher']),
         ('bin', glob('bin/*')),

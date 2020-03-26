@@ -112,6 +112,9 @@ def flathub_images(filename):
 def images(filename):
     return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
 
+@route('/public/<filename>')
+def images(filename):
+    return static_file(filename, root='public')
 
 @route('/shortcuts/new', method='POST')
 @authenticate

@@ -285,8 +285,8 @@
 		}
 	</style>
 
-	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-	<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+	<link href="/public/filepond.min.css" rel="stylesheet">
+	<script src="/public/filepond.min.js"></script>
 </head>
 <body>
 	<script>
