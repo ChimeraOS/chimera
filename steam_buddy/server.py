@@ -245,9 +245,19 @@ def shortcut_delete():
 @route('/shortcuts/file-upload', method='POST')
 @authenticate
 def start_file_upload():
+    file_name = None
+    file_data = request.files.get('banner') or request.files.get('content')
+
+    if file_data:
+        file_name = sanitize(file_data.filename)
+
     ( _, path ) = tempfile.mkstemp()
     key = os.path.basename(path)
-    tmpfiles[key] = ( path, None )
+    tmpfiles[key] = ( path, file_name )
+
+    if file_data:
+        file_data.save(path, True)
+
     return key
 
 @route('/shortcuts/file-upload', method='PATCH')
@@ -258,7 +268,7 @@ def upload_file_chunk():
     if not path:
         abort(400)
 
-    tmpfiles[key] = ( path, request.headers.get('Upload-Name') )
+    tmpfiles[key] = ( path, sanitize(request.headers.get('Upload-Name')) )
 
     f = open(path, 'ab')
     f.seek(int(request.headers.get('Upload-Offset')))
@@ -479,7 +489,7 @@ def get_audio():
             'options' : results,
             'volume' : volume,
             'muted' : muted != 0
-        };
+        }
     except:
         return None
 
