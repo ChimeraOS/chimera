@@ -452,32 +452,36 @@ def mangohud():
 def get_audio():
     if not shutil.which('ponymix'):
         return None
-    raw = subprocess.check_output([ "ponymix", "list-profiles" ])
-    entries = raw.decode('utf8').split('\n')
 
-    volume = subprocess.check_output([ "ponymix", "get-volume" ])
-    volume = volume.decode('utf8')
+    try:
+        raw = subprocess.check_output([ "ponymix", "list-profiles" ])
+        entries = raw.decode('utf8').split('\n')
 
-    muted = subprocess.call([ "ponymix", "is-muted" ])
-    print(muted)
+        volume = subprocess.check_output([ "ponymix", "get-volume" ])
+        volume = volume.decode('utf8')
 
-    active = None
-    grouped = []
-    for i in range(0, len(entries), 2):
-        if '[active]' in entries[i]:
-            active = entries[i].replace(' [active]', '')
-            grouped.append((active, entries[i+1].strip()))
-        elif entries[i]:
-            grouped.append((entries[i], entries[i+1].strip()))
+        muted = subprocess.call([ "ponymix", "is-muted" ])
+        print(muted)
 
-    results = [ e for e in grouped if 'input' not in e[0] and e[0] != 'off' ]
+        active = None
+        grouped = []
+        for i in range(0, len(entries), 2):
+            if '[active]' in entries[i]:
+                active = entries[i].replace(' [active]', '')
+                grouped.append((active, entries[i+1].strip()))
+            elif entries[i]:
+                grouped.append((entries[i], entries[i+1].strip()))
 
-    return {
-        'active' : active,
-        'options' : results,
-        'volume' : volume,
-        'muted' : muted != 0
-    };
+        results = [ e for e in grouped if 'input' not in e[0] and e[0] != 'off' ]
+
+        return {
+            'active' : active,
+            'options' : results,
+            'volume' : volume,
+            'muted' : muted != 0
+        };
+    except:
+        return None
 
 
 @route('/audio/toggle_mute')
