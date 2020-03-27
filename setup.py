@@ -31,6 +31,7 @@ setup(
         'beaker',
         'pygame',
         'psutil',
+        'bcrypt',
     ],
 
     # metadata to display on PyPI
