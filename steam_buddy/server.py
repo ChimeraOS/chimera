@@ -496,7 +496,7 @@ def get_audio():
 
 @route('/audio/toggle_mute')
 @authenticate
-def volume_up():
+def toggle_mute():
     try:
         subprocess.call([ "ponymix", "toggle" ])
     finally:
