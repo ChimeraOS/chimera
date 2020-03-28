@@ -1,4 +1,5 @@
 import os
+import pwd
 import subprocess
 import tempfile
 import json
@@ -382,7 +383,7 @@ def settings():
     password_is_set = password_field and len(password_field) > 7
     ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
     hostname = request.environ.get('HTTP_HOST').split(":")[0] or request.environ.get('SERVER_NAME')
-    username = os.getlogin()
+    username = pwd.getpwuid(os.getuid())[0]
     return template('settings.tpl', settings=current_settings, password_is_set=password_is_set, ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
 
 
