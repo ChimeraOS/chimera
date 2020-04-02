@@ -39,5 +39,9 @@ class Settings:
     def get_settings(self) -> dict:
         if os.path.isfile(self.settings_file):
             with open(self.settings_file, "r") as file:
-                return json.loads(file.read())
+                results = json.loads(file.read())
+                if 'enable_ftp_server' not in results or not results['enable_ftp_server']:
+                    if 'ftp_password' in results and len(results['ftp_password']) < 8: results['ftp_password'] = None
+                    if 'ftp_username' in results and len(results['ftp_username']) < 5: results['ftp_username'] = None
+                return results
         return {}
