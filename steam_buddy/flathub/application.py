@@ -6,6 +6,9 @@ import time
 import subprocess
 import requests
 
+FLATPAK_WRAPPER = os.path.abspath('flatpak-wrapper')
+if not os.path.isfile(FLATPAK_WRAPPER):
+	FLATPAK_WRAPPER = "bin/flatpak-wrapper"
 
 class Application:
 
@@ -127,10 +130,10 @@ class Application:
             return False
 
     def __install(self) -> subprocess:
-        return subprocess.Popen(["flatpak", "install", "--user", "-y", "flathub", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def __uninstall(self) -> subprocess:
-        return subprocess.Popen(["flatpak", "uninstall", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def __update(self) -> subprocess:
-        return subprocess.Popen(["flatpak", "update", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", self.flatpak_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

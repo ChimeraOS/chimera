@@ -17,7 +17,7 @@ setup(
         ('share/steam-buddy', ['launcher']),
         ('bin', glob('bin/*')),
         ('bin', ['toggle-steamos-compositor']),
-        ('share/steam-buddy/bin', ['steam-buddy-authenticator']),
+        ('share/steam-buddy/bin', ['steam-buddy-authenticator', 'flatpak-wrapper']),
         ('share/doc/steam-buddy', ['README.md']),
         ('share/doc/steam-buddy', ['LICENSE']),
     ],
