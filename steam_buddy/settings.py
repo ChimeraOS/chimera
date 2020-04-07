@@ -41,7 +41,7 @@ class Settings:
             with open(self.settings_file, "r") as file:
                 results = json.loads(file.read())
                 if 'enable_ftp_server' not in results or not results['enable_ftp_server']:
-                    if 'ftp_password' in results and len(results['ftp_password']) < 8: results['ftp_password'] = None
-                    if 'ftp_username' in results and len(results['ftp_username']) < 5: results['ftp_username'] = None
+                    if 'ftp_password' in results and results['ftp_password'] and len(results['ftp_password']) < 8: results['ftp_password'] = ''
+                    if 'ftp_username' in results and results['ftp_username'] and len(results['ftp_username']) < 5: results['ftp_username'] = ''
                 return results
         return {}
