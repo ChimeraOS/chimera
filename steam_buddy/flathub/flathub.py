@@ -18,11 +18,13 @@ class Flathub:
             print('Error: Failed to initialize flathub support')
 
     def __add_repo(self, name: str, url: str) -> None:
-        # This only adds the flatpak repo if it isn't already installed
-        return_value = subprocess.call(["flatpak", "remote-add", "--user", "--if-not-exists", name, url])
-
-        if return_value != 0:
-            print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=name, url=url))
+        return_value = None
+        try:
+            # This only adds the flatpak repo if it isn't already installed
+            return_value = subprocess.call(["flatpak", "remote-add", "--user", "--if-not-exists", name, url])
+        finally:
+            if return_value != 0:
+                print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=name, url=url))
 
     def __get_application_list(self):
         applications = []
