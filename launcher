@@ -44,6 +44,6 @@ if [ -e ${CORE_CONFIG} ]; then
 fi
 
 retroarch \
---appendconfig ${RETRO_CONFIG} \
+--appendconfig "${RETRO_CONFIG}|${CORE_CONFIG}" \
 --libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
 "$@"
