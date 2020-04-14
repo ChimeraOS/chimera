@@ -18,6 +18,7 @@ You can upload ROMs and banner images to Steam Buddy and they will be added to S
 
 The following platforms are currently supported:
 - Atari 2600
+- Dreamcast
 - Game Boy
 - Game Boy Advance
 - Game Boy Color
@@ -26,10 +27,19 @@ The following platforms are currently supported:
 - Master System
 - Nintendo
 - Nintendo 64
+- PlayStation (requires BIOS file)
+- PlayStation 2
+- Saturn (BIOS file optional)
 - Super Nintendo
 - TurboGrafx-16
 
 More platforms will be added over time.
+
+#### BIOS files
+
+BIOS files can be uploaded the same as games. However, the name of the shortcut should reflect the name of the file that the emulator is looking for without the file extension.
+
+Also, select the "Hide" option so the BIOS file is not shown in Steam along with other games.
 
 ## Installation
 
