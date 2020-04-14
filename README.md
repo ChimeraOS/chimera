@@ -35,6 +35,11 @@ The following platforms are currently supported:
 
 More platforms will be added over time.
 
+#### Supported formats
+
+CD based platforms (PlayStation 1, Saturn, Dreamcast) require use of .chd format for game files.
+These can be created easily from cue/bin format using the `chdman` tool.
+
 #### BIOS files
 
 BIOS files can be uploaded the same as games. However, the name of the shortcut should reflect the name of the file that the emulator is looking for without the file extension.
