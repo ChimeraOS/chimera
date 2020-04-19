@@ -22,6 +22,7 @@ CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
+	"arcade"     : "Arcade",
 	"atari-2600" : "Atari 2600",
 	"dreamcast"  : "Dreamcast",
 	"flathub"    : "Flathub",

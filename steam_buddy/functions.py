@@ -63,6 +63,10 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
     delete_file_link(base_dir, platform, name)
     os.symlink(file_path, dst)
 
+    # mame requires ROM files to have a specific name, so launch original file directly
+    if platform == "arcade" and os.path.basename(base_dir) == "content":
+        return file_path
+
     return dst
 
 
