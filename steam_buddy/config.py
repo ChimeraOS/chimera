@@ -33,6 +33,7 @@ PLATFORMS = {
 	"sgg"        : "Game Gear",
 	"genesis"    : "Genesis",
 	"sms"        : "Master System",
+	"neo-geo"    : "Neo Geo",
 	"nes"        : "Nintendo",
 	"n64"        : "Nintendo 64",
 	"ps1"        : "PlayStation",
