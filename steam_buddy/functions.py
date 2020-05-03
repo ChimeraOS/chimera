@@ -41,12 +41,21 @@ def delete_file_link(base_dir, platform, name):
             os.remove(link)
 
 
+def is_direct(platform, content_type):
+    return (platform == "arcade" or platform == "neo-geo") and content_type == "content"
+
+
 def upsert_file(src_path, base_dir, platform, name, dst_name):
     if not src_path:
         return
 
+    content_type = os.path.basename(base_dir)
     filename = sanitize(dst_name)
     file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
+
+    # mame ROM files have dependencies on each other, so store them all in a single directory
+    if is_direct(platform, content_type):
+        file_dir = "{base_dir}/{platform}/.{platform}".format(base_dir=base_dir, platform=platform, name=name)
 
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
@@ -64,16 +73,27 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
     os.symlink(file_path, dst)
 
     # mame requires ROM files to have a specific name, so launch original file directly
-    if platform == "arcade" and os.path.basename(base_dir) == "content":
+    if is_direct(platform, content_type):
         return file_path
 
     return dst
 
+def strip(string):
+    if string.startswith('"') and string.endswith('"'):
+        return string[1:-1]
+    return string
 
 def delete_file(base_dir, platform, name):
-    file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
-
-    if os.path.exists(file_dir):
-        shutil.rmtree(file_dir)
+    if is_direct(platform, os.path.basename(base_dir)):
+        shortcuts = load_shortcuts(platform)
+        matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+        shortcut = matches[0]
+        file_path = os.path.join(strip(shortcut['dir']), strip(shortcut['params']))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    else:
+        file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
+        if os.path.exists(file_dir):
+            shutil.rmtree(file_dir)
 
     delete_file_link(base_dir, platform, name)
