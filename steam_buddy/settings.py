@@ -21,12 +21,15 @@ class Settings:
             except KeyError:
                 self.set_setting(key, self.settings_default[key])
 
-    def set_setting(self, key, value) -> None:
-        settings = self.get_settings()
-        settings[key] = value
+    def save(self, settings) -> None:
         with open(self.settings_file, "w") as file:
             file.write(json.dumps(settings))
             file.close()
+
+    def set_setting(self, key, value) -> None:
+        settings = self.get_settings()
+        settings[key] = value
+        self.save(settings)
 
     def get_setting(self, setting: str) -> any:
         with open(self.settings_file, "r") as file:
@@ -40,8 +43,18 @@ class Settings:
         if os.path.isfile(self.settings_file):
             with open(self.settings_file, "r") as file:
                 results = json.loads(file.read())
-                if 'enable_ftp_server' not in results or not results['enable_ftp_server']:
-                    if 'ftp_password' in results and results['ftp_password'] and len(results['ftp_password']) < 8: results['ftp_password'] = ''
-                    if 'ftp_username' in results and results['ftp_username'] and len(results['ftp_username']) < 5: results['ftp_username'] = ''
+                changed = False
+                if 'ftp_password' in results and results['ftp_password'] and len(results['ftp_password']) < 8:
+                    results['ftp_password'] = self.settings_default['ftp_password']
+                    changed = True
+
+                if 'ftp_username' in results and results['ftp_username'] and len(results['ftp_username']) < 5:
+                    results['ftp_username'] = self.settings_default['ftp_username']
+                    changed = True
+
+                if changed:
+                    results['enable_ftp_server'] = False
+                    self.save(results)
+
                 return results
         return {}
