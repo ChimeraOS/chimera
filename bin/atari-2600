@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/share/steam-buddy/launcher atari-2600 stella2014 "$@"

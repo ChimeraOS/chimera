@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/share/steam-buddy/launcher tg-16 mednafen_pce_fast "$@"

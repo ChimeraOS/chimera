@@ -6,9 +6,7 @@ import time
 import subprocess
 import requests
 
-FLATPAK_WRAPPER = os.path.abspath('flatpak-wrapper')
-if not os.path.isfile(FLATPAK_WRAPPER):
-	FLATPAK_WRAPPER = "bin/flatpak-wrapper"
+FLATPAK_WRAPPER = "bin/flatpak-wrapper"
 
 class Application:
 

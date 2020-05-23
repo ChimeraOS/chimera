@@ -446,7 +446,7 @@ def steam_restart():
 @authenticate
 def steam_compositor():
     try:
-        subprocess.call(["toggle-steamos-compositor"])
+        subprocess.call(["bin/toggle-steamos-compositor"])
     finally:
         redirect('/')
 
@@ -458,6 +458,15 @@ def mangohud():
 		subprocess.call(["xdotool", "key", "F3"])
 	finally:
 		redirect('/')
+
+
+@route('/exit_game')
+@authenticate
+def exit_game():
+    try:
+        subprocess.call([ "bin/exit-game" ])
+    finally:
+        redirect('/')
 
 
 def get_audio():

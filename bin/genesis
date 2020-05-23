@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/share/steam-buddy/launcher genesis genesis_plus_gx "$@"
