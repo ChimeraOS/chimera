@@ -339,6 +339,7 @@
 			% end
             <div class="menuitems" id="mainmenu">
                 <a href="/settings">Settings</a>
+                <a href="/exit_game">Exit Game</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/mangohud">Toggle MangoHud</a>
