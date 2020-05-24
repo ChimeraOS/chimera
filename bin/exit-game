@@ -24,8 +24,8 @@ for x in 1 2 3 4 5; do
 	if [ -z "$CHILDREN" ]; then
 		exit
 	fi
-	kill -n SIGTERM "$CHILDREN"
+	kill -n SIGTERM $CHILDREN
 	sleep 1
 done
 
-kill -9 "$CHILDREN"
+kill -9 $CHILDREN
