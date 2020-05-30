@@ -17,14 +17,17 @@ If the application works well please create a new issue with the app id and grid
 You can upload ROMs and banner images to Steam Buddy and they will be added to Steam. The emulators are pre-configured and ready to play out of the box with almost any controller.
 
 The following platforms are currently supported:
+- Arcade
 - Atari 2600
 - Dreamcast
 - Game Boy
 - Game Boy Advance
 - Game Boy Color
 - Game Gear
+- GameCube
 - Genesis/Mega Drive
 - Master System
+- Neo Geo (requires BIOS file)
 - Nintendo
 - Nintendo 64
 - PlayStation (requires BIOS file)
