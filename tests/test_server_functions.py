@@ -1,0 +1,69 @@
+import sys
+import importlib
+sys.modules["steam_buddy.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
+from tidylib import tidy_document
+from bottle import request
+from steam_buddy.server import root, platform, new, settings, logout, login
+from steam_buddy.config import PLATFORMS
+
+
+def validate_html(endpoint, document):
+    """
+    This function can be used to make sure HTML returned is valid
+    It raises an exception describing what's wrong then non-valid HTML was entered
+    :param endpoint: name of the function which returned the html content
+    :param document: the html content
+    :return: None
+    """
+    tidied, errors = tidy_document(document)
+    if errors:
+        raise SystemError(
+            "Errors were found in the following HTML returned by function {}:\n{}\n\nErrors:\n{}".format(
+                endpoint,
+                document,
+                errors
+            )
+        )
+
+
+def test_root():
+    document = root()
+    validate_html("root", document)
+
+
+def test_platform():
+    for p in PLATFORMS:
+        document = platform(p)
+        validate_html("platform({})".format(p), document)
+
+
+def test_new():
+    for p in PLATFORMS:
+        document = new(p)
+        validate_html("new({})".format(p), document)
+
+
+def test_settings():
+    request.environ["HTTP_HOST"] = "localhost:8844"
+    document = settings()
+    validate_html("settings", document)
+
+
+def test_logout():
+    class mock_session:
+        def delete(self):
+            pass
+    request.environ["beaker.session"] = mock_session()
+    document = logout()
+    validate_html("logout", document)
+
+
+def test_login(monkeypatch):
+    def mock_launch(self):
+        pass
+
+    from steam_buddy.authenticator import Authenticator
+    monkeypatch.setattr(Authenticator, 'launch', mock_launch)
+
+    document = login()
+    validate_html("login", document)
