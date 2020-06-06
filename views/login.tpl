@@ -9,7 +9,7 @@
 % end
 <form action="/authenticate" method="post" enctype="multipart/form-data">
 	<div class="label">Password</div>
-	<input type="password" name="password"/>
+	<input type="text" name="password"/>
 
 	<button>Login</button>
 </form>
