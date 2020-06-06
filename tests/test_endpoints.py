@@ -1,11 +1,13 @@
+import os
 from webtest import TestApp
 from steam_buddy import server
-from steam_buddy.config import PLATFORMS
+from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
 def test_runs(monkeypatch):
     def mock_launch(self):
-        pass
+        if not os.path.isfile(AUTHENTICATOR_PATH):
+            raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
 
     from steam_buddy.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)

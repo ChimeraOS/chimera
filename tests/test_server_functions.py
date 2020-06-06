@@ -1,10 +1,11 @@
+import os
 import sys
 import importlib
 sys.modules["steam_buddy.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
 from tidylib import tidy_document
 from bottle import request
 from steam_buddy.server import root, platform, new, settings, logout, login
-from steam_buddy.config import PLATFORMS
+from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
 def validate_html(endpoint, document):
@@ -60,7 +61,8 @@ def test_logout():
 
 def test_login(monkeypatch):
     def mock_launch(self):
-        pass
+        if not os.path.isfile(AUTHENTICATOR_PATH):
+            raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
 
     from steam_buddy.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)
