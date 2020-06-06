@@ -558,7 +558,7 @@ def logout():
 @route('/authenticate', method='POST')
 def authenticate_route_handler():
     AUTHENTICATOR.kill()
-    password = request.forms.get('password')
+    password = request.forms.get('password').upper()
     session = request.environ.get('beaker.session')
     keep_password = SETTINGS_HANDLER.get_setting('keep_password') or False
     stored_hash = SETTINGS_HANDLER.get_setting('password')
