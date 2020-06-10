@@ -12,26 +12,11 @@ from bottle import app, route, template, static_file, redirect, abort, request, 
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
+from steam_buddy.auth_decorator import authenticate
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 tmpfiles = {}
-
-def authenticate(func):
-    def wrapper(*args, **kwargs):
-        authenticated = True
-        session = request.environ.get('beaker.session')
-        if not session.get('Logged-In') or not session['Logged-In']:
-            authenticated = False
-            session['Logged-In'] = False
-            session.save()
-        elif not session.get('User-Agent') or session['User-Agent'] != request.headers.get('User-Agent'):
-            session.delete()
-            authenticated = False
-        if not authenticated:
-            return redirect('/login')
-        return func(*args, **kwargs)
-    return wrapper
 
 
 @route('/')

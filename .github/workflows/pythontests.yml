@@ -20,6 +20,6 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics --exit-zero
-    - name: Test with webtest
+    - name: Run tests
       run: |
-        python -m unittest tests
+        for test in $(find ./tests -type f -name "test*.py"); do python -m pytest ${test} -v; done

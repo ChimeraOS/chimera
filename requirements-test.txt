@@ -8,3 +8,5 @@ psutil
 flake8
 WebTest
 bcrypt
+pytest
+pytidylib
