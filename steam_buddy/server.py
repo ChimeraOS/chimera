@@ -444,6 +444,20 @@ def mangohud():
 	finally:
 		redirect('/')
 
+@route('/virtual_keyboard')
+@authenticate
+def type():
+    return template('virtual_keyboard.tpl')
+
+@route('/virtual_keyboard/string', method='POST')
+@authenticate
+def type_string():
+    str = sanitize(request.forms.get('str'))
+    try:
+        subprocess.call(["xdotool", "type", "--", str])
+    finally:
+        redirect('/virtual_keyboard')
+
 
 @route('/exit_game')
 @authenticate
