@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Steam Buddy</title>
@@ -343,6 +344,7 @@
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/mangohud">Toggle MangoHud</a>
+                <a href="/virtual_keyboard">Virtual Keyboard</a>
                 <a href="/logout">Log Out</a>
             </div>
             <a href="javascript:void(0);" id="mainmenuicon" onclick="toggleMenu('mainmenu')">&#9881;</a>

@@ -43,8 +43,10 @@
     <div class="label">Current public keys</div>
         <table class="settings">
             <thead>
+            <tr>
                 <th>ID</th>
                 <th>Delete</th>
+            </tr>
             </thead>
             % for key_id in ssh_key_ids:
                 <tr>
