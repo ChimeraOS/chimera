@@ -436,6 +436,15 @@ def steam_compositor():
         redirect('/')
 
 
+@route('/steam/overlay')
+@authenticate
+def steam_overlay():
+	try:
+		subprocess.call(["xdotool", "key", "shift+Tab"])
+	finally:
+		redirect('/')
+
+
 @route('/mangohud')
 @authenticate
 def mangohud():
