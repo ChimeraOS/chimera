@@ -343,6 +343,7 @@
                 <a href="/exit_game">Exit Game</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
+                <a href="/steam/overlay">Toggle Steam Overlay</a>
                 <a href="/mangohud">Toggle MangoHud</a>
                 <a href="/virtual_keyboard">Virtual Keyboard</a>
                 <a href="/logout">Log Out</a>
