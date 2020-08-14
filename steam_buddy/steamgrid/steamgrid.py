@@ -13,7 +13,7 @@ class Steamgrid:
         return response.text
 
     def get_images(self, game_id):
-        url = "https://www.steamgriddb.com/api/v2/grids/game/{}".format(game_id)
+        url = "https://www.steamgriddb.com/api/v2/grids/game/{}?dimensions=460x215,920x430".format(game_id)
         response = self.__request(url)
         return response.text
 
