@@ -568,7 +568,7 @@ def authenticate_route_handler():
     session = request.environ.get('beaker.session')
     keep_password = SETTINGS_HANDLER.get_setting('keep_password') or False
     stored_hash = SETTINGS_HANDLER.get_setting('password')
-    if AUTHENTICATOR.matches_password(password) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
+    if AUTHENTICATOR.matches_password(password.upper()) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
