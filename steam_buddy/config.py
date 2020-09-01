@@ -41,6 +41,7 @@ PLATFORMS = {
 	"ps1"        : "PlayStation",
 	"ps2"        : "PlayStation 2",
 	"saturn"     : "Saturn",
+	"sega-cd"    : "Sega CD",
 	"snes"       : "Super Nintendo",
 	"tg-16"      : "TurboGrafx-16"
 }
