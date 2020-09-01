@@ -13,4 +13,6 @@ if pgrep steamcompmgr > /dev/null; then
 elif pgrep openbox > /dev/null; then
 	wkill openbox
 	DISPLAY=:0.0 steamcompmgr &
+else
+	DISPLAY=:0.0 steamcompmgr &
 fi
