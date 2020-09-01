@@ -72,7 +72,7 @@ FilePond.setOptions({
     function setImage(url, selectedID) {
         let field = document.getElementById("banner-url");
         field.value = url;
-        const gameImages = document.getElementsByClassName("game-image-suggestion");
+        const gameImages = document.getElementsByClassName("img-container");
 		for (const img of gameImages) {
 			if (img.id === selectedID) {
 				img.classList.add("selected");
@@ -123,12 +123,15 @@ FilePond.setOptions({
         images = await response.json();
         imagesElement = await document.getElementById("game-images");
         images.data.forEach(function (image, i) {
+			container = document.createElement("div");
+			container.setAttribute("class", "img-container");
             entry = document.createElement("IMG");
-			entry.setAttribute("id", `img-${i}`);
+			container.setAttribute("id", `img-${i}`);
             entry.setAttribute("class", "game-image-suggestion");
             entry.setAttribute("src", image.thumb);
             entry.setAttribute("onclick", `setImage('${image.url}', 'img-${i}')`);
-            imagesElement.appendChild(entry);
+			container.appendChild(entry);
+            imagesElement.appendChild(container);
         });
     }
 

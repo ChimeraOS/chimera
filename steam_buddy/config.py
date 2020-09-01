@@ -1,5 +1,4 @@
 import os
-from steam_buddy.flathub import Flathub
 from steam_buddy.settings import Settings
 from steam_buddy.ftp.server import Server as FTPServer
 from steam_buddy.authenticator import Authenticator, generate_password
@@ -7,6 +6,7 @@ from steam_buddy.ssh_keys import SSHKeys
 from steam_buddy.steamgrid.steamgrid import Steamgrid
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
+CONFIG_DIR = os.getenv('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
@@ -25,6 +25,7 @@ PLATFORMS = {
 	"arcade"     : "Arcade",
 	"atari-2600" : "Atari 2600",
 	"dreamcast"  : "Dreamcast",
+	"epic-store" : "Epic Games Store",
 	"flathub"    : "Flathub",
 	"gb"         : "Game Boy",
 	"gba"        : "Game Boy Advance",
@@ -58,8 +59,6 @@ SESSION_OPTIONS = {
 	'session.type': 'memory',
 	'session.validate_key': True,
 }
-
-FLATHUB_HANDLER = Flathub()
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
 

@@ -56,7 +56,7 @@
 		}
 
 		.hidden {
-			opacity : 0.4
+			opacity : 0.6
 		}
 
 		.new-shortcut {
@@ -66,44 +66,32 @@
 			background-color : #3268a8;
 		}
 
-		img {
-			margin : 10px;
-			width : 90%;
-			height : auto;
-			max-width : 460px;
-			max-height : 215px;
+		.img-container {
+			position : relative;
+			display : inline-block;
+			margin : 0px;
+			padding : 0px;
+			height : 215px;
+			width  : 460px;
 			border-width : 4px;
 			border-style : solid;
 			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
-			background-color : black;
+			background-color : #444444;
 		}
 
-		img.selected {
+		.img-container.selected {
 			border-image : none;
 			border-color : #0075ff;
 			border-width : 12px;
 		}
 
-		.missing > img {
-			width : 100%;
-			opacity : 0;
-			background-color : gray;
-		}
-
-		.missing {
-			position : relative;
-			display : inline-block;
-			margin : 10px;
-			overflow : hidden;
-			padding : 0px;
-			width : 90%;
-			height : auto;
-			max-width : 460px;
+		img {
+			width : auto;
+			height : 215px;
 			max-height : 215px;
-			background-color : #333333;
-			border-width : 4px;
-			border-style : solid;
-			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
 		}
 
 		.missing-text {
@@ -285,6 +273,19 @@
 		#banner-url {
 			width: 100%;
 		}
+
+		p.platform-login-description {
+			text-align: center;
+		}
+
+		p.platform-login-description a {
+			color : darkslategray;
+			text-decoration : underline;
+		}
+
+		p.platform-login-description a:hover {
+			color : slategray;
+		}
 	</style>
 
 	<link href="/public/filepond.min.css" rel="stylesheet">
@@ -312,7 +313,9 @@
 		% if get('platform') :
 			<em>/</em> <a href="/platforms/{{platform}}">{{platformName}}</a>
 
-			% if get('name') :
+			% if get('app') and get('name') :
+				<em>/</em> <a href="/platforms/{{platform}}/edit/{{name}}">{{app.name}}</a>
+			% elif get('name') :
 				<em>/</em> <a href="/platforms/{{platform}}/edit/{{name}}">{{name}}</a>
 			% elif get('isNew') :
 				<em>/</em> <a href="/platforms/{{platform}}/new">New</a>

@@ -1,17 +1,19 @@
 % rebase('base.tpl')
 
-<a href="/platforms/{{platform}}/new">
-    <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut"/>
-</a>
+<div class="img-container">
+    <a href="/platforms/{{platform}}/new">
+        <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut"/>
+    </a>
+</div>
 
 % for s in shortcuts:
-    <a href="/platforms/{{platform}}/edit/{{s['name']}}">
+<a href="/platforms/{{platform}}/edit/{{s['name']}}">
+    <div class="img-container {{s['hidden']}}">
         % if s['banner'] == None :
-            <div class="missing {{s['hidden']}}">
-                <img src="/images/add.png" alt="{{s['name']}}" title="{{s['name']}}"/>
-                <span class="missing-text">{{s['name']}}</span>
-            </div>
+            <span class="missing-text">{{s['name']}}</span>
         % else :
             <img class="{{s['hidden']}}" src="{{s['banner']}}" alt="{{s['name']}}" title="{{s['name']}}"/>
-    </a>
+        % end
+    </div>
+</a>
 % end

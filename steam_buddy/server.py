@@ -10,13 +10,28 @@ import requests
 import shutil
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, FLATHUB_HANDLER, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
+from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
 from steam_buddy.auth_decorator import authenticate
+from steam_buddy.platforms.epic_store import EpicStore
+from steam_buddy.platforms.flathub import Flathub
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 tmpfiles = {}
+
+
+PLATFORM_HANDLERS = {
+    "epic-store" : EpicStore(),
+    "flathub"    : Flathub(),
+}
+
+def authenticate_platform(platform):
+    if platform in PLATFORM_HANDLERS:
+        if not PLATFORM_HANDLERS[platform].is_authenticated():
+            redirect('/platforms/{platform}'.format(platform=platform))
+            return False
+    return True
 
 
 @route('/')
@@ -29,9 +44,13 @@ def root():
 @route('/platforms/<platform>')
 @authenticate
 def platform(platform):
-    if platform == "flathub":
-        return template('flathub', app_list=FLATHUB_HANDLER.get_installed_applications(), isInstalledOverview=True,
-                        platform=platform, platformName=PLATFORMS[platform])
+    if platform in PLATFORM_HANDLERS:
+        if PLATFORM_HANDLERS[platform].is_authenticated():
+            return template('custom', app_list=PLATFORM_HANDLERS[platform].get_installed_content(), isInstalledOverview=True,
+                            platform=platform, platformName=PLATFORMS[platform])
+        else:
+            return template('custom_login', platform=platform, platformName=PLATFORMS[platform])
+
     shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
     data = []
     for shortcut in shortcuts:
@@ -47,6 +66,17 @@ def platform(platform):
     return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
 
 
+@route('/platforms/<platform>/authenticate', method='POST')
+@authenticate
+def platform(platform):
+    if not platform in PLATFORM_HANDLERS:
+        return
+
+    password = request.forms.get('password')
+    PLATFORM_HANDLERS[platform].authenticate(password)
+    redirect('/platforms/{platform}'.format(platform=platform))
+
+
 @route('/banners/<platform>/<filename>')
 @authenticate
 def banners(platform, filename):
@@ -57,8 +87,11 @@ def banners(platform, filename):
 @route('/platforms/<platform>/new')
 @authenticate
 def new(platform):
-    if platform == "flathub":
-        return template('flathub', app_list=FLATHUB_HANDLER.get_available_applications(), isInstalledOverview=False,
+    if platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(platform):
+            return
+
+        return template('custom', app_list=PLATFORM_HANDLERS[platform].get_available_content(), isInstalledOverview=False,
                         isNew=True, platform=platform, platformName=PLATFORMS[platform])
     return template('new.tpl', isNew=True, isEditing=False, platform=platform, platformName=PLATFORMS[platform],
                     name='', hidden='')
@@ -67,13 +100,17 @@ def new(platform):
 @route('/platforms/<platform>/edit/<name>')
 @authenticate
 def edit(platform, name):
-    if platform == "flathub":
-        application = FLATHUB_HANDLER.get_application(name)
-        if application:
-            return template('flathub_edit', app=application, platform="flathub", platformName="Flathub",
-                            name=name, )
+    if platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(platform):
+            return
+
+        content_id = name
+        content = PLATFORM_HANDLERS[platform].get_content(content_id)
+        if content:
+            return template('custom_edit', app=content, platform=platform, platformName=PLATFORMS[platform], name=content_id)
         else:
-            abort(404, '{} not found in Flathub'.format(name))
+            abort(404, 'Content not found')
+
     shortcuts = load_shortcuts(platform)
 
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -83,15 +120,11 @@ def edit(platform, name):
                     hidden=shortcut['hidden'])
 
 
-@route('/images/flathub/<filename>')
+@route('/images/flathub/<content_id>')
 @authenticate
-def flathub_images(filename):
-    path = os.path.join(RESOURCE_DIR, 'images/flathub')
-    local = os.path.join(BANNER_DIR, 'flathub')
-    if os.path.isfile(os.path.join(local, filename)):
-        path = local
-
-    return static_file(filename, root=path)
+def flathub_images(content_id):
+    path = PLATFORM_HANDLERS['flathub'].get_image_file_base_dir(content_id)
+    return static_file(content_id + '.png', root=path)
 
 
 @route('/images/<filename>')
@@ -277,86 +310,67 @@ def delete_file_upload():
     del tmpfiles[key]
     os.remove(path)
 
-@route('/flathub/install/<flatpak_id>')
+@route('/<platform>/install/<content_id>')
 @authenticate
-def flathub_install(flatpak_id):
-    platform = "flathub"
-    application = FLATHUB_HANDLER.get_application(flatpak_id)
-    if not application:
-        abort(404, '{} not found in Flathub'.format(flatpak_id))
-    application.install()
+def platform_install(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    if not content:
+        abort(404, 'Content not found')
+
+    PLATFORM_HANDLERS[platform].install_content(content_id)
 
     shortcuts = load_shortcuts(platform)
-    shortcut = {
-        'name': application.name,
-        'hidden': False,
-        'banner': application.get_image(os.path.join(BANNER_DIR, platform)),
-        'params': application.flatpak_id,
-        'cmd': "flatpak run",
-        'tags': ["Flathub"],
-    }
+    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+
     shortcuts.append(shortcut)
     shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
+    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=platform, content_id=content_id))
 
 
-@route('/flathub/uninstall/<flatpak_id>')
+@route('/<platform>/uninstall/<content_id>')
 @authenticate
-def flathub_uninstall(flatpak_id):
-    platform = "flathub"
-    application = FLATHUB_HANDLER.get_application(flatpak_id)
-    if not application:
-        abort(404, '{} not found in Flathub'.format(flatpak_id))
-    application.uninstall()
+def uninstall(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    if not content:
+        abort(404, 'Content not found')
+    PLATFORM_HANDLERS[platform].uninstall_content(content_id)
 
     shortcuts = load_shortcuts(platform)
     for shortcut in shortcuts:
-        if application.name == shortcut['name']:
+        if content.name == shortcut['name']:
             shortcuts.remove(shortcut)
             break
     shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
 
-
-@route('/flathub/update/<flatpak_id>')
+@route('/<platform>/update/<content_id>')
 @authenticate
-def flathub_update(flatpak_id):
-    platform = "flathub"
-    application = FLATHUB_HANDLER.get_application(flatpak_id)
-    if not application:
-        abort(404, '{} not found in Flathub'.format(flatpak_id))
-    application.update()
+def content_update(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    if not content:
+        abort(404, 'Content not found')
+    PLATFORM_HANDLERS[platform].update_content(content_id)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=flatpak_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
 
 
-@route('/flathub/progress/<flatpak_id>')
+@route('/<platform>/progress/<content_id>')
 @authenticate
-def flathub_progress(flatpak_id):
-    application = FLATHUB_HANDLER.get_application(flatpak_id)
-    if not application:
-        abort(404, '{} not found in Flathub'.format(flatpak_id))
+def install_progress(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    if not content:
+        abort(404, '{} not found'.format(content_id))
 
     response.content_type = 'application/json'
     values = {
-        "busy": application.busy,
-        "progress": application.progress
+        "operation" : content.operation,
+        "progress"  : content.progress,
     }
 
-    return json.dumps(values)
-
-
-@route('/flathub/description/<flatpak_id>')
-@authenticate
-def flathub_description(flatpak_id):
-    application = FLATHUB_HANDLER.get_application(flatpak_id)
-    values = {
-        "description": application.get_description()
-    }
     return json.dumps(values)
 
 
