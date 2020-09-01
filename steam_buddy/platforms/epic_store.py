@@ -16,7 +16,7 @@ class EpicStore(StorePlatform):
 
     def get_shortcut(self, content):
         ext = '.jpg'
-        base_path = os.path.join(BANNER_DIR, 'epic-store')
+        base_path = os.path.join(BANNER_DIR, 'epic-store/')
         try:
             os.makedirs(base_path)
         except:
