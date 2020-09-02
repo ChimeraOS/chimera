@@ -78,10 +78,10 @@ class EpicStore(StorePlatform):
         return content
 
     def _update(self, content_id) -> subprocess:
-        return subprocess.Popen(["legendary", "update", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(["legendary", "--yes", "update", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _install(self, content_id) -> subprocess:
-        return subprocess.Popen(["legendary", "install", "--base-path", os.path.join(CONTENT_DIR, 'epic-store'), content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(["legendary", "--yes", "install", "--base-path", os.path.join(CONTENT_DIR, 'epic-store'), content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     
     def _uninstall(self, content_id) -> subprocess:
         return subprocess.Popen(["legendary", "--yes", "uninstall", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
