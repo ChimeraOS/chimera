@@ -69,10 +69,10 @@
 		.img-container {
 			position : relative;
 			display : inline-block;
-			margin : 0px;
+			margin : 4px;
 			padding : 0px;
-			height : 215px;
-			width  : 460px;
+			height : 150px;
+			width  : 322px;
 			border-width : 4px;
 			border-style : solid;
 			border-image : linear-gradient(to bottom, #888888, #666666) 1 1;
@@ -82,13 +82,12 @@
 		.img-container.selected {
 			border-image : none;
 			border-color : #0075ff;
-			border-width : 12px;
+			border-width : 4px;
 		}
 
 		img {
 			width : auto;
-			height : 215px;
-			max-height : 215px;
+			height : 150px;
 			display: block;
 			margin-left: auto;
 			margin-right: auto;
