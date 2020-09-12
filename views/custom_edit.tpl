@@ -24,9 +24,11 @@
 % elif app.installed_version:
 	<h3>Version: {{app.installed_version}}</h3>
 % end
-<p>{{app.summary}}<p>
+<p>{{app.summary}}</p>
 
-<p><img class="flathub-edit" src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}"></img></p>
+<div class="img-container">
+	<img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}"></img>
+</div>
 
 % if not app.operation:
 	% if app.installed:
@@ -44,4 +46,3 @@
 		</form>
 	% end
 % end
-</p>

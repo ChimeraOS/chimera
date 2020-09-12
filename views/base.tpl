@@ -47,14 +47,6 @@
             position : relative;
 		}
 
-		img.flathub-edit {
-		    width : initial;
-		    height : initial;
-		    border-style : hidden;
-		    border-width : 0px;
-		    background-color : transparent;
-		}
-
 		.hidden {
 			opacity : 0.6
 		}
