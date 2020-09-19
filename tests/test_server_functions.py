@@ -34,14 +34,16 @@ def test_root():
 
 def test_platform():
     for p in PLATFORMS:
-        document = platform(p)
-        validate_html("platform({})".format(p), document)
+        if p != 'epic-store' and p != 'flathub':
+            document = platform(p)
+            validate_html("platform({})".format(p), document)
 
 
 def test_new():
     for p in PLATFORMS:
-        document = new(p)
-        validate_html("new({})".format(p), document)
+        if p != 'epic-store' and p != 'flathub':
+            document = new(p)
+            validate_html("new({})".format(p), document)
 
 
 def test_settings():
