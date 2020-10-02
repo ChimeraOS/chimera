@@ -78,10 +78,12 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
 
     return dst
 
+
 def strip(string):
     if string.startswith('"') and string.endswith('"'):
         return string[1:-1]
     return string
+
 
 def delete_file(base_dir, platform, name):
     if is_direct(platform, os.path.basename(base_dir)):

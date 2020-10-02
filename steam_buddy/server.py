@@ -22,9 +22,10 @@ tmpfiles = {}
 
 
 PLATFORM_HANDLERS = {
-    "epic-store" : EpicStore(),
-    "flathub"    : Flathub(),
+    "epic-store": EpicStore(),
+    "flathub": Flathub(),
 }
+
 
 def authenticate_platform(platform):
     if platform in PLATFORM_HANDLERS:

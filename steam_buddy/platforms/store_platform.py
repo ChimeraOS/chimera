@@ -58,11 +58,11 @@ class StorePlatform:
 
     def get_shortcut(self, content):
         pass
-    
+
     def __update_progress(self, sp: subprocess, content_id, opName):
         if content_id in self.tasks or sp is None:
             return
-        task = dic({ 'progress' : -1, 'operation' : opName })
+        task = dic({'progress': -1, 'operation': opName})
         self.tasks[content_id] = task
         buf = BytesIO()
         while sp.poll() is None:

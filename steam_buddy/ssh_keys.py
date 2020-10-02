@@ -57,6 +57,7 @@ class SSHKeys:
                 except SSHKeyNotValidException:
                     file.write(line)
 
+
     @staticmethod
     def get_key_id(key):
         if not SSHKeys.looks_like_ssh_key(key):
@@ -88,13 +89,18 @@ class SSHKeys:
             key_ids.append(self.get_key_id(key))
         return key_ids
 
-    # This function does some basic checks
-    # It will return False if we're sure the line was not added by steam-buddy
-    # In this case that means if any option was added which steam-buddy wouldn't use
-    # Besides that it does a small check to see if it is valid
-    # The key should not contain tabs or newlines
+
     @staticmethod
     def looks_like_ssh_key(key) -> bool:
+        """
+        This function does some basic checks
+        It will return False if we're sure the line was not added by steam-buddy
+        In this case that means if any option was added which steam-buddy wouldn't use
+        Besides that it does a small check to see if it is valid
+        The key should not contain tabs or newlines
+        :param key: an ssh public key
+        :return: boolean stating if the key is allowed to be used
+        """
         for s in forbidden_strings:
             if s in key:
                 return False
@@ -103,4 +109,3 @@ class SSHKeys:
         if len(key.split(" ")) != 3:
             return False
         return True
-

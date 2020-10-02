@@ -1,5 +1,6 @@
 from steam_buddy.ssh_keys import SSHKeys, forbidden_strings
 
+
 def test_looks_like_ssh_key():
     for s in forbidden_strings:
         test_string = "ssh-rsa {} test".format(s)
