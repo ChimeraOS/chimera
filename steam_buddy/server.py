@@ -97,10 +97,14 @@ def new(selected_platform):
         if not authenticate_platform(selected_platform):
             return
 
-        return template('custom', app_list=PLATFORM_HANDLERS[selected_platform].get_available_content(), isInstalledOverview=False,
-                        isNew=True, platform=selected_platform, platformName=PLATFORMS[selected_platform])
-    return template('new.tpl', isNew=True, isEditing=False, platform=selected_platform, platformName=PLATFORMS[selected_platform],
-                    name='', hidden='')
+        return template(
+            'custom', app_list=PLATFORM_HANDLERS[selected_platform].get_available_content(), isInstalledOverview=False,
+            isNew=True, platform=selected_platform, platformName=PLATFORMS[selected_platform]
+        )
+    return template(
+        'new.tpl', isNew=True, isEditing=False, platform=selected_platform,
+        platformName=PLATFORMS[selected_platform], name='', hidden=''
+    )
 
 
 @route('/platforms/<platform>/edit/<name>')
@@ -113,7 +117,10 @@ def edit(selected_platform, name):
         content_id = name
         content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
         if content:
-            return template('custom_edit', app=content, platform=selected_platform, platformName=PLATFORMS[selected_platform], name=content_id)
+            return template(
+                'custom_edit', app=content, platform=selected_platform,
+                platformName=PLATFORMS[selected_platform], name=content_id
+            )
         else:
             abort(404, 'Content not found')
 
@@ -122,8 +129,8 @@ def edit(selected_platform, name):
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == selected_platform]
     shortcut = matches[0]
 
-    return template('new.tpl', isEditing=True, platform=selected_platform, platformName=PLATFORMS[selected_platform], name=name,
-                    hidden=shortcut['hidden'])
+    return template('new.tpl', isEditing=True, platform=selected_platform, platformName=PLATFORMS[selected_platform],
+                    name=name, hidden=shortcut['hidden'])
 
 
 @route('/images/flathub/<content_id>')
