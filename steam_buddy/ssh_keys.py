@@ -57,7 +57,6 @@ class SSHKeys:
                 except SSHKeyNotValidException:
                     file.write(line)
 
-
     @staticmethod
     def get_key_id(key):
         if not SSHKeys.looks_like_ssh_key(key):
@@ -88,7 +87,6 @@ class SSHKeys:
         for key in self.get_keys():
             key_ids.append(self.get_key_id(key))
         return key_ids
-
 
     @staticmethod
     def looks_like_ssh_key(key) -> bool:

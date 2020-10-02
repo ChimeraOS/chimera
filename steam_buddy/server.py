@@ -27,10 +27,10 @@ PLATFORM_HANDLERS = {
 }
 
 
-def authenticate_platform(platform):
-    if platform in PLATFORM_HANDLERS:
-        if not PLATFORM_HANDLERS[platform].is_authenticated():
-            redirect('/platforms/{platform}'.format(platform=platform))
+def authenticate_platform(selected_platform):
+    if selected_platform in PLATFORM_HANDLERS:
+        if not PLATFORM_HANDLERS[selected_platform].is_authenticated():
+            redirect('/platforms/{platform}'.format(platform=selected_platform))
             return False
     return True
 
@@ -38,21 +38,20 @@ def authenticate_platform(platform):
 @route('/')
 @authenticate
 def root():
-    audio = get_audio()
-    return template('platforms.tpl', platforms=PLATFORMS, audio=audio)
+    return template('platforms.tpl', platforms=PLATFORMS, audio=get_audio())
 
 
 @route('/platforms/<platform>')
 @authenticate
-def platform(platform):
-    if platform in PLATFORM_HANDLERS:
-        if PLATFORM_HANDLERS[platform].is_authenticated():
-            return template('custom', app_list=PLATFORM_HANDLERS[platform].get_installed_content(), isInstalledOverview=True,
-                            platform=platform, platformName=PLATFORMS[platform])
+def platform(selected_platform):
+    if selected_platform in PLATFORM_HANDLERS:
+        if PLATFORM_HANDLERS[selected_platform].is_authenticated():
+            return template('custom', app_list=PLATFORM_HANDLERS[selected_platform].get_installed_content(), isInstalledOverview=True,
+                            platform=selected_platform, platformName=PLATFORMS[selected_platform])
         else:
-            return template('custom_login', platform=platform, platformName=PLATFORMS[platform])
+            return template('custom_login', platform=selected_platform, platformName=PLATFORMS[selected_platform])
 
-    shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
+    shortcuts = sorted(load_shortcuts(selected_platform), key=lambda s: s['name'])
     data = []
     for shortcut in shortcuts:
         filename = None
@@ -60,64 +59,64 @@ def platform(platform):
         hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
-            banner = '/banners/{platform}/{filename}'.format(platform=platform, name=shortcut['name'],
+            banner = '/banners/{platform}/{filename}'.format(platform=selected_platform, name=shortcut['name'],
                                                              filename=filename)
         data.append({'hidden': hidden, 'filename': filename, 'banner': banner, 'name': shortcut['name']})
 
-    return template('platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform])
+    return template('platform.tpl', shortcuts=data, platform=selected_platform, platformName=PLATFORMS[selected_platform])
 
 
 @route('/platforms/<platform>/authenticate', method='POST')
 @authenticate
-def platform(platform):
-    if not platform in PLATFORM_HANDLERS:
+def platform_authenticate(selected_platform):
+    if selected_platform not in PLATFORM_HANDLERS:
         return
 
     password = request.forms.get('password')
-    PLATFORM_HANDLERS[platform].authenticate(password)
-    redirect('/platforms/{platform}'.format(platform=platform))
+    PLATFORM_HANDLERS[selected_platform].authenticate(password)
+    redirect('/platforms/{platform}'.format(platform=selected_platform))
 
 
 @route('/banners/<platform>/<filename>')
 @authenticate
-def banners(platform, filename):
-    base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
+def banners(selected_platform, filename):
+    base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=selected_platform)
     return static_file(filename, root='{base}'.format(base=base))
 
 
 @route('/platforms/<platform>/new')
 @authenticate
-def new(platform):
-    if platform in PLATFORM_HANDLERS:
-        if not authenticate_platform(platform):
+def new(selected_platform):
+    if selected_platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(selected_platform):
             return
 
-        return template('custom', app_list=PLATFORM_HANDLERS[platform].get_available_content(), isInstalledOverview=False,
-                        isNew=True, platform=platform, platformName=PLATFORMS[platform])
-    return template('new.tpl', isNew=True, isEditing=False, platform=platform, platformName=PLATFORMS[platform],
+        return template('custom', app_list=PLATFORM_HANDLERS[selected_platform].get_available_content(), isInstalledOverview=False,
+                        isNew=True, platform=selected_platform, platformName=PLATFORMS[selected_platform])
+    return template('new.tpl', isNew=True, isEditing=False, platform=selected_platform, platformName=PLATFORMS[selected_platform],
                     name='', hidden='')
 
 
 @route('/platforms/<platform>/edit/<name>')
 @authenticate
-def edit(platform, name):
-    if platform in PLATFORM_HANDLERS:
-        if not authenticate_platform(platform):
+def edit(selected_platform, name):
+    if selected_platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(selected_platform):
             return
 
         content_id = name
-        content = PLATFORM_HANDLERS[platform].get_content(content_id)
+        content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
         if content:
-            return template('custom_edit', app=content, platform=platform, platformName=PLATFORMS[platform], name=content_id)
+            return template('custom_edit', app=content, platform=selected_platform, platformName=PLATFORMS[selected_platform], name=content_id)
         else:
             abort(404, 'Content not found')
 
-    shortcuts = load_shortcuts(platform)
+    shortcuts = load_shortcuts(selected_platform)
 
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
+    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == selected_platform]
     shortcut = matches[0]
 
-    return template('new.tpl', isEditing=True, platform=platform, platformName=PLATFORMS[platform], name=name,
+    return template('new.tpl', isEditing=True, platform=selected_platform, platformName=PLATFORMS[selected_platform], name=name,
                     hidden=shortcut['hidden'])
 
 
@@ -132,9 +131,11 @@ def flathub_images(content_id):
 def images(filename):
     return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
 
+
 @route('/public/<filename>')
-def images(filename):
+def public(filename):
     return static_file(filename, root='public')
+
 
 @route('/shortcuts/new', method='POST')
 @authenticate
@@ -161,7 +162,7 @@ def shortcut_create():
 
     banner_path = None
     if banner:
-        ( banner_src_path, banner_dst_name ) = tmpfiles[banner]
+        (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
         banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
     elif banner_url:
@@ -173,7 +174,7 @@ def shortcut_create():
             banner_file.write(download.content)
 
     if content:
-        ( content_src_path, content_dst_name ) = tmpfiles[content]
+        (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
         content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
 
@@ -212,7 +213,7 @@ def shortcut_update():
 
     banner_path = None
     if banner:
-        ( banner_src_path, banner_dst_name ) = tmpfiles[banner]
+        (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
         banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
     elif banner_url:
@@ -224,7 +225,7 @@ def shortcut_update():
             banner_file.write(download.content)
 
     if content:
-        ( content_src_path, content_dst_name ) = tmpfiles[content]
+        (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
         content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
 
@@ -262,6 +263,7 @@ def shortcut_delete():
 
     redirect('/platforms/{platform}'.format(platform=platform))
 
+
 @route('/shortcuts/file-upload', method='POST')
 @authenticate
 def start_file_upload():
@@ -271,14 +273,15 @@ def start_file_upload():
     if file_data:
         file_name = sanitize(file_data.filename)
 
-    ( _, path ) = tempfile.mkstemp()
+    (_, path) = tempfile.mkstemp()
     key = os.path.basename(path)
-    tmpfiles[key] = ( path, file_name )
+    tmpfiles[key] = (path, file_name)
 
     if file_data:
         file_data.save(path, True)
 
     return key
+
 
 @route('/shortcuts/file-upload', method='PATCH')
 @authenticate
@@ -288,17 +291,19 @@ def upload_file_chunk():
     if not path:
         abort(400)
 
-    tmpfiles[key] = ( path, sanitize(request.headers.get('Upload-Name')) )
+    tmpfiles[key] = (path, sanitize(request.headers.get('Upload-Name')))
 
     f = open(path, 'ab')
     f.seek(int(request.headers.get('Upload-Offset')))
     f.write(request.body.read())
     f.close()
 
+
 @route('/shortcuts/file-upload', method='HEAD')
 @authenticate
 def check_file_upload():
     return 0
+
 
 @route('/shortcuts/file-upload', method='DELETE')
 @authenticate
@@ -311,52 +316,54 @@ def delete_file_upload():
     del tmpfiles[key]
     os.remove(path)
 
+
 @route('/<platform>/install/<content_id>')
 @authenticate
-def platform_install(platform, content_id):
-    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+def platform_install(selected_platform, content_id):
+    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
 
-    PLATFORM_HANDLERS[platform].install_content(content_id)
+    PLATFORM_HANDLERS[selected_platform].install_content(content_id)
 
-    shortcuts = load_shortcuts(platform)
-    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+    shortcuts = load_shortcuts(selected_platform)
+    shortcut = PLATFORM_HANDLERS[selected_platform].get_shortcut(content)
 
     shortcuts.append(shortcut)
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=selected_platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=platform, content_id=content_id))
+    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=selected_platform, content_id=content_id))
 
 
 @route('/<platform>/uninstall/<content_id>')
 @authenticate
-def uninstall(platform, content_id):
-    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+def uninstall(selected_platform, content_id):
+    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
-    PLATFORM_HANDLERS[platform].uninstall_content(content_id)
+    PLATFORM_HANDLERS[selected_platform].uninstall_content(content_id)
 
-    shortcuts = load_shortcuts(platform)
+    shortcuts = load_shortcuts(selected_platform)
     for shortcut in shortcuts:
         if content.name == shortcut['name']:
             shortcuts.remove(shortcut)
             break
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=selected_platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=selected_platform, name=content_id))
+
 
 @route('/<platform>/update/<content_id>')
 @authenticate
-def content_update(platform, content_id):
-    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+def content_update(selected_platform, content_id):
+    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
-    PLATFORM_HANDLERS[platform].update_content(content_id)
+    PLATFORM_HANDLERS[selected_platform].update_content(content_id)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=selected_platform, name=content_id))
 
 
 @route('/<platform>/progress/<content_id>')
@@ -368,8 +375,8 @@ def install_progress(platform, content_id):
 
     response.content_type = 'application/json'
     values = {
-        "operation" : content.operation,
-        "progress"  : content.progress,
+        "operation": content.operation,
+        "progress": content.progress,
     }
 
     return json.dumps(values)
@@ -450,33 +457,37 @@ def steam_compositor():
     finally:
         redirect('/')
 
+
 @route('/steam/overlay')
 @authenticate
 def steam_overlay():
-	try:
-		subprocess.call(["xdotool", "key", "shift+Tab"])
-	finally:
-		redirect('/')
+    try:
+        subprocess.call(["xdotool", "key", "shift+Tab"])
+    finally:
+        redirect('/')
+
 
 @route('/mangohud')
 @authenticate
 def mangohud():
-	try:
-		subprocess.call(["xdotool", "key", "F3"])
-	finally:
-		redirect('/')
+    try:
+        subprocess.call(["xdotool", "key", "F3"])
+    finally:
+        redirect('/')
+
 
 @route('/virtual_keyboard')
 @authenticate
 def type():
     return template('virtual_keyboard.tpl')
 
+
 @route('/virtual_keyboard/string', method='POST')
 @authenticate
 def type_string():
-    str = sanitize(request.forms.get('str'))
+    string = sanitize(request.forms.get('str'))
     try:
-        subprocess.call(["xdotool", "type", "--", str])
+        subprocess.call(["xdotool", "type", "--", string])
     finally:
         redirect('/virtual_keyboard')
 
@@ -485,7 +496,7 @@ def type_string():
 @authenticate
 def exit_game():
     try:
-        subprocess.call([ "bin/exit-game" ])
+        subprocess.call(["bin/exit-game"])
     finally:
         redirect('/')
 
@@ -495,13 +506,13 @@ def get_audio():
         return None
 
     try:
-        raw = subprocess.check_output([ "ponymix", "list-profiles" ])
+        raw = subprocess.check_output(["ponymix", "list-profiles"])
         entries = raw.decode('utf8').split('\n')
 
-        volume = subprocess.check_output([ "ponymix", "get-volume" ])
+        volume = subprocess.check_output(["ponymix", "get-volume"])
         volume = volume.decode('utf8')
 
-        muted = subprocess.call([ "ponymix", "is-muted" ])
+        muted = subprocess.call(["ponymix", "is-muted"])
         print(muted)
 
         active = None
@@ -513,13 +524,13 @@ def get_audio():
             elif entries[i]:
                 grouped.append((entries[i], entries[i+1].strip()))
 
-        results = [ e for e in grouped if 'input' not in e[0] and e[0] != 'off' ]
+        results = [e for e in grouped if 'input' not in e[0] and e[0] != 'off']
 
         return {
-            'active' : active,
-            'options' : results,
-            'volume' : volume,
-            'muted' : muted != 0
+            'active': active,
+            'options': results,
+            'volume': volume,
+            'muted': muted != 0
         }
     except:
         return None
@@ -529,15 +540,16 @@ def get_audio():
 @authenticate
 def toggle_mute():
     try:
-        subprocess.call([ "ponymix", "toggle" ])
+        subprocess.call(["ponymix", "toggle"])
     finally:
         redirect('/')
+
 
 @route('/audio/volume_up')
 @authenticate
 def volume_up():
     try:
-        subprocess.call([ "ponymix", "increase", "10" ])
+        subprocess.call(["ponymix", "increase", "10"])
     finally:
         redirect('/')
 
@@ -546,7 +558,7 @@ def volume_up():
 @authenticate
 def volume_down():
     try:
-        subprocess.call([ "ponymix", "decrease", "10" ])
+        subprocess.call(["ponymix", "decrease", "10"])
     finally:
         redirect('/')
 
@@ -555,7 +567,7 @@ def volume_down():
 @authenticate
 def audio(profile):
     try:
-        subprocess.call([ "ponymix", "set-profile", profile ])
+        subprocess.call(["ponymix", "set-profile", profile])
     finally:
         redirect('/')
 

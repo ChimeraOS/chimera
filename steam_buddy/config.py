@@ -10,11 +10,11 @@ CONFIG_DIR = os.getenv('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
-	RESOURCE_DIR = "/usr/share/steam-buddy"
+    RESOURCE_DIR = "/usr/share/steam-buddy"
 
 AUTHENTICATOR_PATH = os.path.abspath('bin/steam-buddy-authenticator')
 if not os.path.isfile(AUTHENTICATOR_PATH):
-	AUTHENTICATOR_PATH = "/usr/share/steam-buddy/bin/steam-buddy-authenticator"
+    AUTHENTICATOR_PATH = "/usr/share/steam-buddy/bin/steam-buddy-authenticator"
 
 SHORTCUT_DIR = DATA_DIR + '/steam-shortcuts'
 BANNER_DIR = DATA_DIR + '/steam-buddy/banners'
@@ -22,44 +22,44 @@ CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
-	"32x"        : "32X",
-	"arcade"     : "Arcade",
-	"atari-2600" : "Atari 2600",
-	"dreamcast"  : "Dreamcast",
-	"epic-store" : "Epic Games Store",
-	"flathub"    : "Flathub",
-	"gb"         : "Game Boy",
-	"gba"        : "Game Boy Advance",
-	"gbc"        : "Game Boy Color",
-	"gc"         : "GameCube",
-	"sgg"        : "Game Gear",
-	"genesis"    : "Genesis",
-	"sms"        : "Master System",
-	"neo-geo"    : "Neo Geo",
-	"nes"        : "Nintendo",
-	"n64"        : "Nintendo 64",
-	"ps1"        : "PlayStation",
-	"ps2"        : "PlayStation 2",
-	"saturn"     : "Saturn",
-	"sega-cd"    : "Sega CD",
-	"snes"       : "Super Nintendo",
-	"tg-16"      : "TurboGrafx-16"
+    "32x":         "32X",
+    "arcade":      "Arcade",
+    "atari-2600":  "Atari 2600",
+    "dreamcast":   "Dreamcast",
+    "epic-store":  "Epic Games Store",
+    "flathub":     "Flathub",
+    "gb":          "Game Boy",
+    "gba":         "Game Boy Advance",
+    "gbc":         "Game Boy Color",
+    "gc":          "GameCube",
+    "sgg":         "Game Gear",
+    "genesis":     "Genesis",
+    "sms":         "Master System",
+    "neo-geo":     "Neo Geo",
+    "nes":         "Nintendo",
+    "n64":         "Nintendo 64",
+    "ps1":         "PlayStation",
+    "ps2":         "PlayStation 2",
+    "saturn":      "Saturn",
+    "sega-cd":     "Sega CD",
+    "snes":        "Super Nintendo",
+    "tg-16":       "TurboGrafx-16"
 }
 
 SETTINGS_DEFAULT = {
-	"enable_ftp_server": False,
-	"ftp_username": "gamer",
-	"ftp_password": generate_password(12),
-	"ftp_port": 2121,
-	"keep_password": False
+    "enable_ftp_server": False,
+    "ftp_username": "gamer",
+    "ftp_password": generate_password(12),
+    "ftp_port": 2121,
+    "keep_password": False
 }
 
 SESSION_OPTIONS = {
-	'session.cookie_expires': True,
-	'session.httponly': True,
-	'session.timeout': 3600 * 2,
-	'session.type': 'memory',
-	'session.validate_key': True,
+    'session.cookie_expires': True,
+    'session.httponly': True,
+    'session.timeout': 3600 * 2,
+    'session.type': 'memory',
+    'session.validate_key': True,
 }
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
