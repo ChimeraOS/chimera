@@ -2,6 +2,22 @@ import os
 from typing import List
 
 
+forbidden_strings = [
+            "\n",
+            "\t",
+            "command=",
+            "environment=",
+            "from=",
+            "no-agent-forwarding",
+            "no-pty",
+            "no-user-rc",
+            "no-X11-forwarding",
+            "principals=",
+            "tunnel=",
+            "zos-key-ring-label=",
+        ]
+
+
 class SSHKeyNotValidException(Exception):
     pass
 
@@ -79,32 +95,9 @@ class SSHKeys:
     # The key should not contain tabs or newlines
     @staticmethod
     def looks_like_ssh_key(key) -> bool:
-        if "\n" in key:
-            return False
-        if "\t" in key:
-            return False
-        if "command=" in key:
-            return False
-        if "environment=" in key:
-            return False
-        if "from=" in key:
-            return False
-        if "no-agent-forwarding" in key:
-            return False
-        if "no-pty" in key:
-            return False
-        if "no-user-rc" in key:
-            return False
-        if "no-X11-forwarding" in key:
-            return False
-        if "permitopen=" in key:
-            return False
-        if "principals=" in key:
-            return False
-        if "tunnel=" in key:
-            return False
-        if "zos-key-ring-label=" in key:
-            return False
+        for s in forbidden_strings:
+            if s in key:
+                return False
         if not key.startswith("ssh-"):
             return False
         if len(key.split(" ")) != 3:
