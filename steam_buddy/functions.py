@@ -55,7 +55,7 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
 
     # mame ROM files have dependencies on each other, so store them all in a single directory
     if is_direct(platform, content_type):
-        file_dir = "{base_dir}/{platform}/.{platform}".format(base_dir=base_dir, platform=platform, name=name)
+        file_dir = "{base_dir}/{platform}/.{platform}".format(base_dir=base_dir, platform=platform)
 
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
