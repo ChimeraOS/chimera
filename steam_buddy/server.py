@@ -46,8 +46,13 @@ def root():
 def platform(selected_platform):
     if selected_platform in PLATFORM_HANDLERS:
         if PLATFORM_HANDLERS[selected_platform].is_authenticated():
-            return template('custom', app_list=PLATFORM_HANDLERS[selected_platform].get_installed_content(), isInstalledOverview=True,
-                            platform=selected_platform, platformName=PLATFORMS[selected_platform])
+            return template(
+                'custom',
+                app_list=PLATFORM_HANDLERS[selected_platform].get_installed_content(),
+                isInstalledOverview=True,
+                platform=selected_platform,
+                platformName=PLATFORMS[selected_platform]
+            )
         else:
             return template('custom_login', platform=selected_platform, platformName=PLATFORMS[selected_platform])
 
@@ -59,11 +64,12 @@ def platform(selected_platform):
         hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
-            banner = '/banners/{platform}/{filename}'.format(platform=selected_platform, name=shortcut['name'],
-                                                             filename=filename)
+            banner = '/banners/{platform}/{filename}'.format(platform=selected_platform, filename=filename)
         data.append({'hidden': hidden, 'filename': filename, 'banner': banner, 'name': shortcut['name']})
 
-    return template('platform.tpl', shortcuts=data, platform=selected_platform, platformName=PLATFORMS[selected_platform])
+    return template(
+        'platform.tpl', shortcuts=data, platform=selected_platform, platformName=PLATFORMS[selected_platform]
+    )
 
 
 @route('/platforms/<platform>/authenticate', method='POST')
