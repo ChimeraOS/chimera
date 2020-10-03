@@ -4,7 +4,7 @@ import importlib
 sys.modules["steam_buddy.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
 from tidylib import tidy_document
 from bottle import request
-from steam_buddy.server import root, platform, new, settings, logout, login
+from steam_buddy.server import root, platform_page, new, settings, logout, login
 from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
@@ -35,7 +35,7 @@ def test_root():
 def test_platform():
     for p in PLATFORMS:
         if p != 'epic-store' and p != 'flathub':
-            document = platform(p)
+            document = platform_page(p)
             validate_html("platform({})".format(p), document)
 
 
