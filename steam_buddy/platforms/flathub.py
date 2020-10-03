@@ -65,7 +65,9 @@ class Flathub(StorePlatform):
                         installed = True
                         version = app['version']
 
-                applications.append(dic({"content_id": flatpak_id, "summary": description, "name": name, "installed_version": version, "available_version": available_version, "image_url": image_url, "installed": installed, "operation": None}))
+                applications.append(dic({"content_id": flatpak_id, "summary": description, "name": name,
+                                         "installed_version": version, "available_version": available_version,
+                                         "image_url": image_url, "installed": installed, "operation": None}))
 
         return applications
 
@@ -120,10 +122,13 @@ class Flathub(StorePlatform):
         return [app for app in apps if not app.installed]
 
     def _install(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _uninstall(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _update(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

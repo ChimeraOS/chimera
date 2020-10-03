@@ -186,19 +186,13 @@ def shortcut_create():
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
 
+    shortcut = {'name': name, 'cmd': platform, 'hidden': hidden == 'on', 'tags': [PLATFORMS[platform]]}
+    if banner or banner_url:
+        shortcut['banner'] = banner_path
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
         content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
-
-    shortcut = {}
-    shortcut['name'] = name
-    shortcut['cmd'] = platform
-    shortcut['hidden'] = hidden == 'on'
-    shortcut['tags'] = [PLATFORMS[platform]]
-    if banner or banner_url:
-        shortcut['banner'] = banner_path
-    if content:
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
         shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
@@ -237,17 +231,15 @@ def shortcut_update():
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
 
-    if content:
-        (content_src_path, content_dst_name) = tmpfiles[content]
-        del tmpfiles[content]
-        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
-
     shortcut['name'] = name
     shortcut['cmd'] = platform
     shortcut['hidden'] = hidden == 'on'
     if banner or banner_url:
         shortcut['banner'] = banner_path
     if content:
+        (content_src_path, content_dst_name) = tmpfiles[content]
+        del tmpfiles[content]
+        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
         shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
@@ -404,7 +396,8 @@ def settings():
     ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
     hostname = request.environ.get('HTTP_HOST').split(":")[0] or request.environ.get('SERVER_NAME')
     username = pwd.getpwuid(os.getuid())[0]
-    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set, ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
+    return template('settings.tpl', settings=current_settings, password_is_set=password_is_set,
+                    ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
 
 
 @route('/settings/update', method='POST')
@@ -491,13 +484,13 @@ def mangohud():
 
 @route('/virtual_keyboard')
 @authenticate
-def type():
+def virtual_keyboard():
     return template('virtual_keyboard.tpl')
 
 
 @route('/virtual_keyboard/string', method='POST')
 @authenticate
-def type_string():
+def virtual_keyboard_string():
     string = sanitize(request.forms.get('str'))
     try:
         subprocess.call(["xdotool", "type", "--", string])

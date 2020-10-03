@@ -51,7 +51,9 @@ class EpicStore(StorePlatform):
                 if img['type'] == 'DieselGameBox':
                     break
 
-            content.append(dic({"content_id": data[0], "summary": "", "name": data[1], "installed_version": data[2], "available_version": data[3], "image_url": img['url'] + '?h=215&resize=1', "installed": True, 'operation': None}))
+            content.append(dic({"content_id": data[0], "summary": "", "name": data[1], "installed_version": data[2],
+                                "available_version": data[3], "image_url": img['url'] + '?h=215&resize=1',
+                                "installed": True, 'operation': None}))
 
         return content
 
@@ -74,15 +76,21 @@ class EpicStore(StorePlatform):
             for img in metadata['metadata']['keyImages']:
                 if img['type'] == 'DieselGameBox':
                     break
-            content.append(dic({"content_id": data[0], "summary": "", "name": data[1], "installed_version": None, "available_version": data[2], "image_url": img['url'] + '?h=215&resize=1', "installed": False, 'operation': None}))
+            content.append(dic({"content_id": data[0], "summary": "", "name": data[1], "installed_version": None,
+                                "available_version": data[2], "image_url": img['url'] + '?h=215&resize=1',
+                                "installed": False, 'operation': None}))
 
         return content
 
     def _update(self, content_id) -> subprocess:
-        return subprocess.Popen(["legendary", "--yes", "update", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(["legendary", "--yes", "update", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _install(self, content_id) -> subprocess:
-        return subprocess.Popen(["legendary", "--yes", "install", "--base-path", os.path.join(CONTENT_DIR, 'epic-store'), content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(
+            ["legendary", "--yes", "install", "--base-path", os.path.join(CONTENT_DIR, 'epic-store'), content_id],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _uninstall(self, content_id) -> subprocess:
-        return subprocess.Popen(["legendary", "--yes", "uninstall", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(["legendary", "--yes", "uninstall", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
