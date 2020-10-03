@@ -43,20 +43,20 @@ def root():
 
 @route('/platforms/<platform>')
 @authenticate
-def platform(selected_platform):
-    if selected_platform in PLATFORM_HANDLERS:
-        if PLATFORM_HANDLERS[selected_platform].is_authenticated():
+def platform_page(platform):
+    if platform in PLATFORM_HANDLERS:
+        if PLATFORM_HANDLERS[platform].is_authenticated():
             return template(
                 'custom',
-                app_list=PLATFORM_HANDLERS[selected_platform].get_installed_content(),
+                app_list=PLATFORM_HANDLERS[platform].get_installed_content(),
                 isInstalledOverview=True,
-                platform=selected_platform,
-                platformName=PLATFORMS[selected_platform]
+                platform=platform,
+                platformName=PLATFORMS[platform]
             )
         else:
-            return template('custom_login', platform=selected_platform, platformName=PLATFORMS[selected_platform])
+            return template('custom_login', platform=platform, platformName=PLATFORMS[platform])
 
-    shortcuts = sorted(load_shortcuts(selected_platform), key=lambda s: s['name'])
+    shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
     data = []
     for shortcut in shortcuts:
         filename = None
@@ -64,72 +64,72 @@ def platform(selected_platform):
         hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
-            banner = '/banners/{platform}/{filename}'.format(platform=selected_platform, filename=filename)
+            banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
         data.append({'hidden': hidden, 'filename': filename, 'banner': banner, 'name': shortcut['name']})
 
     return template(
-        'platform.tpl', shortcuts=data, platform=selected_platform, platformName=PLATFORMS[selected_platform]
+        'platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform]
     )
 
 
 @route('/platforms/<platform>/authenticate', method='POST')
 @authenticate
-def platform_authenticate(selected_platform):
-    if selected_platform not in PLATFORM_HANDLERS:
+def platform_authenticate(platform):
+    if platform not in PLATFORM_HANDLERS:
         return
 
     password = request.forms.get('password')
-    PLATFORM_HANDLERS[selected_platform].authenticate(password)
-    redirect('/platforms/{platform}'.format(platform=selected_platform))
+    PLATFORM_HANDLERS[platform].authenticate(password)
+    redirect('/platforms/{platform}'.format(platform=platform))
 
 
 @route('/banners/<platform>/<filename>')
 @authenticate
-def banners(selected_platform, filename):
-    base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=selected_platform)
+def banners(platform, filename):
+    base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
     return static_file(filename, root='{base}'.format(base=base))
 
 
 @route('/platforms/<platform>/new')
 @authenticate
-def new(selected_platform):
-    if selected_platform in PLATFORM_HANDLERS:
-        if not authenticate_platform(selected_platform):
+def new(platform):
+    if platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(platform):
             return
 
         return template(
-            'custom', app_list=PLATFORM_HANDLERS[selected_platform].get_available_content(), isInstalledOverview=False,
-            isNew=True, platform=selected_platform, platformName=PLATFORMS[selected_platform]
+            'custom', app_list=PLATFORM_HANDLERS[platform].get_available_content(), isInstalledOverview=False,
+            isNew=True, platform=platform, platformName=PLATFORMS[platform]
         )
     return template(
-        'new.tpl', isNew=True, isEditing=False, platform=selected_platform,
-        platformName=PLATFORMS[selected_platform], name='', hidden=''
+        'new.tpl', isNew=True, isEditing=False, platform=platform,
+        platformName=PLATFORMS[platform], name='', hidden=''
     )
 
 
 @route('/platforms/<platform>/edit/<name>')
 @authenticate
-def edit(selected_platform, name):
-    if selected_platform in PLATFORM_HANDLERS:
-        if not authenticate_platform(selected_platform):
+def edit(platform, name):
+    if platform in PLATFORM_HANDLERS:
+        if not authenticate_platform(platform):
             return
 
         content_id = name
-        content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
+        content = PLATFORM_HANDLERS[platform].get_content(content_id)
         if content:
             return template(
-                'custom_edit', app=content, platform=selected_platform,
-                platformName=PLATFORMS[selected_platform], name=content_id
+                'custom_edit', app=content, platform=platform,
+                platformName=PLATFORMS[platform], name=content_id
             )
         else:
             abort(404, 'Content not found')
 
-    shortcuts = load_shortcuts(selected_platform)
+    shortcuts = load_shortcuts(platform)
 
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == selected_platform]
+    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
     shortcut = matches[0]
 
-    return template('new.tpl', isEditing=True, platform=selected_platform, platformName=PLATFORMS[selected_platform],
+    return template('new.tpl', isEditing=True, platform=platform, platformName=PLATFORMS[platform],
                     name=name, hidden=shortcut['hidden'])
 
 
@@ -332,51 +332,51 @@ def delete_file_upload():
 
 @route('/<platform>/install/<content_id>')
 @authenticate
-def platform_install(selected_platform, content_id):
-    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
+def platform_install(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
 
-    PLATFORM_HANDLERS[selected_platform].install_content(content_id)
+    PLATFORM_HANDLERS[platform].install_content(content_id)
 
-    shortcuts = load_shortcuts(selected_platform)
-    shortcut = PLATFORM_HANDLERS[selected_platform].get_shortcut(content)
+    shortcuts = load_shortcuts(platform)
+    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
 
     shortcuts.append(shortcut)
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=selected_platform)
+    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=selected_platform, content_id=content_id))
+    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=platform, content_id=content_id))
 
 
 @route('/<platform>/uninstall/<content_id>')
 @authenticate
-def uninstall(selected_platform, content_id):
-    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
+def uninstall(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
-    PLATFORM_HANDLERS[selected_platform].uninstall_content(content_id)
+    PLATFORM_HANDLERS[platform].uninstall_content(content_id)
 
-    shortcuts = load_shortcuts(selected_platform)
+    shortcuts = load_shortcuts(platform)
     for shortcut in shortcuts:
         if content.name == shortcut['name']:
             shortcuts.remove(shortcut)
             break
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=selected_platform)
+    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=selected_platform, name=content_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
 
 
 @route('/<platform>/update/<content_id>')
 @authenticate
-def content_update(selected_platform, content_id):
-    content = PLATFORM_HANDLERS[selected_platform].get_content(content_id)
+def content_update(platform, content_id):
+    content = PLATFORM_HANDLERS[platform].get_content(content_id)
     if not content:
         abort(404, 'Content not found')
-    PLATFORM_HANDLERS[selected_platform].update_content(content_id)
+    PLATFORM_HANDLERS[platform].update_content(content_id)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=selected_platform, name=content_id))
+    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
 
 
 @route('/<platform>/progress/<content_id>')
