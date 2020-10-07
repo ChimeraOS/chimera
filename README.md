@@ -11,6 +11,10 @@ Steam Buddy also looks in `~/.local/share/steam-buddy/banners/flathub/` for a li
 
 If the application works well please create a new issue with the app id and grid image for permanent whitelisting.
 
+### Install games from the Epic Games Store
+After logging in to your Epic account, you can download and install any of your games from the Epic Games Store.
+
+Games are automatically started with Proton. Not all games will work and currently controllers are not being recognized by Epic Games Store games.
 
 ### Upload ROMs
 
@@ -32,6 +36,8 @@ The following platforms are currently supported:
 - Nintendo 64
 - PlayStation (requires BIOS file)
 - PlayStation 2
+- Sega 32X
+- Sega CD (requires BIOS file)
 - Saturn (BIOS file optional)
 - Super Nintendo
 - TurboGrafx-16
@@ -40,8 +46,8 @@ More platforms will be added over time.
 
 #### Supported formats
 
-CD based platforms (PlayStation 1, Saturn, Dreamcast) require use of .chd format for game files.
-These can be created easily from cue/bin format using the `chdman` tool.
+CD based platforms usually require use of CHD formatted game files, but may also work with ISO files.
+CHD files can be created easily from cue/bin format using the `chdman` tool.
 
 #### BIOS files
 
