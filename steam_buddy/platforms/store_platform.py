@@ -33,7 +33,7 @@ class StorePlatform:
                 return
             app = apps[0]
 
-        app.progress  = None
+        app.progress = None
         app.operation = None
         if content_id in self.tasks:
             app.progress = self.tasks[content_id].progress
@@ -42,27 +42,27 @@ class StorePlatform:
         return app
 
     def uninstall_content(self, content_id):
-        # thread = threading.Thread(target=self._StorePlatform__update_progress, args=(self.__uninstall(content_id),content_id,'Uninstalling',))
-        thread = threading.Thread(target=self.__update_progress, args=(self._uninstall(content_id),content_id,'Uninstalling',))
+        thread = threading.Thread(target=self.__update_progress,
+                                  args=(self._uninstall(content_id), content_id, 'Uninstalling'))
         thread.start()
 
     def install_content(self, content_id):
-        # thread = threading.Thread(target=self._StorePlatform__update_progress, args=(self.__install(content_id),content_id,'Installing',))
-        thread = threading.Thread(target=self.__update_progress, args=(self._install(content_id),content_id,'Installing',))
+        thread = threading.Thread(target=self.__update_progress,
+                                  args=(self._install(content_id), content_id, 'Installing'))
         thread.start()
 
     def update_content(self, content_id):
-        # thread = threading.Thread(target=self._StorePlatform__update_progress, args=(self.__update(content_id),content_id,'Updating',))
-        thread = threading.Thread(target=self.__update_progress, args=(self._update(content_id),content_id,'Updating',))
+        thread = threading.Thread(target=self.__update_progress,
+                                  args=(self._update(content_id), content_id, 'Updating'))
         thread.start()
 
     def get_shortcut(self, content):
         pass
-    
+
     def __update_progress(self, sp: subprocess, content_id, opName):
         if content_id in self.tasks or sp is None:
             return
-        task = dic({ 'progress' : -1, 'operation' : opName })
+        task = dic({'progress': -1, 'operation': opName})
         self.tasks[content_id] = task
         buf = BytesIO()
         while sp.poll() is None:

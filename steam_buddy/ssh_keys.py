@@ -2,6 +2,22 @@ import os
 from typing import List
 
 
+forbidden_strings = [
+            "\n",
+            "\t",
+            "command=",
+            "environment=",
+            "from=",
+            "no-agent-forwarding",
+            "no-pty",
+            "no-user-rc",
+            "no-X11-forwarding",
+            "principals=",
+            "tunnel=",
+            "zos-key-ring-label=",
+        ]
+
+
 class SSHKeyNotValidException(Exception):
     pass
 
@@ -72,42 +88,22 @@ class SSHKeys:
             key_ids.append(self.get_key_id(key))
         return key_ids
 
-    # This function does some basic checks
-    # It will return False if we're sure the line was not added by steam-buddy
-    # In this case that means if any option was added which steam-buddy wouldn't use
-    # Besides that it does a small check to see if it is valid
-    # The key should not contain tabs or newlines
     @staticmethod
     def looks_like_ssh_key(key) -> bool:
-        if "\n" in key:
-            return False
-        if "\t" in key:
-            return False
-        if "command=" in key:
-            return False
-        if "environment=" in key:
-            return False
-        if "from=" in key:
-            return False
-        if "no-agent-forwarding" in key:
-            return False
-        if "no-pty" in key:
-            return False
-        if "no-user-rc" in key:
-            return False
-        if "no-X11-forwarding" in key:
-            return False
-        if "permitopen=" in key:
-            return False
-        if "principals=" in key:
-            return False
-        if "tunnel=" in key:
-            return False
-        if "zos-key-ring-label=" in key:
-            return False
+        """
+        This function does some basic checks
+        It will return False if we're sure the line was not added by steam-buddy
+        In this case that means if any option was added which steam-buddy wouldn't use
+        Besides that it does a small check to see if it is valid
+        The key should not contain tabs or newlines
+        :param key: an ssh public key
+        :return: boolean stating if the key is allowed to be used
+        """
+        for s in forbidden_strings:
+            if s in key:
+                return False
         if not key.startswith("ssh-"):
             return False
         if len(key.split(" ")) != 3:
             return False
         return True
-

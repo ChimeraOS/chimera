@@ -10,15 +10,15 @@ FLATPAK_WRAPPER = "bin/flatpak-wrapper"
 
 
 def listdir(path):
-	if os.path.isdir(path):
-		return os.listdir(path)
-	else:
-		return []
+    if os.path.isdir(path):
+        return os.listdir(path)
+    else:
+        return []
+
 
 local = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy/banners/flathub')
 files = listdir('images/flathub') + listdir(local) + listdir('/usr/share/steam-buddy/images/flathub/')
-whitelist = [ os.path.splitext(f)[0] for f in files ]
-
+whitelist = [os.path.splitext(f)[0] for f in files]
 
 
 class Flathub(StorePlatform):
@@ -51,7 +51,7 @@ class Flathub(StorePlatform):
             installed_list = self.__get_installed_list()
             for entry in api_response.json():
                 flatpak_id = entry['flatpakAppId']
-                if not flatpak_id in whitelist:
+                if flatpak_id not in whitelist:
                     continue
                 name = entry['name']
                 description = entry['summary']
@@ -64,11 +64,13 @@ class Flathub(StorePlatform):
                     if app['flatpak_id'].strip() == flatpak_id:
                         installed = True
                         version = app['version']
-                
-                applications.append(dic({ "content_id": flatpak_id, "summary": description, "name": name, "installed_version": version, "available_version": available_version, "image_url": image_url, "installed": installed, "operation": None }))
+
+                applications.append(dic({"content_id": flatpak_id, "summary": description, "name": name,
+                                         "installed_version": version, "available_version": available_version,
+                                         "image_url": image_url, "installed": installed, "operation": None}))
 
         return applications
-    
+
     def __get_installed_list(self) -> List[Dict[str, any]]:
         installed_list = []
         for line in subprocess.check_output(["flatpak", "list", "--user", "--app"]).splitlines():
@@ -113,17 +115,20 @@ class Flathub(StorePlatform):
 
     def get_installed_content(self) -> list:
         apps = self.__get_application_list()
-        return [ app for app in apps if app.installed ]
+        return [app for app in apps if app.installed]
 
     def get_available_content(self) -> list:
         apps = self.__get_application_list()
-        return [ app for app in apps if not app.installed ]
+        return [app for app in apps if not app.installed]
 
     def _install(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _uninstall(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _update(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", content_id], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", content_id],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
