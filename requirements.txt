@@ -7,3 +7,4 @@ beaker
 pygame
 psutil
 bcrypt
+Pillow
