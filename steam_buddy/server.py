@@ -11,7 +11,7 @@ import shutil
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
-from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file
+from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file, generate_banner
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
 from steam_buddy.platforms.flathub import Flathub
@@ -178,17 +178,21 @@ def shortcut_create():
         (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
         banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
-    elif banner_url:
+    else:
         banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
         if not os.path.isdir(os.path.dirname(banner_path)):
             os.makedirs(os.path.dirname(banner_path))
-        download = requests.get(banner_url)
-        with open(banner_path, "wb") as banner_file:
-            banner_file.write(download.content)
+        if banner_url:
+            download = requests.get(banner_url)
+            with open(banner_path, "wb") as banner_file:
+                banner_file.write(download.content)
+        else:
+            generate_banner(name, banner_path)
 
-    shortcut = {'name': name, 'cmd': platform, 'hidden': hidden == 'on', 'tags': [PLATFORMS[platform]]}
-    if banner or banner_url:
-        shortcut['banner'] = banner_path
+    shortcut = {
+        'name': name, 'cmd': platform, 'hidden': hidden == 'on', 'banner': banner_path, 'tags': [PLATFORMS[platform]]
+    }
+
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
