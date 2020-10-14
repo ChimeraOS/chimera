@@ -73,6 +73,9 @@ You can connect to Steam Buddy on GamerOS by opening a browser on another comput
 After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
 To restart Steam you can click on the cog icon in the top right of the Steam Buddy UI and select the "Restart Steam" option.
 
+## Configuration
+The default RetroArch configuration files are located under `/usr/share/steam-buddy/config/`.
+You can override the default configuration by creating corresponding files under `~/.config/steam-buddy/`.
 
 ## Screenshots
 
