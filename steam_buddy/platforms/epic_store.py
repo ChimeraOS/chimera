@@ -32,7 +32,7 @@ class EpicStore(StorePlatform):
             'banner': img_path,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'tags': ["Epic Games Store"],
-            'compat_tool': 'proton_411'
+            'compat_tool': 'proton_513'
         }
 
     def get_installed_content(self) -> list:
