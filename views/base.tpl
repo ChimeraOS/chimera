@@ -3,7 +3,7 @@
 <head>
 	<title>Steam Buddy</title>
 	<meta name="viewport" content="width=device-width">
-    <link href="/public/style.css" rel="stylesheet">
+	<link href="/public/style.css" rel="stylesheet">
 	<link href="/public/filepond.min.css" rel="stylesheet">
 	<script src="/public/filepond.min.js"></script>
 </head>
