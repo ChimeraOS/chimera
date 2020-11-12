@@ -34,6 +34,7 @@ PLATFORMS = {
     "gc":          "GameCube",
     "sgg":         "Game Gear",
     "genesis":     "Genesis",
+    "jaguar":      "Jaguar",
     "sms":         "Master System",
     "neo-geo":     "Neo Geo",
     "nes":         "Nintendo",
