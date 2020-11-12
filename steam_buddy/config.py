@@ -7,6 +7,7 @@ from steam_buddy.steamgrid.steamgrid import Steamgrid
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
 CONFIG_DIR = os.getenv('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
+CACHE_DIR = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
@@ -32,6 +33,7 @@ PLATFORMS = {
     "gba":         "Game Boy Advance",
     "gbc":         "Game Boy Color",
     "gc":          "GameCube",
+    "gog":         "GOG",
     "sgg":         "Game Gear",
     "genesis":     "Genesis",
     "sms":         "Master System",

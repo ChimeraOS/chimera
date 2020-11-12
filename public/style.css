@@ -57,11 +57,11 @@ p.placeholder {
     margin: 4px;
     padding: 0px;
     height: 150px;
-    width: 322px;
+    width: 320px;
     border-width: 4px;
     border-style: solid;
-    border-image: linear-gradient(to bottom, #888888, #666666) 1 1;
-    background-color: #444444;
+    border-color: #666666;
+    background-color: #333333;
 }
 
 .img-container.selected {
@@ -71,11 +71,12 @@ p.placeholder {
 }
 
 img {
-    width: auto;
-    height: 150px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .missing-text {

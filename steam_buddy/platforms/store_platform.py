@@ -42,24 +42,24 @@ class StorePlatform:
         return app
 
     def uninstall_content(self, content_id):
-        thread = threading.Thread(target=self.__update_progress,
+        thread = threading.Thread(target=self._update_progress,
                                   args=(self._uninstall(content_id), content_id, 'Uninstalling'))
         thread.start()
 
     def install_content(self, content_id):
-        thread = threading.Thread(target=self.__update_progress,
+        thread = threading.Thread(target=self._update_progress,
                                   args=(self._install(content_id), content_id, 'Installing'))
         thread.start()
 
     def update_content(self, content_id):
-        thread = threading.Thread(target=self.__update_progress,
+        thread = threading.Thread(target=self._update_progress,
                                   args=(self._update(content_id), content_id, 'Updating'))
         thread.start()
 
     def get_shortcut(self, content):
         pass
 
-    def __update_progress(self, sp: subprocess, content_id, opName):
+    def _update_progress(self, sp: subprocess, content_id, opName):
         if content_id in self.tasks or sp is None:
             return
         task = dic({'progress': -1, 'operation': opName})

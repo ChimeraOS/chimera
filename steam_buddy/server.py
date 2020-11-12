@@ -15,6 +15,7 @@ from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
 from steam_buddy.platforms.flathub import Flathub
+from steam_buddy.platforms.gog import GOG
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -24,6 +25,7 @@ tmpfiles = {}
 PLATFORM_HANDLERS = {
     "epic-store": EpicStore(),
     "flathub": Flathub(),
+    "gog": GOG(),
 }
 
 
