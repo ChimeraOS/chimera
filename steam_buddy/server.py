@@ -472,7 +472,7 @@ def steam_compositor():
 @authenticate
 def steam_overlay():
     try:
-        subprocess.call(["xdotool", "key", "shift+Tab"])
+        subprocess.call(["bin/toggle-steam-overlay"])
     finally:
         redirect('/')
 
@@ -481,7 +481,7 @@ def steam_overlay():
 @authenticate
 def mangohud():
     try:
-        subprocess.call(["xdotool", "key", "F3"])
+        subprocess.call(["bin/toggle-mangohud"])
     finally:
         redirect('/')
 
@@ -497,7 +497,7 @@ def virtual_keyboard():
 def virtual_keyboard_string():
     string = sanitize(request.forms.get('str'))
     try:
-        subprocess.call(["xdotool", "type", "--", string])
+        subprocess.call(["bin/virtual-keyboard", string])
     finally:
         redirect('/virtual_keyboard')
 
