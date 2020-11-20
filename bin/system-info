@@ -1,8 +1,5 @@
 #! /bin/bash
 
-source $(dirname $0)/set-display
-
-
 # All whitespace below is required for correct parsing in protondb
 echo "
 System Info:

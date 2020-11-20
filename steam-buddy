@@ -5,6 +5,9 @@ from steam_buddy import server
 from steam_buddy.config import RESOURCE_DIR, FTP_SERVER
 
 if __name__ == '__main__':
+	if not os.environ.get("DISPLAY"):
+		os.environ["DISPLAY"] = ":0.0"
+
 	os.chdir(RESOURCE_DIR)
 	FTP_SERVER.run()
 	bottle.run(app=server, host='0.0.0.0', port=8844)

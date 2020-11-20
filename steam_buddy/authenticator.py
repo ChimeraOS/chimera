@@ -32,8 +32,6 @@ class Authenticator:
 
     def launch(self) -> None:
         print("Showing authenticator on screen")
-        if not os.environ.get("DISPLAY"):
-            os.environ["DISPLAY"] = ":0.0"
         self.kill()
         subprocess.Popen([self.__app, self.__password])
 
