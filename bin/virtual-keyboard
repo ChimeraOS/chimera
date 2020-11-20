@@ -1,5 +1,0 @@
-#! /bin/bash
-
-source $(dirname $0)/set-display
-
-xdotool type -- "$1"
