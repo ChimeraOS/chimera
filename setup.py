@@ -3,7 +3,7 @@ from glob import glob
 
 setup(
     name="Steam-Buddy",
-    version="0.7.3",
+    version="0.8.1",
     packages=find_packages(exclude=['tests']),
     scripts=['steam-buddy'],
 
