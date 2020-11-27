@@ -3,7 +3,7 @@ Description=SteamBuddy socket
 
 [Socket]
 ListenStream=80
-Service=steam-buddy-proxy@%i.service
+Service=steam-buddy-proxy.service
 
 [Install]
 WantedBy=sockets.target

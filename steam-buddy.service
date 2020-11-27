@@ -1,0 +1,11 @@
+[Unit]
+Description=SteamBuddy
+
+[Service]
+WorkingDirectory=/usr/share/steam-buddy
+ExecStartPre=/usr/bin/sleep 10
+ExecStart=/usr/bin/steam-buddy
+Restart=always
+
+[Install]
+WantedBy=default.target

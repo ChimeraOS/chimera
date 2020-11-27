@@ -14,7 +14,7 @@ If the application works well please create a new issue with the app id and grid
 ### Install games from the Epic Games Store
 After logging in to your Epic account, you can download and install any of your games from the Epic Games Store.
 
-Games are automatically started with Proton. Not all games will work and currently controllers are not being recognized by Epic Games Store games.
+Games are automatically started with Proton. Not all games will work.
 
 ### Upload ROMs
 
@@ -30,12 +30,14 @@ The following platforms are currently supported:
 - Game Gear
 - GameCube
 - Genesis/Mega Drive
+- Jaguar
 - Master System
 - Neo Geo (requires BIOS file)
 - Nintendo
 - Nintendo 64
 - PlayStation (requires BIOS file)
 - PlayStation 2
+- PlayStation Portable
 - Sega 32X
 - Sega CD (requires BIOS file)
 - Saturn (BIOS file optional)
@@ -60,11 +62,11 @@ Also, select the "Hide" option so the BIOS file is not shown in Steam along with
 Steam Buddy is installed and configured out of the box on GamerOS.
 
 It is also available for Arch from the AUR as `steam-buddy`.
-After installing the `steam-buddy` package, you must run the following commands as root to enable it and then restart your system:
+After installing the `steam-buddy` package, you must run the following commands to enable it and then restart your system:
 ```
-    systemctl enable steam-buddy@<your username>.service
-    systemctl enable steam-buddy-proxy@<your username>.service
-    systemctl enable steam-buddy-proxy@<your username>.socket
+    systemctl --user enable steam-buddy.service
+    sudo systemctl enable steam-buddy-proxy.service
+    sudo systemctl enable steam-buddy-proxy.socket
 ```
 
 ## Usage

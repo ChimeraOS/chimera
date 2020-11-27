@@ -9,10 +9,10 @@ wkill() {
 
 if pgrep steamcompmgr > /dev/null; then
 	wkill steamcompmgr
-	DISPLAY=:0.0 openbox &
+	openbox &
 elif pgrep openbox > /dev/null; then
 	wkill openbox
-	DISPLAY=:0.0 steamcompmgr &
+	steamcompmgr &
 else
-	DISPLAY=:0.0 steamcompmgr &
+	steamcompmgr &
 fi

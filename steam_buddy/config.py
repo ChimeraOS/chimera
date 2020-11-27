@@ -24,6 +24,7 @@ SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 
 PLATFORMS = {
     "32x":         "32X",
+    "3do":         "3DO",
     "arcade":      "Arcade",
     "atari-2600":  "Atari 2600",
     "dreamcast":   "Dreamcast",
@@ -36,6 +37,7 @@ PLATFORMS = {
     "gog":         "GOG",
     "sgg":         "Game Gear",
     "genesis":     "Genesis",
+    "jaguar":      "Jaguar",
     "sms":         "Master System",
     "neo-geo":     "Neo Geo",
     "nes":         "Nintendo",
