@@ -121,8 +121,8 @@ class Flathub(StorePlatform):
         apps = self.__get_application_list()
         return [app for app in apps if not app.installed]
 
-    def _install(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content_id],
+    def _install(self, content) -> subprocess:
+        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content.content_id],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def _uninstall(self, content_id) -> subprocess:

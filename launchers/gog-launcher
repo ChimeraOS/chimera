@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Linux
+if [ -f start.sh ]; then
+	echo ./start.sh
+	exit
+fi
+
+# Windows
+rm -rf tmp
+appdir=$(dirname `find . -name "goggame*.info"`)
+
+if [ "$appdir" != "." ]; then
+	mv $appdir/* .
+	rm -rf $appdir
+fi
+
+cat goggame*.info | grep path | cut -d':' -f 2 | sed 's/"//g' | sed 's/,//g' | xargs

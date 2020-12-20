@@ -46,9 +46,9 @@ class StorePlatform:
                                   args=(self._uninstall(content_id), content_id, 'Uninstalling'))
         thread.start()
 
-    def install_content(self, content_id):
+    def install_content(self, content):
         thread = threading.Thread(target=self._update_progress,
-                                  args=(self._install(content_id), content_id, 'Installing'))
+                                  args=(self._install(content), content.content_id, 'Installing'))
         thread.start()
 
     def update_content(self, content_id):

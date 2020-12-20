@@ -1,0 +1,13 @@
+#! /bin/bash
+
+mkdir -p ~/.cache/steam-buddy
+cd ~/.cache/steam-buddy
+
+game_id=$1
+install_dir=$2
+mkdir -p $install_dir
+
+wyvern down --id $game_id --force-windows
+
+setup=`ls -1 *.exe | head -1`
+innoextract $setup -d $install_dir

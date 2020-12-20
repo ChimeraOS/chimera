@@ -335,7 +335,7 @@ def platform_install(platform, content_id):
     if not content:
         abort(404, 'Content not found')
 
-    PLATFORM_HANDLERS[platform].install_content(content_id)
+    PLATFORM_HANDLERS[platform].install_content(content)
 
     shortcuts = load_shortcuts(platform)
     shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)

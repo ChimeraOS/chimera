@@ -42,10 +42,10 @@ class GOG(StorePlatform):
             'name': content.name,
             'hidden': False,
             'banner': img_path,
-            'cmd': '$(gog {id})'.format(id=content.content_id),
+            'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
-            'compat_tool': 'proton_513',
+            'compat_tool': None if content.native else 'proton_513',
             'id': content.content_id
         }
 
@@ -77,14 +77,14 @@ class GOG(StorePlatform):
             cid = str(info.id)
 
             img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
-            content.append(dic({ "content_id": cid, "summary": "", "name": info.title, "installed_version": None, "available_version": None, "image_url": img, "installed": cid in installed_ids, 'operation' : None }))
+            content.append(dic({ "content_id": cid, "summary": "", "name": info.title, "native": info.worksOn['Linux'], "installed_version": None, "available_version": None, "image_url": img, "installed": cid in installed_ids, 'operation' : None }))
 
         return content
 
     def _update(self, content_id) -> subprocess:
         pass
 
-    def _install(self, content_id) -> subprocess:
+    def _install(self, content) -> subprocess:
         cachedir = os.path.join(CACHE_DIR, 'steam-buddy')
         try:
             shutil.rmtree(cachedir)
@@ -94,7 +94,12 @@ class GOG(StorePlatform):
             os.mkdir(cachedir)
         except:
             pass
-        cmd = ["wyvern", "down", "--id", content_id, "--install", os.path.join(CONTENT_DIR, 'gog', content_id), "--force-windows"]
+
+        if not content.native:
+            cmd = ["bin/gog-install", content.content_id, os.path.join(CONTENT_DIR, 'gog', content.content_id)]
+            return subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        cmd = ["wyvern", "down", "--id", content.content_id, "--install", os.path.join(CONTENT_DIR, 'gog', content.content_id)]
         return subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cachedir)
 
     def _uninstall(self, content_id) -> subprocess:
