@@ -12,10 +12,18 @@ from steam_buddy.functions import load_shortcuts
 
 class GOG(StorePlatform):
     def is_authenticated(self):
-        return True
+        num_lines = 0
+        path = os.path.join(CONFIG_DIR, "wyvern", "wyvern.toml")
+        if os.path.isfile(path):
+            num_lines = sum(1 for line in open(path))
+
+        if num_lines > 1:
+            return True
+
+        return False
 
     def authenticate(self, password):
-        pass
+        subprocess.check_output(["wyvern", "login", "--code", password])
 
     def get_shortcut(self, content):
         ext = '.png'
