@@ -91,9 +91,10 @@ def delete_file(base_dir, platform, name):
         shortcuts = load_shortcuts(platform)
         matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
         shortcut = matches[0]
-        file_path = os.path.join(strip(shortcut['dir']), strip(shortcut['params']))
-        if os.path.exists(file_path):
-            os.remove(file_path)
+        if 'dir' in shortcut and 'params' in shortcut:
+            file_path = os.path.join(strip(shortcut['dir']), strip(shortcut['params']))
+            if os.path.exists(file_path):
+                os.remove(file_path)
     else:
         file_dir = "{base_dir}/{platform}/.{name}".format(base_dir=base_dir, platform=platform, name=name)
         if os.path.exists(file_dir):
