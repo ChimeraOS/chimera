@@ -10,7 +10,7 @@ import requests
 import shutil
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, SESSION_OPTIONS
+from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file, generate_banner
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
@@ -284,7 +284,9 @@ def start_file_upload():
     if file_data:
         file_name = sanitize(file_data.filename)
 
-    (_, path) = tempfile.mkstemp()
+    if not os.path.exists(UPLOADS_DIR):
+        os.makedirs(UPLOADS_DIR)
+    (_, path) = tempfile.mkstemp(dir=UPLOADS_DIR)
     key = os.path.basename(path)
     tmpfiles[key] = (path, file_name)
 

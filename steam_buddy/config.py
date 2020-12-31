@@ -21,6 +21,7 @@ SHORTCUT_DIR = DATA_DIR + '/steam-shortcuts'
 BANNER_DIR = DATA_DIR + '/steam-buddy/banners'
 CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
+UPLOADS_DIR = os.path.join(CACHE_DIR, 'steam-buddy', 'uploads')
 
 PLATFORMS = {
     "32x":         "32X",
