@@ -54,20 +54,16 @@ p.placeholder {
 .img-container {
     position: relative;
     display: inline-block;
-    margin: 4px;
+    margin: 16px;
     padding: 0px;
-    height: 150px;
-    width: 320px;
-    border-width: 4px;
-    border-style: solid;
-    border-color: #666666;
+    height: 116px;
+    width: 248px;
+    box-shadow: 0px 2px 8px 3px rgba(0, 0, 0, 0.8);
     background-color: #333333;
 }
 
 .img-container.selected {
-    border-image: none;
-    border-color: #0075ff;
-    border-width: 4px;
+    box-shadow: 0px 0px 6px 4px rgba(0, 117, 255, 1.0);
 }
 
 img {
