@@ -8,6 +8,7 @@ import yaml
 import bcrypt
 import requests
 import shutil
+import unicodedata
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
 from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS
@@ -499,9 +500,10 @@ def virtual_keyboard():
 @route('/virtual_keyboard/string', method='POST')
 @authenticate
 def virtual_keyboard_string():
-    string = sanitize(request.forms.get('str'))
+    string = request.forms.get('str')
+    string_without_controlcharacters = "".join(c for c in string if unicodedata.category(c) != "Cc")
     try:
-        subprocess.call(["xdotool", "type", "--", string])
+        subprocess.call(["xdotool", "type", "--", string_without_controlcharacters])
     finally:
         redirect('/virtual_keyboard')
 
