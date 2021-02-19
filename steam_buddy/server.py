@@ -1,6 +1,7 @@
 import os
 import pwd
 import subprocess
+import socket
 import tempfile
 import json
 import html
@@ -490,6 +491,25 @@ def mangohud():
     finally:
         redirect('/')
 
+def retroarch_cmd(msg):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(bytes(msg, "utf-8"), ('127.0.0.1', 55355))
+
+@route('/retroarch/load_state')
+@authenticate
+def retro_load_state():
+    try:
+        retroarch_cmd('LOAD_STATE')
+    finally:
+        redirect('/')
+
+@route('/retroarch/save_state')
+@authenticate
+def retro_save_state():
+    try:
+        retroarch_cmd('SAVE_STATE')
+    finally:
+        redirect('/')
 
 @route('/virtual_keyboard')
 @authenticate

@@ -61,6 +61,8 @@
                 <a href="/settings">Settings</a>
                 <a href="/exit_game">Exit Game</a>
                 <a href="/steam/restart">Restart Steam</a>
+                <a href="/retroarch/load_state">Save Emulator State</a>
+                <a href="/retroarch/save_state">Load Emulator State</a>
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/steam/overlay">Toggle Steam Overlay</a>
                 <a href="/mangohud">Toggle MangoHud</a>
