@@ -53,6 +53,7 @@ PLATFORMS = {
 }
 
 SETTINGS_DEFAULT = {
+    "enable_mangohud": True,
     "enable_ftp_server": False,
     "ftp_username": "gamer",
     "ftp_password": generate_password(12),
