@@ -456,6 +456,13 @@ def settings_update():
     redirect('/settings')
 
 
+@route('/settings/reset_mangohud', method='POST')
+@authenticate
+def mangohud_reset():
+    MANGOHUD_HANDLER.reset_config()
+    redirect('/settings')
+
+
 @route('/steam/restart')
 @authenticate
 def steam_restart():

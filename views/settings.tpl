@@ -2,10 +2,8 @@
 <form action="/settings/update" method="post" enctype="multipart/form-data">
     <h4>MangoHud</h4>
     <hr>
-    MangoHud confguration. You'll be able to reset the default configuration and set it onhere.
-    <div class="label">Enable MangoHud</div>
-	<input type="checkbox" name="enable_mangohud" id="enable_mangohud"  {{'checked' if settings["enable_mangohud"] else ''}} />
-	<button>Reset configuration</button>
+    You'll be able to reset the default MangoHud configuration here.
+	<button formaction="/settings/reset_mangohud">Reset configuration</button>
 
     <h4>Logging in</h4>
     <hr>
