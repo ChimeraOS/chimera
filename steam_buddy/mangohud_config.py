@@ -13,9 +13,7 @@ class MangoHudConfig:
 
     def __setup_environment(self):
         if self.enabled:
-            env_dir = os.path.dirname(self.enable_file)
-            if not os.path.exists(env_dir):
-                os.mkdir(env_dir, mode=0o755)
+            self.__ensure_dir_existence(self.enable_file)
             if not os.path.exists(self.enable_file):
                 f = open(self.enable_file, "w+")
                 f.write("MANGOHUD=1")
@@ -47,13 +45,27 @@ class MangoHudConfig:
         self.__read_toggle_key()
 
     def reset_config(self) -> None:
-        config_dir = os.path.dirname(self.config_file)
-        if not os.path.exists(config_dir):
-            os.mkdir(config_dir, mode=0o755)
+        self.save_config("no_display")
+
+    def get_current_config(self):
+        if os.path.exists(self.config_file):
+            f = open(self.config_file, "r")
+            current_config = f.read()
+            f.close()
+            return current_config
+
+    def save_config(self, new_content):
+        self.__ensure_dir_existence(self.config_file)
         f = open(self.config_file, "w+")
-        f.write("no_display")
+        f.write(new_content)
         f.close()
         self.__read_toggle_key()
 
     def get_togle_hud_key(self):
         return self.toggle_key
+
+    @staticmethod
+    def __ensure_dir_existence(file):
+        d = os.path.dirname(file)
+        if not os.path.exists(d):
+            os.mkdir(d, mode=0o755)

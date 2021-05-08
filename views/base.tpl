@@ -66,6 +66,7 @@
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/steam/overlay">Toggle Steam Overlay</a>
                 <a href="/mangohud">Toggle MangoHud</a>
+                <a href="/mangohud/edit_config">MangoHud Configuration</a>
                 <a href="/virtual_keyboard">Virtual Keyboard</a>
                 <a href="/logout">Log Out</a>
             </div>

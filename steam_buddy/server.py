@@ -499,9 +499,26 @@ def mangohud():
     finally:
         redirect('/')
 
+
+@route('/mangohud/save_config', method='POST')
+@authenticate
+def mangohud_save_config():
+    new_content = request.forms.get('new_content')
+    MANGOHUD_HANDLER.save_config(new_content)
+    redirect('/mangohud/edit_config')
+
+
+@route('/mangohud/edit_config')
+@authenticate
+def mangohud_edit():
+    current_content = MANGOHUD_HANDLER.get_current_config()
+    return template('mangohud_edit.tpl', file_content=current_content)
+
+
 def retroarch_cmd(msg):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(msg, "utf-8"), ('127.0.0.1', 55355))
+
 
 @route('/retroarch/load_state')
 @authenticate
@@ -511,6 +528,7 @@ def retro_load_state():
     finally:
         redirect('/')
 
+
 @route('/retroarch/save_state')
 @authenticate
 def retro_save_state():
@@ -518,6 +536,7 @@ def retro_save_state():
         retroarch_cmd('SAVE_STATE')
     finally:
         redirect('/')
+
 
 @route('/virtual_keyboard')
 @authenticate
