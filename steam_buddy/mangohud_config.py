@@ -33,6 +33,7 @@ class MangoHudConfig:
             f = open(self.config_file, "r")
             parser = ConfigParser(allow_no_value=True)
             parser.read_string("[Mangohud]\n" + f.read())
+            f.close()
             if 'toggle_hud' in parser['Mangohud']:
                 self.toggle_key = parser['Mangohud']['toggle_hud']
             else:
@@ -51,6 +52,7 @@ class MangoHudConfig:
             os.mkdir(config_dir, mode=0o755)
         f = open(self.config_file, "w+")
         f.write("no_display")
+        f.close()
         self.__read_toggle_key()
 
     def get_togle_hud_key(self):
