@@ -4,27 +4,14 @@ from configparser import ConfigParser
 
 class MangoHudConfig:
 
-    def __init__(self, settings_handler, env_dir, mango_dir):
-        self.enable_file = env_dir + "/10-mangohud.conf"
+    def __init__(self, mango_dir):
         self.config_file = mango_dir + "/MangoHud.conf"
-        self.enabled = settings_handler.get_setting("enable_mangohud")
         self.__setup_environment()
         self.__read_toggle_key()
 
     def __setup_environment(self):
-        if self.enabled:
-            self.__ensure_dir_existence(self.enable_file)
-            if not os.path.exists(self.enable_file):
-                f = open(self.enable_file, "w+")
-                f.write("MANGOHUD=1")
-                f.close()
-            if not os.path.exists(self.config_file):
-                self.reset_config()
-            else:
-                pass
-        else:
-            if os.path.exists(self.enable_file):
-                os.remove(self.enable_file)
+        if not os.path.exists(self.config_file):
+            self.reset_config()
 
     def __read_toggle_key(self):
         if os.path.exists(self.config_file):
@@ -37,12 +24,7 @@ class MangoHudConfig:
             else:
                 self.toggle_key = "Shift_R+F12"
         else:
-            self.toggle_key = "Shift_R+F12"
-
-    def set_enabled(self, enabled) -> None:
-        self.enabled = enabled
-        self.__setup_environment()
-        self.__read_toggle_key()
+            self.toggle_key = "Sh ift_R+F12"
 
     def reset_config(self) -> None:
         self.save_config("no_display")
@@ -55,7 +37,7 @@ class MangoHudConfig:
             return current_config
 
     def save_config(self, new_content):
-        self.__ensure_dir_existence(self.config_file)
+        self.ensure_dir_for_file(self.config_file)
         f = open(self.config_file, "w+")
         f.write(new_content)
         f.close()
@@ -65,7 +47,7 @@ class MangoHudConfig:
         return self.toggle_key
 
     @staticmethod
-    def __ensure_dir_existence(file):
+    def ensure_dir_for_file(file):
         d = os.path.dirname(file)
         if not os.path.exists(d):
             os.mkdir(d, mode=0o755)
