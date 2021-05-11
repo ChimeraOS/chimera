@@ -43,7 +43,7 @@ class MangoHudConfig:
         f.close()
         self.__read_toggle_key()
 
-    def get_togle_hud_key(self):
+    def get_toggle_hud_key(self):
         return self.toggle_key
 
     @staticmethod

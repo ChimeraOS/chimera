@@ -493,7 +493,7 @@ def steam_overlay():
 @route('/mangohud')
 @authenticate
 def mangohud():
-    key = MANGOHUD_HANDLER.get_togle_hud_key()
+    key = MANGOHUD_HANDLER.get_toggle_hud_key()
     try:
         subprocess.call(["xdotool", "key", key])
     finally:
