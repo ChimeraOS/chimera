@@ -24,7 +24,7 @@ class MangoHudConfig:
             else:
                 self.toggle_key = "Shift_R+F12"
         else:
-            self.toggle_key = "Sh ift_R+F12"
+            self.toggle_key = "Shift_R+F12"
 
     def reset_config(self) -> None:
         self.save_config("no_display")
