@@ -1,6 +1,6 @@
 import os
 import shlex
-import datetime as dt
+import time
 import subprocess as sp
 
 
@@ -40,7 +40,9 @@ class StreamServer:
         FPS = "60"
 
         if local:
-            STREAM = "~/screen" + dt.datetime.now() +".mp4"
+            STREAM = "screen_" + \
+                    str(time.strftime("%Y%m%d_%H%M%S")) + \
+                    ".mp4"
         else:
             STREAM = '"srt://localhost:8080?streamid=uplive.gameros/live/stream"'
 
@@ -55,7 +57,7 @@ class StreamServer:
             STREAM
         args = shlex.split(command_line)
         if self._ffmpeg is None:
-            self._ffmpeg = sp.Popen(args)
+            self._ffmpeg = sp.Popen(args, cwd=os.path.expanduser("~"))
         else:
             raise(Exception("Error starting FFMpeg: Already started"))
 
@@ -74,3 +76,9 @@ class StreamServer:
     def stop_stream(self):
         self.__stop_ffmpeg()
         self.__stop_sls()
+
+    def record_screen(self):
+        self.__start_ffmpeg(local=True)
+
+    def stop_record(self):
+        self.__stop_ffmpeg()

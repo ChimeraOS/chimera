@@ -506,6 +506,20 @@ def streaming_stop():
     redirect('/')
 
 
+@route('/record/start')
+@authenticate
+def record_start():
+    STREAMING_HANDLER.record_screen()
+    redirect('/')
+
+
+@route('/record/stop')
+@authenticate
+def record_stop():
+    STREAMING_HANDLER.stop_record()
+    redirect('/')
+
+
 def retroarch_cmd(msg):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(msg, "utf-8"), ('127.0.0.1', 55355))
