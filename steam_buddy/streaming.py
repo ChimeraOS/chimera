@@ -8,8 +8,6 @@ class StreamServer:
 
     def __init__(self, sls_conf_file):
         self.sls_conf_file = sls_conf_file
-        self._ffmpeg_cmd = "ffmpeg"
-        self._sls_cmd = "sls"
         self._sls = None
         self._ffmpeg = None
 
@@ -18,7 +16,7 @@ class StreamServer:
 
     def __start_sls(self):
         if self._sls is None:
-            self._sls = sp.Popen([self._sls_cmd, '-c', self.sls_conf_file])
+            self._sls = sp.Popen(['sls', '-c', self.sls_conf_file])
         else:
             raise(Exception("Error starting SLS: Already started"))
 
@@ -31,7 +29,6 @@ class StreamServer:
         self._sls = None
 
     def __start_ffmpeg(self, local=False):
-        command_line = ""
         VCODEC = "libx264"
         VCODEC_OPTIONS = "-preset ultrafast -tune zerolatency"
         VSIZE = "1920x1080"
@@ -46,16 +43,16 @@ class StreamServer:
         else:
             STREAM = '"srt://localhost:8080?streamid=uplive.gameros/live/stream"'
 
-        command_line = self._ffmpeg_cmd + " " + \
-            "-f x11grab -framerate " + FPS + " -i :0 " + \
-            "-f alsa -ac 2 -i pulse " + \
-            "-vcodec " + VCODEC + " " + VCODEC_OPTIONS + " " + \
-            "-acodec " + ACODEC + " " + ACODEC_OPTIONS + " " + \
-            "-video_size " + VSIZE + " " + \
-            "-flush_packets 0 " + \
-            "-f mpegts " + \
-            STREAM
-        args = shlex.split(command_line)
+        cmd = ["ffmpeg",
+               "-f x11grab -framerate", FPS, "-i :0",
+               "-f alsa -ac 2 -i pulse",
+               "-vcodec", VCODEC, VCODEC_OPTIONS,
+               "-acodec", ACODEC, ACODEC_OPTIONS,
+               "-video_size", VSIZE,
+               "-flush_packets 0",
+               "-f mpegts",
+               STREAM]
+        args = shlex.split(" ".join(cmd))
         if self._ffmpeg is None:
             self._ffmpeg = sp.Popen(args, cwd=os.path.expanduser("~"))
         else:
