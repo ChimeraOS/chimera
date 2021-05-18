@@ -29,7 +29,7 @@ class MangoHudConfig:
     def reset_config(self) -> None:
         defaultt_config = [
             "no_display",
-            'toggle_hud = F3"'
+            'toggle_hud = "F3"'
         ]
         self.save_config("\n".join(defaultt_config))
 
