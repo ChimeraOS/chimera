@@ -22,12 +22,16 @@ class MangoHudConfig:
             if 'toggle_hud' in parser['Mangohud']:
                 self.toggle_key = parser['Mangohud']['toggle_hud']
             else:
-                self.toggle_key = "Shift_R+F12"
+                self.toggle_key = "F3"
         else:
             self.toggle_key = "Shift_R+F12"
 
     def reset_config(self) -> None:
-        self.save_config("no_display")
+        defaultt_config = [
+            "no_display",
+            'toggle_hud = F3"'
+        ]
+        self.save_config("\n".join(defaultt_config))
 
     def get_current_config(self):
         if os.path.exists(self.config_file):
