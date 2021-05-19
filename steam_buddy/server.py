@@ -12,7 +12,7 @@ import shutil
 import unicodedata
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS, STREAMING_HANDLER
+from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS, STREAMING_HANDLER, MANGOHUD_HANDLER
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file, generate_banner
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
@@ -453,7 +453,14 @@ def settings_update():
 
     FTP_SERVER.reload()
 
-    redirect('/settings')
+    return template('success.tpl')
+
+
+@route('/settings/reset_mangohud', method='POST')
+@authenticate
+def mangohud_reset():
+    MANGOHUD_HANDLER.reset_config()
+    redirect('/')
 
 
 @route('/steam/restart')
@@ -462,7 +469,7 @@ def steam_restart():
     try:
         subprocess.call(["pkill", "steamos-session"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 @route('/steam/compositor')
@@ -471,7 +478,7 @@ def steam_compositor():
     try:
         subprocess.call(["bin/toggle-steamos-compositor"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 @route('/steam/overlay')
@@ -486,8 +493,9 @@ def steam_overlay():
 @route('/mangohud')
 @authenticate
 def mangohud():
+    key = MANGOHUD_HANDLER.get_toggle_hud_key()
     try:
-        subprocess.call(["xdotool", "key", "F3"])
+        subprocess.call(["xdotool", "key", key])
     finally:
         redirect('/')
 
@@ -520,9 +528,25 @@ def record_stop():
     redirect('/')
 
 
+@route('/mangohud/save_config', method='POST')
+@authenticate
+def mangohud_save_config():
+    new_content = request.forms.get('new_content')
+    MANGOHUD_HANDLER.save_config(new_content)
+    redirect('/')
+
+
+@route('/mangohud/edit_config')
+@authenticate
+def mangohud_edit():
+    current_content = MANGOHUD_HANDLER.get_current_config()
+    return template('mangohud_edit.tpl', file_content=current_content)
+
+
 def retroarch_cmd(msg):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(msg, "utf-8"), ('127.0.0.1', 55355))
+
 
 @route('/retroarch/load_state')
 @authenticate
@@ -532,6 +556,7 @@ def retro_load_state():
     finally:
         redirect('/')
 
+
 @route('/retroarch/save_state')
 @authenticate
 def retro_save_state():
@@ -539,6 +564,7 @@ def retro_save_state():
         retroarch_cmd('SAVE_STATE')
     finally:
         redirect('/')
+
 
 @route('/virtual_keyboard')
 @authenticate
@@ -563,7 +589,7 @@ def exit_game():
     try:
         subprocess.call(["bin/exit-game"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 def get_audio():
