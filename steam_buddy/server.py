@@ -453,7 +453,7 @@ def settings_update():
 
     FTP_SERVER.reload()
 
-    redirect('/settings')
+    return template('success.tpl')
 
 
 @route('/settings/reset_mangohud', method='POST')
@@ -469,7 +469,7 @@ def steam_restart():
     try:
         subprocess.call(["pkill", "steamos-session"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 @route('/steam/compositor')
@@ -478,7 +478,7 @@ def steam_compositor():
     try:
         subprocess.call(["bin/toggle-steamos-compositor"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 @route('/steam/overlay')
@@ -561,7 +561,7 @@ def exit_game():
     try:
         subprocess.call(["bin/exit-game"])
     finally:
-        redirect('/')
+        return template('success.tpl')
 
 
 def get_audio():
