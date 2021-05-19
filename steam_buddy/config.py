@@ -4,6 +4,7 @@ from steam_buddy.ftp.server import Server as FTPServer
 from steam_buddy.authenticator import Authenticator, generate_password
 from steam_buddy.ssh_keys import SSHKeys
 from steam_buddy.steamgrid.steamgrid import Steamgrid
+from steam_buddy.streaming import StreamServer
 from steam_buddy.mangohud_config import MangoHudConfig
 
 DATA_DIR = os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
@@ -79,5 +80,7 @@ FTP_SERVER = FTPServer(SETTINGS_HANDLER)
 SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
+
+STREAMING_HANDLER = StreamServer(SETTINGS_DIR + "/sls.conf")
 
 MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)

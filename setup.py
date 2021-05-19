@@ -14,6 +14,7 @@ setup(
         ('share/steam-buddy/public', glob('public/*.js')),
         ('share/steam-buddy/public', glob('public/*.css')),
         ('share/steam-buddy/config', glob('config/*.cfg')),
+        ('share/steam-buddy/config', glob('config/*.conf')),
         ('share/steam-buddy/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
         ('share/doc/steam-buddy', ['README.md']),

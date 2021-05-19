@@ -12,7 +12,7 @@ import shutil
 import unicodedata
 from bottle import app, route, template, static_file, redirect, abort, request, response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS, MANGOHUD_HANDLER
+from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS, STREAMING_HANDLER, MANGOHUD_HANDLER
 from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file, generate_banner
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
@@ -498,6 +498,34 @@ def mangohud():
         subprocess.call(["xdotool", "key", key])
     finally:
         redirect('/')
+
+
+@route('/streaming/net/start')
+@authenticate
+def streaming_net_start():
+    STREAMING_HANDLER.stream_to_lan()
+    redirect('/')
+
+
+@route('/streaming/net/stop')
+@authenticate
+def streaming_stop():
+    STREAMING_HANDLER.stop_stream()
+    redirect('/')
+
+
+@route('/record/start')
+@authenticate
+def record_start():
+    STREAMING_HANDLER.record_screen()
+    redirect('/')
+
+
+@route('/record/stop')
+@authenticate
+def record_stop():
+    STREAMING_HANDLER.stop_record()
+    redirect('/')
 
 
 @route('/mangohud/save_config', method='POST')
