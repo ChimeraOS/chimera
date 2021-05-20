@@ -81,6 +81,6 @@ SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
 
-STREAMING_HANDLER = StreamServer(SETTINGS_DIR + "/sls.conf")
+STREAMING_HANDLER = StreamServer(RESOURCE_DIR + "/config/sls.conf")
 
 MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
