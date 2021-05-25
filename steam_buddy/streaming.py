@@ -6,8 +6,8 @@ import subprocess as sp
 
 class StreamServer:
 
-    def __init__(self, sls_conf_file):
-        self.sls_conf_file = sls_conf_file
+    def __init__(self, settings_handler):
+        self.settings = settings_handler
         self._sls = None
         self._ffmpeg = None
 
@@ -15,8 +15,9 @@ class StreamServer:
         pass
 
     def __start_sls(self):
+        sls_conf_file = self.settings.get_setting("sls_conf_file")
         if self._sls is None:
-            self._sls = sp.Popen(['sls', '-c', self.sls_conf_file])
+            self._sls = sp.Popen(['sls', '-c', sls_conf_file])
         else:
             raise(Exception("Error starting SLS: Already started"))
 
@@ -29,30 +30,32 @@ class StreamServer:
         self._sls = None
 
     def __start_ffmpeg(self, local=False):
-        VCODEC = "libx264"
-        VCODEC_OPTIONS = "-preset ultrafast -tune zerolatency"
-        VSIZE = "1920x1080"
-        ACODEC = "libmp3lame"
-        ACODEC_OPTIONS = ""
-        FPS = "60"
+        INPUTS = self.settings.get_setting("ffmpeg_inputs")
+        VCODEC = self.settings.get_setting("ffmpeg_vcodec")
+        ACODEC = self.settings.get_setting("ffmpeg_acodec")
+        #OUTPUT_FORMAT = self.settings.get_setting("ffmpeg_output_format")
 
         if local:
+            OUTPUT_FORMAT = "-f matroska"
             STREAM = "screen_" + \
-                    str(time.strftime("%Y%m%d_%H%M%S")) + \
-                    ".mp4"
+                str(time.strftime("%Y%m%d_%H%M%S")) + \
+                ".mkv"
         else:
+            OUTPUT_FORMAT = "-f mpegts -flush_packets 0"
             STREAM = '"srt://localhost:8080?streamid=uplive.gameros/live/stream"'
 
-        cmd = ["ffmpeg",
-               "-f x11grab -framerate", FPS, "-i :0",
-               "-f alsa -ac 2 -i pulse",
-               "-vcodec", VCODEC, VCODEC_OPTIONS,
-               "-acodec", ACODEC, ACODEC_OPTIONS,
-               "-video_size", VSIZE,
-               "-flush_packets 0",
-               "-f mpegts",
-               STREAM]
+        # Build the ffmpeg command line
+        cmd = ["ffmpeg"]
+        for i in INPUTS:
+            cmd.append(i)
+        cmd.append(VCODEC)
+        cmd.append(ACODEC)
+        cmd.append(OUTPUT_FORMAT)
+        cmd.append(STREAM)
+
+        print(cmd)
         args = shlex.split(" ".join(cmd))
+        print(args)
         if self._ffmpeg is None:
             self._ffmpeg = sp.Popen(args, cwd=os.path.expanduser("~"))
         else:
@@ -79,3 +82,6 @@ class StreamServer:
 
     def stop_record(self):
         self.__stop_ffmpeg()
+
+    def is_streaming(self):
+        return True if self._ffmpeg else False

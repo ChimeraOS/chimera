@@ -60,7 +60,13 @@ SETTINGS_DEFAULT = {
     "ftp_username": "gamer",
     "ftp_password": generate_password(12),
     "ftp_port": 2121,
-    "keep_password": False
+    "keep_password": False,
+    "sls_conf_file": RESOURCE_DIR + "/config/sls.conf",
+    "ffmpeg_inputs":
+        ["-f x11grab -i :0",
+         "-f alsa -i pulse"],
+    "ffmpeg_vcodec": "",
+    "ffmpeg_acodec": ""
 }
 
 SESSION_OPTIONS = {
@@ -81,6 +87,6 @@ SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
 
-STREAMING_HANDLER = StreamServer(RESOURCE_DIR + "/config/sls.conf")
+STREAMING_HANDLER = StreamServer(SETTINGS_HANDLER)
 
 MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
