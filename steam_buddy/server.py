@@ -504,26 +504,104 @@ def mangohud():
 @authenticate
 def streaming_config():
     current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
-    return template('streaming_config.tpl', inputs=current_inputs)
+    current_vcodecs = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
+    current_acodecs = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
+    if type(current_inputs) is not list and current_inputs:
+        current_inputs = [current_inputs]
+    if type(current_vcodecs) is not list and current_vcodecs:
+        current_vcodecs = [current_vcodecs]
+    if type(current_acodecs) is not list and current_acodecs:
+        current_acodecs = [current_acodecs]
+    return template('streaming_config.tpl',
+                    inputs=current_inputs,
+                    vcodecs=current_vcodecs,
+                    acodecs=current_acodecs)
 
 
 @route('/streaming/add_input', method='POST')
 @authenticate
 def streaming_add_input():
-    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
+    current_input = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
     new_input = request.forms.get('new_input')
-    current_inputs.append(new_input)
-    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_inputs)
+    if type(current_input) is list:
+        current_input.append(new_input)
+    elif type(current_input) is str:
+        if current_input.strip():
+            current_input = [current_input].append(new_input)
+        else:
+            current_input = new_input
+    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_input)
     redirect('/streaming/config')
 
 
 @route('/streaming/remove_input/<input_id:int>', method='POST')
 @authenticate
 def streaming_remove_input(input_id):
-    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
-    del current_inputs[input_id]
-    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_inputs)
+    current_input = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
+    if type(current_input) is list:
+        del current_input[input_id]
+    else:
+        current_input = ''
+    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_input)
     redirect('/streaming/config')
+
+
+@route('/streaming/add_vcodec', method='POST')
+@authenticate
+def streaming_add_vcodec():
+    current_vcodec = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
+    new_vcodec = request.forms.get('new_vcodec')
+    if type(current_vcodec) is list:
+        current_vcodec.append(new_vcodec)
+    elif type(current_vcodec) is str:
+        if current_vcodec.strip():
+            current_vcodec = [current_vcodec].append(new_vcodec)
+        else:
+            current_vcodec = new_vcodec
+
+    SETTINGS_HANDLER.set_setting("ffmpeg_vcodec", current_vcodec)
+    redirect('/streaming/config')
+
+
+@route('/streaming/remove_vcodec/<vcodec_id:int>', method='POST')
+@authenticate
+def streaming_remove_vcodec(vcodec_id):
+    current_vcodec = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
+    if type(current_vcodec) is list:
+        del current_vcodec[vcodec_id]
+    else:
+        current_vcodec = ''
+    SETTINGS_HANDLER.set_setting("ffmpeg_vcodec", current_vcodec)
+    redirect('/streaming/config')
+
+
+@route('/streaming/add_acodec', method='POST')
+@authenticate
+def streaming_add_acodec():
+    current_acodec = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
+    new_acodec = request.forms.get('new_acodec')
+    if type(current_acodec) is list:
+        current_acodec.append(new_acodec)
+    elif type(current_acodec) is str:
+        if current_acodec.strip():
+            current_acodec = [current_acodec].append(new_acodec)
+        else:
+            current_acodec = new_acodec
+    SETTINGS_HANDLER.set_setting("ffmpeg_acodec", current_acodec)
+    redirect('/streaming/config')
+
+
+@route('/streaming/remove_acodec/<acodec_id:int>', method='POST')
+@authenticate
+def streaming_remove_acodec(acodec_id):
+    current_acodec = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
+    if type(current_acodec) is list:
+        del current_acodec[acodec_id]
+    else:
+        current_acodec = ''
+    SETTINGS_HANDLER.set_setting("ffmpeg_acodec", current_acodec)
+    redirect('/streaming/config')
+
 
 @route('/streaming/net/start')
 @authenticate
