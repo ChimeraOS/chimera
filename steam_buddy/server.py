@@ -500,6 +500,31 @@ def mangohud():
         redirect('/')
 
 
+@route('/streaming/config')
+@authenticate
+def streaming_config():
+    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
+    return template('streaming_config.tpl', inputs=current_inputs)
+
+
+@route('/streaming/add_input', method='POST')
+@authenticate
+def streaming_add_input():
+    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
+    new_input = request.forms.get('new_input')
+    current_inputs.append(new_input)
+    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_inputs)
+    redirect('/streaming/config')
+
+
+@route('/streaming/remove_input/<input_id:int>', method='POST')
+@authenticate
+def streaming_remove_input(input_id):
+    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
+    del current_inputs[input_id]
+    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_inputs)
+    redirect('/streaming/config')
+
 @route('/streaming/net/start')
 @authenticate
 def streaming_net_start():
