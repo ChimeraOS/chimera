@@ -500,6 +500,16 @@ def mangohud():
         redirect('/')
 
 
+@route('/streaming')
+@authenticate
+def streaming_control():
+    is_streaming = STREAMING_HANDLER.is_streaming()
+    is_recording = STREAMING_HANDLER.is_recording()
+    return template('streaming_control.tpl',
+                    streaming=is_streaming,
+                    recording=is_recording)
+
+
 @route('/streaming/config')
 @authenticate
 def streaming_config():
@@ -607,28 +617,28 @@ def streaming_remove_acodec(acodec_id):
 @authenticate
 def streaming_net_start():
     STREAMING_HANDLER.stream_to_lan()
-    redirect('/')
+    return template('success.tpl')
 
 
 @route('/streaming/net/stop')
 @authenticate
 def streaming_stop():
     STREAMING_HANDLER.stop_stream()
-    redirect('/')
+    return template('success.tpl')
 
 
 @route('/record/start')
 @authenticate
 def record_start():
     STREAMING_HANDLER.record_screen()
-    redirect('/')
+    return template('success.tpl')
 
 
 @route('/record/stop')
 @authenticate
 def record_stop():
     STREAMING_HANDLER.stop_record()
-    redirect('/')
+    return template('success.tpl')
 
 
 @route('/mangohud/save_config', method='POST')
@@ -636,7 +646,7 @@ def record_stop():
 def mangohud_save_config():
     new_content = request.forms.get('new_content')
     MANGOHUD_HANDLER.save_config(new_content)
-    redirect('/')
+    return template('success.tpl')
 
 
 @route('/mangohud/edit_config')
