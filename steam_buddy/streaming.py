@@ -30,6 +30,10 @@ class StreamServer:
         self._sls = None
 
     def __start_ffmpeg(self, local=False):
+        recordings_dir = self.settings.get_setting("recordings_dir")
+        if not os.path.exists(recordings_dir):
+            os.mkdir(recordings_dir, mode=0o755)
+
         INPUTS = self.settings.get_setting("ffmpeg_inputs")
         VCODEC = self.settings.get_setting("ffmpeg_vcodec")
         ACODEC = self.settings.get_setting("ffmpeg_acodec")
@@ -57,7 +61,8 @@ class StreamServer:
         args = shlex.split(" ".join(cmd))
         print(args)
         if self._ffmpeg is None:
-            self._ffmpeg = sp.Popen(args, cwd=os.path.expanduser("~"))
+            self._ffmpeg = sp.Popen(args,
+                                    cwd=os.path.expanduser(recordings_dir))
         else:
             raise(Exception("Error starting FFMpeg: Already started"))
 
@@ -83,5 +88,8 @@ class StreamServer:
     def stop_record(self):
         self.__stop_ffmpeg()
 
+    def is_recording(self):
+        return True if (self._ffmpeg and not self._sls) else False
+
     def is_streaming(self):
-        return True if self._ffmpeg else False
+        return True if (self._ffmpeg and self._sls) else False

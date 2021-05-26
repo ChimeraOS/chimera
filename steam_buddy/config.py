@@ -22,6 +22,7 @@ if not os.path.isfile(AUTHENTICATOR_PATH):
 SHORTCUT_DIR = DATA_DIR + '/steam-shortcuts'
 BANNER_DIR = DATA_DIR + '/steam-buddy/banners'
 CONTENT_DIR = DATA_DIR + '/steam-buddy/content'
+RECORDINGS_DIR = DATA_DIR + '/steam-buddy/recordings'
 SETTINGS_DIR = DATA_DIR + '/steam-buddy/settings'
 UPLOADS_DIR = os.path.join(CACHE_DIR, 'steam-buddy', 'uploads')
 MANGOHUD_DIR = CONFIG_DIR + "/MangoHud"
@@ -61,6 +62,7 @@ SETTINGS_DEFAULT = {
     "ftp_password": generate_password(12),
     "ftp_port": 2121,
     "keep_password": False,
+    "recordings_dir": RECORDINGS_DIR,
     "sls_conf_file": RESOURCE_DIR + "/config/sls.conf",
     "ffmpeg_inputs":
         ["-f x11grab -i :0",
