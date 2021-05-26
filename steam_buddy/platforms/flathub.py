@@ -108,7 +108,8 @@ class Flathub(StorePlatform):
             'name': content.name,
             'hidden': False,
             'banner': self.get_image_file_path(content.content_id),
-            'cmd': "flatpak run " + content.content_id,
+            'params': content.content_id,
+            'cmd': "flatpak run",
             'dir': "~",
             'tags': ["Flathub"]
         }
