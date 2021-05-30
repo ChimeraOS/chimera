@@ -1,0 +1,165 @@
+#!/usr/bin/env python
+
+import os
+import vdf
+import time
+import yaml
+import shutil
+import urllib.request
+
+
+if 'XDG_DATA_HOME' in os.environ:
+	DATA_HOME = os.environ['XDG_DATA_HOME']
+else:
+	DATA_HOME = os.environ['HOME'] + '/.local/share'
+
+if 'XDG_CONFIG_HOME' in os.environ:
+	CONFIG_HOME = os.environ['XDG_CONFIG_HOME']
+else:
+	CONFIG_HOME = os.environ['HOME'] + '/.config'
+
+if 'XDG_CACHE_HOME' in os.environ:
+	CACHE_HOME = os.environ['XDG_CACHE_HOME']
+else:
+	CACHE_HOME = os.environ['HOME'] + '/.cache'
+
+MAIN_FILE  = DATA_HOME + '/steam-tweaks.yaml'
+LOCAL_FILE = CONFIG_HOME + '/steam-tweaks.yaml'
+SHORTCUT_COMPAT_DATA_FILE = CACHE_HOME + '/steam-shortcuts-compat.yaml'
+
+STEAM_DIR = DATA_HOME + '/Steam'
+if not os.path.isdir(STEAM_DIR):
+	os.makedirs(STEAM_DIR)
+
+STATIC_FILE = '/usr/share/steam-tweaks/steam-tweaks.yaml'
+if os.path.exists(STATIC_FILE) and not os.path.exists(MAIN_FILE):
+	shutil.copyfile(STATIC_FILE, MAIN_FILE)
+
+
+def load_steam_config(path):
+	if os.path.isfile(path):
+		data = vdf.load(open(path))
+	else:
+		data = vdf.VDFDict()
+		data['InstallConfigStore'] = { 'Software': { 'Valve': { 'Steam': {}}}}
+
+	steam = data['InstallConfigStore']['Software']['Valve']['Steam']
+
+	if 'CompatToolMapping' not in steam:
+		steam['CompatToolMapping'] = {}
+	else:
+		stale_entries=[]
+        
+		for game in steam['CompatToolMapping']:
+			if 'name' in steam['CompatToolMapping'][game] and 'config' in steam['CompatToolMapping'][game]:
+				if steam['CompatToolMapping'][game]['name'] == '' and steam['CompatToolMapping'][game]['config'] == '':
+					stale_entries.append(game)
+
+		for entry in stale_entries:
+			del data['InstallConfigStore']['Software']['Valve']['Steam']['CompatToolMapping'][entry]
+	
+	return data
+
+
+def load_steam_localconfig(path):
+	if os.path.isfile(path):
+		data = vdf.load(open(path))
+	else:
+		data = vdf.VDFDict()
+		data['UserLocalConfigStore'] = { 'Software': { 'Valve': { 'Steam': {}}}}
+
+	steam_input = data['UserLocalConfigStore']
+	if 'Apps' not in steam_input:
+		steam_input['Apps'] = {}
+
+	launch_options = data['UserLocalConfigStore']['Software']['Valve']['Steam']
+	if 'Apps' not in launch_options:
+		launch_options['Apps'] = {}
+
+	return data
+
+
+def update_steam_config(tweaks_file, steam_data, priority):
+	if not os.path.isfile(tweaks_file):
+		return
+
+	compat = steam_data['InstallConfigStore']['Software']['Valve']['Steam']['CompatToolMapping']
+
+	data = yaml.load(open(tweaks_file), Loader=yaml.FullLoader)
+	for key in data:
+		if key not in compat or 'Priority' not in compat[key] or int(compat[key]['Priority']) <= priority:
+			if 'compat_tool' in data[key]:
+				entry = {}
+				entry['name'] = data[key]['compat_tool']
+				if 'compat_config' in data[key]:
+					entry['config'] = data[key]['compat_config']
+				entry['Priority'] = priority
+				compat[key] = entry
+
+
+def update_steam_localconfig(tweaks_file, steam_data):
+	if not os.path.isfile(tweaks_file):
+		return
+
+	steam_input_data = steam_data['UserLocalConfigStore']['Apps']
+	launch_options = steam_data['UserLocalConfigStore']['Software']['Valve']['Steam']['Apps']
+
+	data = yaml.load(open(tweaks_file), Loader=yaml.FullLoader)
+	for key in data:
+		if 'steam_input' in data[key] and data[key]['steam_input'] == 'enabled':
+			steam_input_data[key] = {
+				"UseSteamControllerConfig" : "2",
+				"SteamControllerRumble" : "-1",
+				"SteamControllerRumbleIntensity" : "320",
+				"EnableSCTenFootOverlayCheckNew" : "1"
+			}
+
+		if 'launch_options' in data[key]:
+			if key not in launch_options:
+				launch_options[key] = {}
+			launch_options[key]['LaunchOptions'] = data[key]['launch_options']
+
+
+attempts = 0
+while attempts < 5:
+	try:
+		urllib.request.urlretrieve('https://gamer-os.github.io/steam-tweaks/steam-tweaks.yaml', MAIN_FILE)
+		break
+	except:
+		print('failed to update tweaks file (attempt {})'.format(attempts+1))
+		time.sleep(2)
+		attempts += 1
+
+
+
+config_dir = STEAM_DIR + '/config'
+config_file = config_dir + '/config.vdf'
+
+if not os.path.isdir(config_dir):
+	os.makedirs(config_dir)
+
+config_data = load_steam_config(config_file)
+
+update_steam_config(MAIN_FILE, config_data, 209) # add global entries if file exists
+update_steam_config(LOCAL_FILE, config_data, 229) # add local entries if file exists
+update_steam_config(SHORTCUT_COMPAT_DATA_FILE, config_data, 209) # add shortcut compat data
+vdf.dump(config_data, open(config_file, 'w'), pretty=True)
+
+
+USERS_DIR = STEAM_DIR + '/userdata'
+for user_dir in os.listdir(USERS_DIR):
+	if user_dir == 'anonymous':
+		continue
+
+	config_dir = USERS_DIR + '/' + user_dir + '/config'
+	config_file = config_dir + '/localconfig.vdf'
+
+	if not os.path.isdir(config_dir):
+		os.makedirs(config_dir)
+
+	config_data = load_steam_localconfig(config_file)
+
+	update_steam_localconfig(MAIN_FILE, config_data) # add global entries if file exists
+	update_steam_localconfig(LOCAL_FILE, config_data) # add local entries if file exists
+
+	vdf.dump(config_data, open(config_file, 'w'), pretty=True)

@@ -1,0 +1,10 @@
+[Unit]
+Description=Steam Patch Service
+
+[Service]
+WorkingDirectory=/usr/share/steam-tweaks
+ExecStart=/usr/bin/steam-patch
+Restart=always
+
+[Install]
+WantedBy=default.target

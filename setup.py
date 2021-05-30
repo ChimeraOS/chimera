@@ -5,7 +5,14 @@ setup(
     name="Steam-Buddy",
     version="0.9.1",
     packages=find_packages(exclude=['tests']),
-    scripts=['steam-buddy'],
+    scripts=['steam-buddy',
+             'steam-tweaks',
+             'steam-compat-tool-stubs',
+             'steam-shortcuts',
+             'steam-config',
+             'steam-patch',
+             'steam-mfplat'
+    ],
 
     data_files=[
         ('share/steam-buddy/images', glob('images/*.png')),
@@ -17,6 +24,10 @@ setup(
         ('share/steam-buddy/config', glob('config/*.conf')),
         ('share/steam-buddy/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
+        ('share/steam-tweaks/data', glob('data/*'))
+        ('share/steam-tweaks/compat-tools', glob('compat-tools/*'))
+        ('share/steam-tweaks', ['steam-tweaks.yaml'])
+        ('share/steam-tweaks', ['steam-compat-tool-stub.tpl'])
         ('share/doc/steam-buddy', ['README.md']),
         ('share/doc/steam-buddy', ['LICENSE']),
     ],
@@ -31,6 +42,8 @@ setup(
         'pygame',
         'psutil',
         'bcrypt',
+        'vdf',
+        'inotify_simple',
     ],
 
     # metadata to display on PyPI

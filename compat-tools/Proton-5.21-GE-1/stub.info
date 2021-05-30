@@ -1,0 +1,3 @@
+TOOL_URL=https://github.com/GloriousEggroll/proton-ge-custom/releases/download/5.21-GE-1/Proton-5.21-GE-1.tar.gz
+TOOL_MD5SUM=32a562a772a9b56ff03287978a153227
+TOOL_CMD=proton
