@@ -110,7 +110,8 @@ class Flathub(StorePlatform):
             'banner': self.get_image_file_path(content.content_id),
             'params': content.content_id,
             'cmd': "flatpak run",
-            'tags': ["Flathub"],
+            'dir': "~",
+            'tags': ["Flathub"]
         }
 
     def get_installed_content(self) -> list:
