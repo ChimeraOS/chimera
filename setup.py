@@ -3,7 +3,7 @@ from glob import glob
 
 setup(
     name="Steam-Buddy",
-    version="0.9.1",
+    version="0.11.0",
     packages=find_packages(exclude=['tests']),
     scripts=['steam-buddy',
              'steam-tweaks',
@@ -11,7 +11,7 @@ setup(
              'steam-shortcuts',
              'steam-config',
              'steam-patch',
-             'steam-mfplat'
+             'tweaks-mfplat'
     ],
 
     data_files=[
