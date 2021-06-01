@@ -24,10 +24,10 @@ setup(
         ('share/steam-buddy/config', glob('config/*.conf')),
         ('share/steam-buddy/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
-        ('share/steam-tweaks/data', glob('data/*'))
-        ('share/steam-tweaks/compat-tools', glob('compat-tools/*'))
-        ('share/steam-tweaks', ['steam-tweaks.yaml'])
-        ('share/steam-tweaks', ['steam-compat-tool-stub.tpl'])
+        ('share/steam-tweaks/data', glob('data/*')),
+        ('share/steam-tweaks/compat-tools', glob('compat-tools/*')),
+        ('share/steam-tweaks', ['steam-tweaks.yaml']),
+        ('share/steam-tweaks', ['steam-compat-tool-stub.tpl']),
         ('share/doc/steam-buddy', ['README.md']),
         ('share/doc/steam-buddy', ['LICENSE']),
     ],
