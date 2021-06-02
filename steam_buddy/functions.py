@@ -2,23 +2,30 @@ import re
 import os
 import shutil
 import yaml
-from steam_buddy.config import SHORTCUT_DIR
 from PIL import Image, ImageFont, ImageDraw
+from steam_buddy.utils import ensure_directory
+from steam_buddy.utils import file_exists
+from steam_buddy.utils import SteamEnvironment
 
 
 def sanitize(string):
     if isinstance(string, str):
-        return string.replace('\n', '_').replace('\r', '_').replace('/', '_').replace('\\', '_').replace('\0', '_').replace('"', '')
-
+        retval = string
+        for r in ['\n', '\r', '/', '\\', '\0']:
+            retval = retval.replace(r, '_')
+        retval.replace('"', '')
+        return retval
     return string
 
 
 def load_shortcuts(platform):
     shortcuts = []
-    if not os.path.exists(SHORTCUT_DIR):
-        os.makedirs(SHORTCUT_DIR)
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    if os.path.isfile(shortcuts_file):
+    se = SteamEnvironment()
+    ensure_directory(se.SHORTCUT_DIRS[0])
+
+    shortcuts_file = se.SHORTCUT_DIRS[0] + \
+        "/steam-buddy.{platform}.yaml".format(platform=platform)
+    if file_exists(shortcuts_file):
         shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
     if not shortcuts:

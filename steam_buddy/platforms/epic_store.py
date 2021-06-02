@@ -1,16 +1,27 @@
 import subprocess
 import json
 import os
-from steam_buddy.config import CONFIG_DIR, BANNER_DIR, CONTENT_DIR
+from steam_buddy.utils import SteamEnvironment
+from steam_buddy.utils import ensure_directory
+from steam_buddy.config import BANNER_DIR
+from steam_buddy.config import CONTENT_DIR
 from steam_buddy.platforms.store_platform import StorePlatform, dic
 
 
-METADATA_DIR = os.path.join(CONFIG_DIR, 'legendary', 'metadata')
 
 
 class EpicStore(StorePlatform):
+    def __init__(self):
+        se = SteamEnvironment()
+        self.METADATA_DIR = os.path.join(se.CONFIG_HOME,
+                                         'legendary',
+                                         'metadata')
+
     def is_authenticated(self):
-        return os.path.isfile(os.path.join(CONFIG_DIR, "legendary", "user.json"))
+        se = SteamEnvironment()
+        return os.path.isfile(os.path.join(se.CONFIG_HOME,
+                                           "legendary",
+                                           "user.json"))
 
     def authenticate(self, password):
         subprocess.check_output(["legendary", "auth", "--sid", password])
@@ -18,10 +29,7 @@ class EpicStore(StorePlatform):
     def get_shortcut(self, content):
         ext = '.jpg'
         base_path = os.path.join(BANNER_DIR, 'epic-store/')
-        try:
-            os.makedirs(base_path)
-        except:
-            pass
+        ensure_directory(base_path)
 
         img_path = base_path + content.content_id + ext
         subprocess.check_output(["curl", content.image_url, "-o", img_path])
@@ -44,7 +52,7 @@ class EpicStore(StorePlatform):
             if data[3] == 'True':  # exclude DLC
                 continue
 
-            with open(os.path.join(METADATA_DIR, data[0] + '.json')) as f:
+            with open(os.path.join(self.METADATA_DIR, data[0] + '.json')) as f:
                 metadata = json.load(f)
 
             for img in metadata['metadata']['keyImages']:
@@ -70,7 +78,7 @@ class EpicStore(StorePlatform):
             if data[0] in installed_ids:
                 continue
 
-            with open(os.path.join(METADATA_DIR, data[0]+'.json')) as f:
+            with open(os.path.join(self.METADATA_DIR, data[0]+'.json')) as f:
                 metadata = json.load(f)
 
             for img in metadata['metadata']['keyImages']:

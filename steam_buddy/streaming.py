@@ -1,7 +1,9 @@
-import os
-import shlex
-import time
-import subprocess as sp
+from shlex import split
+from time import strftime
+from os.path import expanduser
+from subprocess import Popen
+from subprocess import TimeoutExpired
+from steam_buddy.utils import ensure_directory
 
 
 class StreamServer:
@@ -17,7 +19,7 @@ class StreamServer:
     def __start_sls(self):
         sls_conf_file = self.settings.get_setting("sls_conf_file")
         if self._sls is None:
-            self._sls = sp.Popen(['sls', '-c', sls_conf_file])
+            self._sls = Popen(['sls', '-c', sls_conf_file])
         else:
             raise(Exception("Error starting SLS: Already started"))
 
@@ -25,19 +27,17 @@ class StreamServer:
         self._sls.terminate()
         try:
             self._sls.wait(5)
-        except sp.TimeoutExpired:
+        except TimeoutExpired:
             self._sls.kill()
         self._sls = None
 
     def __start_ffmpeg(self, local=False):
         recordings_dir = self.settings.get_setting("recordings_dir")
-        if not os.path.exists(recordings_dir):
-            os.mkdir(recordings_dir, mode=0o755)
+        ensure_directory(recordings_dir)
 
         INPUTS = self.settings.get_setting("ffmpeg_inputs")
         VCODEC = self.settings.get_setting("ffmpeg_vcodec")
         ACODEC = self.settings.get_setting("ffmpeg_acodec")
-        #OUTPUT_FORMAT = self.settings.get_setting("ffmpeg_output_format")
 
         if local:
             OUTPUT_FORMAT = "-f matroska"
@@ -58,11 +58,11 @@ class StreamServer:
         cmd.append(STREAM)
 
         print(cmd)
-        args = shlex.split(" ".join(cmd))
+        args = split(" ".join(cmd))
         print(args)
         if self._ffmpeg is None:
-            self._ffmpeg = sp.Popen(args,
-                                    cwd=os.path.expanduser(recordings_dir))
+            self._ffmpeg = Popen(args,
+                                    cwd=expanduser(recordings_dir))
         else:
             raise(Exception("Error starting FFMpeg: Already started"))
 
@@ -70,7 +70,7 @@ class StreamServer:
         self._ffmpeg.terminate()
         try:
             self._ffmpeg.wait(5)
-        except sp.TimeoutExpired:
+        except TimeoutExpired:
             self._ffmpeg.kill()
         self._ffmpeg = None
 
