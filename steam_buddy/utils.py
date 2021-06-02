@@ -39,6 +39,7 @@ class SteamEnvironment:
         self.STEAM_DIR = self.__get_steam_dir()
         self.STEAM_APPS_DIR = self.__get_steam_apps_dir()
         self.STEAM_USER_DIRS = self.__get_steam_user_dirs()
+        self.STEAM_CONFIG_FILE = self.__get_steam_config_file()
         self.STATIC_TWEAKS_FILE = self.__get_static_tweaks_file()
         self.MAIN_TWEAKS_FILE = self.__get_main_tweaks_file()
         self.LOCAL_TWEAKS_FILE = self.__get_local_tweaks_file()
@@ -86,6 +87,9 @@ class SteamEnvironment:
             if d not in ['anonymous', 'ac', '0']:
                 user_dirs.append('/'.join([base, d]))
         return user_dirs
+
+    def __get_steam_config_file(self):
+        return self.STEAM_DIR + '/config/config.vdf'
 
     def __get_main_tweaks_file(self):
         return self.DATA_HOME + '/steam-tweaks.yaml'
