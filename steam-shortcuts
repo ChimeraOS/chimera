@@ -6,7 +6,7 @@ import vdf
 import yaml
 import zlib
 from datetime import datetime, date
-from steam_buddy import utils
+from steam_buddy.utils import BuddyContext
 
 
 compat_data = {}
@@ -124,7 +124,7 @@ def create_shortcut(entry, steam_shortcuts):
         shortcut['tags'][str(t)] = tag
         t += 1
 
-    se = utils.SteamEnvironment()
+    se = BuddyContext()
     if 'banner' in entry:
         _, ext = os.path.splitext(entry['banner'])
         for user_dir in se.STEAM_USER_DIRS:
@@ -147,7 +147,7 @@ def create_shortcut(entry, steam_shortcuts):
 
 
 def main():
-    se = utils.SteamEnvironment()
+    se = BuddyContext()
 
     # Don't scan user directories if there are no shortcuts to create
     data = []

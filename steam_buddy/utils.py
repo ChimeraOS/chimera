@@ -4,7 +4,7 @@ import os
 
 def ensure_directory(directory):
     if not os.path.isdir(directory):
-        os.mkdir(directory)
+        os.makedirs(directory, mode=0o755, exist_ok=True)
 
 
 def ensure_directory_for_file(file):
@@ -16,7 +16,7 @@ def file_exists(file):
     return os.path.exists(file)
 
 
-class SteamEnvironment:
+class BuddyContext:
     """Singleton class to manage the Steam environment.
     It contains variables and common functions to be used in all
     steam_buddy tools"""
@@ -25,7 +25,7 @@ class SteamEnvironment:
 
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super(SteamEnvironment, cls).__new__(cls)
+            cls._instance = super(BuddyContext, cls).__new__(cls)
             cls._instance.__init()
         return cls._instance
 
@@ -82,6 +82,7 @@ class SteamEnvironment:
 
     def __get_steam_user_dirs(self):
         base = self.STEAM_DIR + '/userdata'
+        ensure_directory(base)
         user_dirs = []
         for d in os.listdir(base):
             if d not in ['anonymous', 'ac', '0']:

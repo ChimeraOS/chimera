@@ -25,6 +25,7 @@ from steam_buddy.config import AUTHENTICATOR
 from steam_buddy.config import SETTINGS_HANDLER
 from steam_buddy.config import STEAMGRID_HANDLER
 from steam_buddy.config import FTP_SERVER
+from steam_buddy.config import SHORTCUT_DIR
 from steam_buddy.config import RESOURCE_DIR
 from steam_buddy.config import BANNER_DIR
 from steam_buddy.config import CONTENT_DIR

@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from io import BytesIO
-from steam_buddy.utils import SteamEnvironment
+from steam_buddy.utils import BuddyContext
 from steam_buddy.utils import ensure_directory
 from steam_buddy.utils import file_exists
 from steam_buddy.config import CONTENT_DIR
@@ -15,7 +15,7 @@ from steam_buddy.functions import load_shortcuts
 class GOG(StorePlatform):
     def is_authenticated(self):
         num_lines = 0
-        se = SteamEnvironment()
+        se = BuddyContext()
         path = os.path.join(se.CONFIG_HOME, "wyvern", "wyvern.toml")
         if file_exists(path):
             num_lines = sum(1 for line in open(path))
@@ -85,7 +85,7 @@ class GOG(StorePlatform):
         pass
 
     def _install(self, content) -> subprocess:
-        se = SteamEnvironment()
+        se = BuddyContext()
         cachedir = os.path.join(se.CACHE_HOME, 'steam-buddy')
         shutil.rmtree(cachedir, ignore_errors=True)
         ensure_directory(cachedir)

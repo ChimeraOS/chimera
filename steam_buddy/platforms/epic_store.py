@@ -1,7 +1,7 @@
 import subprocess
 import json
 import os
-from steam_buddy.utils import SteamEnvironment
+from steam_buddy.utils import BuddyContext
 from steam_buddy.utils import ensure_directory
 from steam_buddy.config import BANNER_DIR
 from steam_buddy.config import CONTENT_DIR
@@ -12,13 +12,13 @@ from steam_buddy.platforms.store_platform import StorePlatform, dic
 
 class EpicStore(StorePlatform):
     def __init__(self):
-        se = SteamEnvironment()
+        se = BuddyContext()
         self.METADATA_DIR = os.path.join(se.CONFIG_HOME,
                                          'legendary',
                                          'metadata')
 
     def is_authenticated(self):
-        se = SteamEnvironment()
+        se = BuddyContext()
         return os.path.isfile(os.path.join(se.CONFIG_HOME,
                                            "legendary",
                                            "user.json"))

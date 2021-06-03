@@ -5,7 +5,7 @@ import time
 import yaml
 import shutil
 import urllib.request
-from steam_buddy.utils import SteamEnvironment
+from steam_buddy.utils import BuddyContext
 from steam_buddy.utils import ensure_directory
 from steam_buddy.utils import ensure_directory_for_file
 from steam_buddy.utils import file_exists
@@ -101,7 +101,7 @@ def update_steam_localconfig(tweaks_file, steam_data):
 
 
 def main():
-    se = SteamEnvironment()
+    se = BuddyContext()
     ensure_directory(se.STEAM_DIR)
     if (file_exists(se.STATIC_TWEAKS_FILE) and
             not file_exists(se.MAIN_TWEAKS_FILE)):

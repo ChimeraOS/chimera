@@ -1,6 +1,6 @@
 import os
 from webtest import TestApp
-from steam_buddy import server
+from steam_buddy.server import server
 from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
 
 

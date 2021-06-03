@@ -6,12 +6,13 @@ import shutil
 import filecmp
 import subprocess
 from inotify_simple import INotify, flags
-from steam_buddy import utils
+from steam_buddy.utils import BuddyContext
+from steam_buddy.utils import file_exists
 
 
 patches = {}
 watches = {}
-se = utils.SteamEnvironment()
+se = BuddyContext()
 inotify = INotify()
 watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
 steam_dir = inotify.add_watch(se.STEAM_DIR, watch_flags)
@@ -51,7 +52,7 @@ def start_watch(game_dir):
 
 
 def load_data(data_path):
-    if not utils.file_exists(data_path):
+    if not file_exists(data_path):
         return
 
     print('load_data:', data_path)

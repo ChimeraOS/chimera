@@ -5,7 +5,7 @@ import yaml
 from PIL import Image, ImageFont, ImageDraw
 from steam_buddy.utils import ensure_directory
 from steam_buddy.utils import file_exists
-from steam_buddy.utils import SteamEnvironment
+from steam_buddy.utils import BuddyContext
 
 
 def sanitize(string):
@@ -20,7 +20,7 @@ def sanitize(string):
 
 def load_shortcuts(platform):
     shortcuts = []
-    se = SteamEnvironment()
+    se = BuddyContext()
     ensure_directory(se.SHORTCUT_DIRS[0])
 
     shortcuts_file = se.SHORTCUT_DIRS[0] + \
