@@ -940,14 +940,14 @@
 "1001230": # Partial Control
   compat_tool: proton_513
 
+"1181400": # Path of Giants
+  compat_tool: proton_5
+
 "505230": # Pathologic 2
   compat_tool: proton_513
 
 "1071590": # Pathologic 2 Demo
   compat_tool: proton_513
-
-"1181400": # Path of Giants
-  compat_tool: proton_5
 
 "758730": # Paw Patrol: On A Roll
   compat_tool: proton_411
