@@ -705,6 +705,24 @@ def exit_game():
         redirect('/')
 
 
+@route('/reboot')
+@authenticate
+def reboot_system():
+    os.system('reboot')
+
+
+@route('/poweroff')
+@authenticate
+def poweroff_system():
+    os.system('poweroff')
+
+
+@route('/suspend')
+@authenticate
+def suspend_system():
+    os.system('systemctl suspend')
+
+
 def get_audio():
     if not shutil.which('ponymix'):
         return None
