@@ -14,22 +14,31 @@ class MangoHudConfig:
             self.reset_config()
 
     def __read_toggle_key(self):
+        t_key = "Shift_R+F12"  # MangoHud default
+        parser = ConfigParser(allow_no_value=True)
+
+        # Check in file for override
         if os.path.exists(self.config_file):
             f = open(self.config_file, "r")
-            parser = ConfigParser(allow_no_value=True)
             parser.read_string("[Mangohud]\n" + f.read())
             f.close()
             if 'toggle_hud' in parser['Mangohud']:
-                self.toggle_key = parser['Mangohud']['toggle_hud']
-            else:
-                self.toggle_key = "Shift_R+F12"
-        else:
-            self.toggle_key = "Shift_R+F12"
+                t_key = parser['Mangohud']['toggle_hud']
+
+        # Check override in MANGOHUD_CONFIG
+        config_var = os.environ.get("MANGOHUD_CONFIG")
+        if config_var:
+            config = '\n'.join(config_var.split(','))
+            parser.read_string("[Mangohud]\n" + config)
+            if 'toggle_hud' in parser['Mangohud']:
+                t_key = parser['Mangohud']['toggle_hud']
+
+        self.toggle_key = t_key
 
     def reset_config(self) -> None:
         defaultt_config = [
-            "no_display",
-            'toggle_hud = "F3"'
+            'no_display',
+            'toggle_hud = F3'
         ]
         self.save_config("\n".join(defaultt_config))
 
