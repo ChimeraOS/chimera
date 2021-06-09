@@ -22,7 +22,7 @@ class MangoHudConfig:
             if 'toggle_hud' in parser['Mangohud']:
                 self.toggle_key = parser['Mangohud']['toggle_hud']
             else:
-                self.toggle_key = "F3"
+                self.toggle_key = "Shift_R+F12"
         else:
             self.toggle_key = "Shift_R+F12"
 
