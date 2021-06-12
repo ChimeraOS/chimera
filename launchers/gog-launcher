@@ -15,4 +15,4 @@ if [ "$appdir" != "." ]; then
 	rm -rf $appdir
 fi
 
-cat goggame*.info | grep path | cut -d':' -f 2 | sed 's/"//g' | sed 's/,//g' | xargs
+cat goggame*.info | jq '.playTasks[0].path' | sed 's/"//g'
