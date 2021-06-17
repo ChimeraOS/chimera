@@ -245,6 +245,9 @@
 "870780": # Control
   compat_tool: proton_513
 
+"1000030": # Cook Serve Delicious! 3?!  
+  compat_tool: proton_513
+
 "320340": # Cosmonautica
   compat_tool: proton_513
 
@@ -276,6 +279,9 @@
 
 "939100": # Darksburg
   compat_tool: proton_5
+
+"710920": # Darksiders Genesis
+  compat_tool: Proton-6.1-GE-2
 
 "388410": # Darksiders II Deathinitive Edition
   compat_tool: proton_5
@@ -446,6 +452,9 @@
     - copy:
         src: data/common/xlive.dll
         dst: xlive.dll
+
+"904360": # Family Man
+  compat_tool: proton_513
 
 "959520": # Fantasy Blacksmith
   compat_tool: proton_513
@@ -798,6 +807,9 @@
 "939560": # Monster Trampoline
   compat_tool: proton_316
 
+"1331910": # Morkredd  
+  compat_tool: proton_513
+
 "237110": # Mortal Kombat Komplete Edition
   compat_tool: proton_42
 
@@ -922,8 +934,14 @@
 "622440": # Pandemic: The Board Game
   compat_tool: proton_513
 
+"1178880": # Panzer Dragoon: Remake  
+  compat_tool: Proton-6.1-GE-2
+  
 "1001230": # Partial Control
   compat_tool: proton_513
+
+"1181400": # Path of Giants
+  compat_tool: proton_5
 
 "505230": # Pathologic 2
   compat_tool: proton_513
@@ -934,9 +952,6 @@
 "758730": # Paw Patrol: On A Roll
   compat_tool: proton_411
   launch_options: tweaks-mfplat 4.11 || true && %command%
-
-"1181400": # Path of Giants
-  compat_tool: proton_5
 
 "1013310": # Peaky Blinders: Mastermind
   compat_tool: proton_513
@@ -1017,6 +1032,9 @@
 "254700": # Resident Evil 4
   compat_tool: proton_411
 
+"760810": # Retimed
+  compat_tool: proton_513
+
 "290040": # Retro Game Crunch
   compat_tool: proton_513
  
@@ -1042,8 +1060,23 @@
   compat_tool: proton_513
   launch_options: '%command%'
 
+"1092630": # Rogue Glitch
+  compat_tool: proton_63
+
+"4770": # Rome: Total War - Alexander
+  compat_tool: Proton-6.1-GE-2
+
+"864680": # Rover Mechanic Simulator
+  compat_tool: proton_513
+
 "516130": # Runner3
   compat_tool: proton_411
+
+"418340": # RWBY Grimm Eclipse
+  compat_tool: proton_63
+
+"718560": # Scythe: Digital Edition
+  compat_tool: proton_513
 
 "32360": # The Secret of Monkey Island: Special Edition
   compat_tool: proton_411
@@ -1051,11 +1084,48 @@
 "814380": # Sekiro: Shadows Die Twice
   compat_tool: proton_513
 
+"585450": # Shadows Awakening
+  compat_tool: Proton-6.1-GE-2
+
+"385560": # Shadow Complex Remastered
+  compat_tool: proton_513
+
+"277890": # Shantae: Risky's Revenge - Directors Cut
+  compat_tool: proton_513
+
+"878670": # Shenmue III
+  compat_tool: proton_513
+
+"11130": # Sherlock_Holmes: The Mystery of the Mummy
+  compat_tool: proton_513
+
 "809890": # Shining Resonance Refrain
   compat_tool: proton_5
 
 "289070": # Sid Meier's Civilization VI
   launch_options: LD_PRELOAD=/usr/lib/libfreetype.so.6 %command%
+
+"3920": # Sid Meier's Pirates!
+  compat_tool: proton_63
+
+"7600": # Sid Meier's Railroads
+  compat_tool: proton_513
+
+"282210": # Sid Meier's Starships
+  compat_tool: proton_63
+  launch_options: rm Starships64.exe && ln -s Starships.exe Starships64.exe; %command%
+
+"712730": # SIMULACRA
+  compat_tool: proton_513
+
+"204880": # Sins of a Solar Empire: Rebellion 
+  compat_tool: proton_513
+
+"201290": # Sins of a Solar Empire: Trinity  
+  compat_tool: proton_513
+
+"976700": # Size Matters
+  compat_tool: proton_513
 
 "619320": # Skatemasta Tcheco
   compat_tool: proton_63
@@ -1067,14 +1137,24 @@
 "361350": # Skyhook
   steam_input: enabled
 
+"1018850": # Smile For Me
+  compat_tool: Proton-6.1-GE-2
+
 "544330": # Snake Pass
   compat_tool: proton_5
 
+"238090": # Sniper Elite 3
+  compat_tool: proton_513
+  launch_options: PROTON_SET_GAME_DRIVE=1 %command%
+ 
 "973580": # Sniper Ghost Warrior Contracts
   compat_tool: proton_63
 
 "1096570": # SONG OF HORROR COMPLETE EDITION
   compat_tool: Proton-5.21-GE-1
+
+"460700": # Song of the Deep
+  compat_tool: proton_513
 
 "212480": # Sonic & All-Stars Racing Transformed
   compat_tool: proton_63
@@ -1110,6 +1190,12 @@
 
 "50300": # Spec Ops: The Line
   steam_input: enabled
+
+"468670": # Speed Brawl  
+  compat_tool: Proton-6.1-GE-2
+
+"263280": # Spintires
+  compat_tool: Proton-6.1-GE-2
 
 "996580": # Spyro Reignited Trilogy
   compat_tool: Proton-5.21-GE-1
@@ -1206,6 +1292,9 @@
 
 "427290": # Vampyr
   compat_tool: proton_42
+
+"1063310": # Vane
+  compat_tool: proton_513
 
 "857980": # Void Bastards
   compat_tool: proton_411
