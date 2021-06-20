@@ -524,6 +524,9 @@
 "555000": # Goat of Duty  
   compat_tool: proton_5
 
+"1154810": # Going Under
+  compat_tool: proton_63
+
 "275390": # Guacamelee! Super Turbo Championship Edition
   compat_tool: proton_42
 
