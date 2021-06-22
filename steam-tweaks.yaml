@@ -435,7 +435,6 @@
 
 "1080110": # F1 2020
   compat_tool: proton_63
-  compat_config: seccomp
 
 "995980": # Fae Tactics 
   compat_tool: proton_513
