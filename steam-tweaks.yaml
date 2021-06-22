@@ -350,7 +350,7 @@
   compat_config: noesync,nofsync
 
 "690790": # DiRT Rally 2.0
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "201700": # DiRT Showdown
   steam_input: enabled
@@ -431,7 +431,7 @@
   launch_options: rm -f F1_2019_dx12.exe && ln -s F1_2019.exe F1_2019_dx12.exe; %command%
 
 "1080110": # F1 2020
-  compat_tool: proton_5
+  compat_tool: proton_63
   compat_config: seccomp
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
 
