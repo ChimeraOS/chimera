@@ -34,6 +34,9 @@
 "331870": # AER Memories of Old; fix black screen in native version
   launch_options: '%command% -screen-fullscreen 0'
 
+"221380": # Age of Empires II (2013)
+  compat_tool: proton_411
+
 "1210150": # Ageless
   compat_tool: proton_513
 
