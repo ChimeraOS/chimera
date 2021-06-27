@@ -227,6 +227,12 @@
 "390610": # Circa Infinity; native version crashes on startup
   compat_tool: proton_37
 
+"8800": # Civilization IV: Beyond the Sword
+  compat_tool: proton_63
+
+"3990": # Civilization IV: Warlords
+  compat_tool: proton_63
+
 "602770": # Clatter
   compat_tool: proton_513
 
@@ -270,6 +276,9 @@
 "873940": # Crying Suns
   compat_tool: proton_5
 
+“829590”: # Cryofall
+  compat_tool: proton_63
+  
 "928840": # Cybarian: The Time Travelling Warrior
   compat_tool: proton_5
 
@@ -328,6 +337,9 @@
   compat_tool: proton_513
   
 "755980": # Deployment
+  compat_tool: proton_513
+
+"671510": # DESOLATE
   compat_tool: proton_513
 
 "329050": # Devil May Cry 4 Special Edition
@@ -414,6 +426,9 @@
   compat_tool: proton_411
   compat_config: d9vk,noesync,nofsync
 
+"975950": # Effie
+  compat_tool: Proton-6.1-GE-2
+
 "812160": # Etherborn
   compat_tool: proton_411
 
@@ -437,7 +452,7 @@
   compat_tool: proton_63
   compat_config: seccomp
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
-
+  
 "995980": # Fae Tactics 
   compat_tool: proton_513
 
@@ -614,6 +629,9 @@
 
 "453340": # Hustle Cat
   compat_tool: proton_411
+
+"854940": # Ikenfell
+  compat_tool: proton_513
 
 "890720": # In Other Waters
   compat_tool: proton_513
@@ -792,6 +810,9 @@
   compat_tool: proton_42
   compat_config: noesync,nofsync
 
+"1302050": # Milky Way Prince - The Vampire Star
+  compat_tool: Proton-6.1-GE-2
+
 "489520": # Minion Masters
   compat_tool: proton_513
 
@@ -959,6 +980,9 @@
   compat_tool: proton_411
   launch_options: tweaks-mfplat 4.11 || true && %command%
 
+"1037910": # Paw Paw Paw
+  compat_tool: proton_63
+
 "1013310": # Peaky Blinders: Mastermind
   compat_tool: proton_513
 
@@ -1108,6 +1132,12 @@
 "809890": # Shining Resonance Refrain
   compat_tool: proton_5
 
+"3900": # Sid Meier's Civilization IV
+  compat_tool: proton_63
+
+"16810": # Sid Meier's Civilization IV: Colonization
+  compat_tool: proton_63
+
 "289070": # Sid Meier's Civilization VI
   launch_options: LD_PRELOAD=/usr/lib/libfreetype.so.6 %command%
 
@@ -1162,6 +1192,9 @@
 "460700": # Song of the Deep
   compat_tool: proton_513
 
+"1062480": # Songs of Skydale
+  compat_tool: proton_513
+
 "212480": # Sonic & All-Stars Racing Transformed
   compat_tool: proton_63
 
@@ -1213,6 +1246,15 @@
 "32400": # STAR WARS: Dark Forces
   compat_tool: boxtron
 
+"828900": # The Stillness of the Wind
+  compat_tool: proton_513
+
+"1063490": # Still There
+  compat_tool: proton_513
+
+"439190": # Stories: The Path of Destinies
+  compat_tool: proton_513
+
 "312670": # Strange Brigade
   compat_tool: proton_411
   launch_options: mv bin/StrangeBrigade_Vulkan.exe bin/StrangeBrigade.exe; %command%
@@ -1229,7 +1271,22 @@
 "1035560": # Struggling
   compat_tool: proton_5
 
+"7800": # Stubbs the Zombie in Rebel Without a Pulse
+  compat_tool: proton_63
+
+"1057750": # The Suicide of Rachel Foster
+  compat_tool: Proton-6.1-GE-2
+
 "702700": # Super Bomberman R
+  compat_tool: proton_513
+
+"869750": # Super Chicken Catchers
+  compat_tool: proton_513
+
+"314070": # Super Mega Baseball: Extra Innings
+  compat_tool: proton_513
+
+"670080": # SuperLuminauts
   compat_tool: proton_513
 
 "375120": # Super Star Path; native version does not recognize controllers
@@ -1238,20 +1295,62 @@
 "1000560": # Supraland Demo; native version has sound issues
   compat_tool: proton_5
 
+"63500": # Swords and Soldiers HD
+  compat_tool: proton_513
+
 "619780": # The Swords of Ditto: Mormo's Curse; native version controller mappings are bad
   compat_tool: proton_411
 
 "410700": # System Shock: Classic
   compat_tool: boxtron
 
+"838410": # Tabletop Playground
+  compat_tool: proton_63
+
+"568090": # Tattletail
+  compat_tool: proton_63
+
+"302850": # Team Indie
+  compat_tool: proton_513
+
 "785260": # Team Sonic Racing
   compat_tool: proton_411
+
+"800270": # Terraforming Mars
+  compat_tool: proton_513
 
 "574980": # Them's Fightin' Herds
   compat_tool: proton_42
 
+"573600": # Think of the Children
+  compat_tool: proton_513
+
+"214700": # Thirty Flights of Loving
+  compat_tool: proton_513
+
+"595280": # Throne of Lies: Medieval Politics
+  compat_tool: proton_63
+
+"1003090": # Through the Darkest of Times
+  compat_tool: Proton-6.1-GE-2
+
 "108200": # Ticket to Ride
   compat_tool: proton_513
+
+"340270": # TIMEframe
+  compat_tool: proton_513
+
+"475150": # Titan Quest Anniversary Edition
+  compat_tool: proton_513
+
+"224960": # Tomb Raider I
+  compat_tool: boxtron
+
+"225300": # Tomb Raider II
+ compat_tool: Proton-6.1-GE-2
+
+"225320": # Tomb Raider III 
+ compat_tool: Proton-6.1-GE-2
 
 "674500": # Total Tank Simulator
   compat_tool: proton_513
@@ -1349,6 +1448,9 @@
   compat_tool: proton_513
 
 "354830": # Wolfenstein: The Old Blood German Edition
+  compat_tool: proton_513
+
+"228380": # Wreckfest
   compat_tool: proton_513
 
 "1142100": # WWE 2K BATTLEGROUNDS
