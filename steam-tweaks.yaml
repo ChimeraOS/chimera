@@ -34,6 +34,9 @@
 "331870": # AER Memories of Old; fix black screen in native version
   launch_options: '%command% -screen-fullscreen 0'
 
+"221380": # Age of Empires II (2013)
+  compat_tool: proton_411
+
 "1210150": # Ageless
   compat_tool: proton_513
 
@@ -350,7 +353,7 @@
   compat_config: noesync,nofsync
 
 "690790": # DiRT Rally 2.0
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "201700": # DiRT Showdown
   steam_input: enabled
@@ -431,7 +434,7 @@
   launch_options: rm -f F1_2019_dx12.exe && ln -s F1_2019.exe F1_2019_dx12.exe; %command%
 
 "1080110": # F1 2020
-  compat_tool: proton_5
+  compat_tool: proton_63
   compat_config: seccomp
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
 
@@ -523,6 +526,9 @@
 
 "555000": # Goat of Duty  
   compat_tool: proton_5
+
+"1154810": # Going Under
+  compat_tool: proton_63
 
 "275390": # Guacamelee! Super Turbo Championship Edition
   compat_tool: proton_42

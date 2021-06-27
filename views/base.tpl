@@ -63,7 +63,7 @@
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/retroarch/load_state">Load Emulator State</a>
                 <a href="/retroarch/save_state">Save Emulator State</a>
-                <a href="/streaming">Streaming Control</a>
+                <!--<a href="/streaming">Streaming Control</a>-->
                 <a href="/steam/compositor">Toggle Compositor</a>
                 <a href="/steam/overlay">Toggle Steam Overlay</a>
                 <a href="/mangohud">Toggle MangoHud</a>

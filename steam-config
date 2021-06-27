@@ -123,7 +123,7 @@ def update_steam_localconfig(tweaks_file, steam_data):
 attempts = 0
 while attempts < 5:
 	try:
-		urllib.request.urlretrieve('https://gamer-os.github.io/steam-tweaks/steam-tweaks.yaml', MAIN_FILE)
+		urllib.request.urlretrieve('https://raw.githubusercontent.com/ChimeraOS/chimera/master/steam-tweaks.yaml', MAIN_FILE)
 		break
 	except:
 		print('failed to update tweaks file (attempt {})'.format(attempts+1))

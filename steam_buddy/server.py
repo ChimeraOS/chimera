@@ -453,7 +453,7 @@ def settings_update():
 
     FTP_SERVER.reload()
 
-    return template('success.tpl')
+    redirect('/settings')
 
 
 @route('/settings/reset_mangohud', method='POST')
@@ -469,7 +469,7 @@ def steam_restart():
     try:
         subprocess.call(["pkill", "steamos-session"])
     finally:
-        return template('success.tpl')
+        redirect('/')
 
 
 @route('/steam/compositor')
@@ -478,7 +478,7 @@ def steam_compositor():
     try:
         subprocess.call(["bin/toggle-steamos-compositor"])
     finally:
-        return template('success.tpl')
+        redirect('/')
 
 
 @route('/steam/overlay')
@@ -646,7 +646,7 @@ def record_stop():
 def mangohud_save_config():
     new_content = request.forms.get('new_content')
     MANGOHUD_HANDLER.save_config(new_content)
-    return template('success.tpl')
+    redirect('/')
 
 
 @route('/mangohud/edit_config')
@@ -702,7 +702,7 @@ def exit_game():
     try:
         subprocess.call(["bin/exit-game"])
     finally:
-        return template('success.tpl')
+        redirect('/')
 
 
 def get_audio():
@@ -817,7 +817,7 @@ def authenticate_route_handler():
 @route('/forgotpassword')
 def forgot_password():
     SETTINGS_HANDLER.set_setting('keep_password', False)
-    return redirect('/login')
+    redirect('/login')
 
 
 @route('/steamgrid/search/<search_string>')
