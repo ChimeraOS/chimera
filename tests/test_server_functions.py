@@ -41,7 +41,7 @@ def test_platform():
 
 def test_new():
     for p in PLATFORMS:
-        if p != 'epic-store' and p != 'flathub':
+        if p not in ['epic-store', 'flathub', 'gog']:
             document = new(p)
             validate_html("new({})".format(p), document)
 
