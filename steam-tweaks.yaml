@@ -4,7 +4,7 @@
 # ANY ENTRIES IN THAT FILE WILL OVERRIDE ENTRIES IN THIS FILE
 
 "791180": # 1 Screen Platformer
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "435790": # 10 Second Ninja X
   compat_tool: proton_411
@@ -81,7 +81,7 @@
   compat_tool: Proton-6.1-GE-2
 
 "688420": # Bad North
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "1035850": # Balancelot  
   compat_tool: Proton-5.21-GE-1
@@ -349,7 +349,7 @@
   compat_tool: proton_5
 
 "12840": # DiRT 2
-  compat_tool: proton_37
+  compat_tool: proton_63
   patch_dir: Dirt 2
   patches:
     - exec: echo "02c6dd46d6d89347d721ba87dcf443c3 12840_install.vdf" | md5sum --status -c && sed -i 56,69d 12840_install.vdf
@@ -377,7 +377,7 @@
   compat_tool: proton_411
 
 "525040": # The Disney Afternoon Collection
-  compat_tool: proton_42
+  compat_tool: proton_63
   compat_config: forcelgadd
 
 "635200": # Distrust: Polar Survival
@@ -546,7 +546,7 @@
   compat_tool: proton_63
 
 "275390": # Guacamelee! Super Turbo Championship Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "520440": # GUILTY GEAR Xrd -REVELATOR-
   compat_tool: Proton-5.21-GE-1
@@ -558,7 +558,7 @@
   compat_tool: proton_513
 
 "12750": # GRID (2008)
-  compat_tool: proton_5
+  compat_tool: proton_63
   patch_dir: Grid
   patches:
     - exec: echo "2960d17d77d44b259674e0b099b9e5a6 installscript.vdf" | md5sum --status -c && sed -i '62i \\t\t\t"Command 1"\t\t"/S"^M' installscript.vdf
@@ -568,7 +568,7 @@
   compat_tool: proton_5
 
 "396900": # Grip: Combat Racing
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "683320": # Gris
   compat_tool: Proton-5.21-GE-1
@@ -661,7 +661,7 @@
   compat_tool: proton_411
 
 "205950": # Jet Set Radio
-  compat_tool: proton_42
+  compat_tool: proton_63
   launch_options: mv jetsetradio.exe jsrsetup.exe; %command%
 
 "270810": # Jones On Fire
@@ -832,7 +832,7 @@
   compat_tool: proton_513
 
 "939560": # Monster Trampoline
-  compat_tool: proton_316
+  compat_tool: proton_63
 
 "1331910": # Morkredd  
   compat_tool: proton_513
@@ -935,7 +935,7 @@
   compat_tool: proton_513
 
 "102600": # Orcs Must Die!
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "201790": # Orcs Must Die! 2
   compat_tool: proton_411
@@ -993,7 +993,7 @@
   compat_tool: proton_5
 
 "749800": # PixelJunk Monsters Ultimate; native version does not recognize controllers
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "255870": # PixelJunk Shooter; native version crashes on startup
   compat_tool: proton_411
@@ -1069,7 +1069,7 @@
   compat_tool: proton_513
  
 "1152020": # Return Of The Zombie King
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "9010": # Return to Castle Wolfenstein
   compat_tool: proton_5
@@ -1319,9 +1319,6 @@
 "800270": # Terraforming Mars
   compat_tool: proton_513
 
-"574980": # Them's Fightin' Herds
-  compat_tool: proton_42
-
 "573600": # Think of the Children
   compat_tool: proton_513
 
@@ -1360,7 +1357,7 @@
   compat_config: noesync,nofsync
 
 "585420": # Trailmakers
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "914010": # Train Station Renovation  
   compat_tool: Proton-5.21-GE-1
@@ -1369,7 +1366,7 @@
   compat_tool: Proton-5.21-GE-1
 
 "319910": # Trine 3: The Artifacts of Power; native version shows generic gamepad hints
-  compat_tool: proton_42
+  compat_tool: proton_5
 
 "690640": # Trine 4: The Nightmare Prince
   compat_tool: proton_513
