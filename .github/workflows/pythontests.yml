@@ -22,4 +22,4 @@ jobs:
         flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics --exclude=tests --exit-zero
     - name: Run tests
       run: |
-        for test in $(find ./tests -type f -name "test*.py"); do python -m pytest ${test} -v; done
+        ./run-tests

@@ -4,7 +4,16 @@ import importlib
 sys.modules["steam_buddy.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
 from tidylib import tidy_document
 from bottle import request
-from steam_buddy.server import root, platform_page, new, settings, logout, login
+from steam_buddy.server import \
+        root, \
+        platform_page, \
+        new, \
+        settings, \
+        logout, \
+        login, \
+        mangohud_edit, \
+        streaming_config, \
+        virtual_keyboard
 from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
@@ -50,6 +59,21 @@ def test_settings():
     request.environ["HTTP_HOST"] = "localhost:8844"
     document = settings()
     validate_html("settings", document)
+
+
+def test_mangohud_edit():
+    document = mangohud_edit()
+    validate_html('mangohud_edit', document)
+
+
+def test_streaming_config():
+    document = streaming_config()
+    validate_html('streaming_config', document)
+
+
+def test_virtual_keyoard():
+    document = virtual_keyboard()
+    validate_html('virtual_keyboard', document)
 
 
 def test_logout():
