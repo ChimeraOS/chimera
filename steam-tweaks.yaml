@@ -177,7 +177,7 @@
   compat_tool: proton_411
 
 "965680": # Boomerang Fu
-  compat_tool: proton_5
+  compat_tool: proton_63
 
 "1011630": # Border Force
   compat_tool: proton_513
@@ -593,7 +593,7 @@
   compat_tool: proton_513
 
 "905340": # Heave Ho
-  compat_tool: proton_513
+  compat_tool: proton_63
 
 "960910": # Heavy Rain
   compat_tool: proton_5
@@ -1100,7 +1100,7 @@
   compat_tool: proton_513
 
 "516130": # Runner3
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "418340": # RWBY Grimm Eclipse
   compat_tool: proton_63
@@ -1199,7 +1199,7 @@
   compat_tool: proton_63
 
 "71250": # Sonic Adventure DX
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "200940": # Sonic CD
   compat_tool: proton_411
@@ -1214,8 +1214,8 @@
   compat_tool: proton_411
 
 "71340": # Sonic Generations
-  compat_tool: proton_411
-  compat_config: d9vk,noesync,nofsync
+  compat_tool: proton_63
+  compat_config: noesync,nofsync
 
 "584400": # Sonic Mania
   compat_tool: proton_411
