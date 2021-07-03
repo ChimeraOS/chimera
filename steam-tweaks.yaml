@@ -450,7 +450,6 @@
 
 "1080110": # F1 2020
   compat_tool: proton_63
-  compat_config: seccomp
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
   
 "995980": # Fae Tactics 
