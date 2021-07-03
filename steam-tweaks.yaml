@@ -264,7 +264,7 @@
   compat_tool: proton_513
 
 "731490": # Crash Bandicoot N. Sane Trilogy
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "26900": # Crayon Physics Deluxe
   compat_tool: proton_513
@@ -1087,7 +1087,7 @@
   compat_tool: proton_513
 
 "252950": # Rocket League
-  compat_tool: proton_513
+  compat_tool: proton_63
   launch_options: '%command%'
 
 "1092630": # Rogue Glitch
@@ -1167,8 +1167,7 @@
   compat_tool: proton_63
 
 "91100": # SkyDrift
-  compat_tool: proton_411
-  compat_config: d9vk
+  compat_tool: proton_63
 
 "361350": # Skyhook
   steam_input: enabled
@@ -1237,7 +1236,7 @@
   compat_tool: Proton-6.1-GE-2
 
 "996580": # Spyro Reignited Trilogy
-  compat_tool: Proton-5.21-GE-1
+  compat_tool: proton_63
   launch_options: '%command% -nohmd'
 
 "1058020": # STAR WARS Battlefront (Classic, 2004)
