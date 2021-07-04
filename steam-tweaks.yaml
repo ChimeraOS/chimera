@@ -754,7 +754,7 @@
   compat_tool: proton_513
 
 "424840": # Little Nightmares
-  compat_tool: proton_513
+  compat_tool: proton_63
   launch_options: -onethread
 
 "262690": # Little Racers STREET
