@@ -1239,7 +1239,6 @@
 
 "996580": # Spyro Reignited Trilogy
   compat_tool: proton_63
-  launch_options: '%command% -nohmd'
 
 "1058020": # STAR WARS Battlefront (Classic, 2004)
   compat_tool: proton_5
