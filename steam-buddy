@@ -2,16 +2,16 @@
 import os
 import bottle
 import shutil
-from steam_buddy import server
+from steam_buddy.server import server
 from steam_buddy.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
 
 if __name__ == '__main__':
-	if not os.environ.get("DISPLAY"):
-		os.environ["DISPLAY"] = ":0.0"
+    if not os.environ.get("DISPLAY"):
+        os.environ["DISPLAY"] = ":0.0"
 
-	if os.path.exists(UPLOADS_DIR):
-		shutil.rmtree(UPLOADS_DIR)
+    if os.path.exists(UPLOADS_DIR):
+        shutil.rmtree(UPLOADS_DIR)
 
-	os.chdir(RESOURCE_DIR)
-	FTP_SERVER.run()
-	bottle.run(app=server, host='0.0.0.0', port=8844)
+    os.chdir(RESOURCE_DIR)
+    FTP_SERVER.run()
+    bottle.run(app=server, host='0.0.0.0', port=8844)

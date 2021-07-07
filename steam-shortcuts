@@ -6,9 +6,11 @@ import vdf
 import yaml
 import zlib
 from datetime import datetime, date
+from steam_buddy.utils import BuddyContext
 
-STEAM_USER_DIRS = []
+
 compat_data = {}
+
 
 def yearsago(years):
     from_date = datetime.now().date()
@@ -18,11 +20,11 @@ def yearsago(years):
         return from_date.replace(month=2, day=28, year=from_date.year - years)
 
 
-TIME_WARP_TAG='Time Warp'
-TIME_WARP_DATE=None
-TIME_WARP=os.environ.get('TIME_WARP')
+TIME_WARP_TAG = 'Time Warp'
+TIME_WARP_DATE = None
+TIME_WARP = os.environ.get('TIME_WARP')
 if TIME_WARP:
-    TIME_WARP_DATE=yearsago(int(TIME_WARP)).isoformat()
+    TIME_WARP_DATE = yearsago(int(TIME_WARP)).isoformat()
 
 
 def get_banner_id(exe, name):
@@ -31,28 +33,32 @@ def get_banner_id(exe, name):
     full_64 = (high_32 << 32) | 0x02000000
     return full_64
 
+
 def get_compat_id(exe, name):
     crc_input = ''.join([exe, name])
     return (zlib.crc32(crc_input.encode('utf-8')) & 0xffffffff) | 0x80000000
+
 
 def get_shortcut_id(exe, name):
     return get_compat_id(exe, name) - 2**32
 
 
-"""
-Returns the shortcut dictionary of the given app_id. If not found returns {}
-"""
 def match_app_id(sc, app_id):
+    """Returns the shortcut dictionary of the given app_id.
+    If not found returns {}
+    """
     for s in sc:
         if 'appid' in sc[s] and sc[s]['appid'] == app_id:
             return sc[s]
     return {}
 
-"""
-Creates a new shrotcut dictionary to be written later on the shortcut file.
-If an application exists with the same app ID in the file, tries to update it.
-"""
+
 def create_shortcut(entry, steam_shortcuts):
+    """Creates a new shrotcut dictionary to be written later on the
+    shortcut file.
+    If an application exists with the same app ID in the file, tries
+    to update it.
+    """
     if 'name' not in entry:
         print('shortcut missing required field "name"; skipping')
         return
@@ -118,9 +124,10 @@ def create_shortcut(entry, steam_shortcuts):
         shortcut['tags'][str(t)] = tag
         t += 1
 
+    se = BuddyContext()
     if 'banner' in entry:
         _, ext = os.path.splitext(entry['banner'])
-        for user_dir in STEAM_USER_DIRS:
+        for user_dir in se.STEAM_USER_DIRS:
             dst_dir = user_dir + '/config/grid/'
             if not os.path.isdir(dst_dir):
                 os.makedirs(dst_dir)
@@ -138,41 +145,13 @@ def create_shortcut(entry, steam_shortcuts):
 
     return shortcut
 
+
 def main():
-    # Initialize all directories and files
-    if 'XDG_CACHE_HOME' in os.environ:
-        CACHE_HOME = os.environ['XDG_CACHE_HOME']
-    else:
-        CACHE_HOME = os.environ['HOME'] + '/.cache'
-
-    COMPAT_DATA_FILE = CACHE_HOME + '/steam-shortcuts-compat.yaml'
-
-    if 'XDG_DATA_HOME' in os.environ:
-        DATA_HOME = os.environ['XDG_DATA_HOME']
-    else:
-        DATA_HOME = os.environ['HOME'] + '/.local/share'
-
-    DATA_HOME += '/'
-
-    if not os.path.isdir(DATA_HOME + 'steam-shortcuts'):
-        os.makedirs(DATA_HOME + 'steam-shortcuts')
-
-    SHORTCUT_DIRS = [ DATA_HOME + 'steam-shortcuts' ]
-
-    if os.path.isdir('/usr/share/steam-shortcuts'):
-        SHORTCUT_DIRS.append('/usr/share/steam-shortcuts')
-
-    STEAM_USER_BASE_DIR = DATA_HOME + 'Steam/userdata/'
-    for d in os.listdir(STEAM_USER_BASE_DIR):
-        if d == 'anonymous' or d == 'ac' or d == '0':
-            continue
-        path = STEAM_USER_BASE_DIR + d
-        if os.path.isdir(path):
-            STEAM_USER_DIRS.append(path)
+    se = BuddyContext()
 
     # Don't scan user directories if there are no shortcuts to create
     data = []
-    for d in SHORTCUT_DIRS:
+    for d in se.SHORTCUT_DIRS:
         for f in os.listdir(d):
             y = open(d + '/' + f)
             dd = yaml.load(y, Loader=yaml.FullLoader)
@@ -187,12 +166,12 @@ def main():
         sys.exit(1)
 
     # Get current shortcuts for each user
-    for user_dir in STEAM_USER_DIRS:
+    for user_dir in se.STEAM_USER_DIRS:
         steam_shortcuts = {}
         file_path = user_dir + '/config/shortcuts.vdf'
-        STEAM_SHORTCUT_FILE = file_path
+        steam_shortcuts_file = file_path
         if os.path.isfile(file_path):
-            s = vdf.binary_load(open(STEAM_SHORTCUT_FILE, 'rb'))
+            s = vdf.binary_load(open(steam_shortcuts_file, 'rb'))
             if 'shortcuts' in s:
                 steam_shortcuts = s['shortcuts']
 
@@ -208,9 +187,11 @@ def main():
         out = {}
         out['shortcuts'] = shortcuts
         b = vdf.binary_dumps(out)
-        open(STEAM_SHORTCUT_FILE, 'wb').write(b)
+        open(steam_shortcuts_file, 'wb').write(b)
 
-    yaml.dump(compat_data, open(COMPAT_DATA_FILE, 'w'), default_flow_style=False)
+    yaml.dump(compat_data,
+              open(se.COMPAT_DATA_FILE, 'w'),
+              default_flow_style=False)
 
 
 main()

@@ -10,10 +10,34 @@ import bcrypt
 import requests
 import shutil
 import unicodedata
-from bottle import app, route, template, static_file, redirect, abort, request, response
+from bottle import app
+from bottle import route
+from bottle import template
+from bottle import static_file
+from bottle import redirect
+from bottle import abort
+from bottle import request
+from bottle import response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS, SSH_KEY_HANDLER, AUTHENTICATOR, SETTINGS_HANDLER, STEAMGRID_HANDLER, FTP_SERVER, RESOURCE_DIR, BANNER_DIR, CONTENT_DIR, SHORTCUT_DIR, UPLOADS_DIR, SESSION_OPTIONS, STREAMING_HANDLER, MANGOHUD_HANDLER
-from steam_buddy.functions import load_shortcuts, sanitize, upsert_file, delete_file, generate_banner
+from steam_buddy.config import PLATFORMS
+from steam_buddy.config import SSH_KEY_HANDLER
+from steam_buddy.config import AUTHENTICATOR
+from steam_buddy.config import SETTINGS_HANDLER
+from steam_buddy.config import STEAMGRID_HANDLER
+from steam_buddy.config import FTP_SERVER
+from steam_buddy.config import SHORTCUT_DIR
+from steam_buddy.config import RESOURCE_DIR
+from steam_buddy.config import BANNER_DIR
+from steam_buddy.config import CONTENT_DIR
+from steam_buddy.config import UPLOADS_DIR
+from steam_buddy.config import SESSION_OPTIONS
+from steam_buddy.config import STREAMING_HANDLER
+from steam_buddy.config import MANGOHUD_HANDLER
+from steam_buddy.functions import load_shortcuts
+from steam_buddy.functions import sanitize
+from steam_buddy.functions import upsert_file
+from steam_buddy.functions import delete_file
+from steam_buddy.functions import generate_banner
 from steam_buddy.auth_decorator import authenticate
 from steam_buddy.platforms.epic_store import EpicStore
 from steam_buddy.platforms.flathub import Flathub
