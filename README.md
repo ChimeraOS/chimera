@@ -1,8 +1,42 @@
 ## What is it?
 Steam Buddy is a web-based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for GamerOS.
 
+It also provides a set of tools for quality of life improvements for Steam.
 
-## Features
+## Installation
+On ArchLinux install `steam-buddy` package from the AUR. On GamerOS the package is pre-installed
+
+After installing the `steam-buddy` package, you must run the following commands to enable the web interface it and then restart your system:
+```
+    systemctl --user enable steam-buddy.service
+    sudo systemctl enable steam-buddy-proxy.service
+    sudo systemctl enable steam-buddy-proxy.socket
+```
+
+## Usage
+
+### Web interface
+You can connect to Steam Buddy on GamerOS by opening a browser on another computer and entering `gameros.local`. If that does not work, then determine the IP address of your GamerOS system by looking at the network settings and enter it directly into your browser.
+
+After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
+
+To restart Steam you can click on the cog icon in the top right of the Steam Buddy UI and select the "Restart Steam" option.
+
+### Command line tools
+If you use GamerOS or use `steamos-compositor-plus` and have `steam-buddy` installed all the command line tools will run automatically when the Steam session starts.
+
+You can also invoke each script listed below (see Command line tools configuration below) manually with the command given in brackets. Alternatively, run the `steam-tweaks` convenience script which runs all the tools. The tools should be invoked when Steam is not running. Any changes the tools make while Steam is running will be overwritten by Steam.
+
+## Configuration
+The default RetroArch configuration files are located under `/usr/share/steam-buddy/config/`.
+You can override the default configuration by creating corresponding files under `~/.config/steam-buddy/`.
+
+## Screenshots
+
+![Platforms](screenshots/platforms.png?raw=true)
+![Flathub](screenshots/flathub.png?raw=true)
+
+## Web Features
 
 ### Install Flathub apps
 Only a limited set of applications are available for immediate installation from Flathub. Many applications on Flathub have compatibility issues with the GamerOS compositor and require testing. The set of available applications will be expanded over time.
@@ -57,29 +91,56 @@ BIOS files can be uploaded the same as games. However, the name of the shortcut 
 
 Also, select the "Hide" option so the BIOS file is not shown in Steam along with other games.
 
-## Installation
 
-Steam Buddy is installed and configured out of the box on GamerOS.
+## Command line tools configuration
+### Steam Config (steam-config)
+Configures Steam games according to the automatically downloaded configuration file, or the local override file if found at `~/.config/steam-tweaks.yaml`.
 
-It is also available for Arch from the AUR as `steam-buddy`.
-After installing the `steam-buddy` package, you must run the following commands to enable it and then restart your system:
+Extends Valve's Steam Play/Proton whitelist, specifying the compatibility tool, launch options and whether Steam Input is enabled on a per-game basis. Many games are already configured to work out of the box, with more being added over time. Please help by testing the games you own and submitting your configurations.
+
+#### Options
+ - **compat_tool**: the compatibility tool to be used for the specified game, e.g. `proton_42`, `steamlinuxruntime`
+ - **compat_config**: the configuration for the compatibility tool specified, e.g. for proton: `d9vk`, `noesync`, etc; see the [Proton docs](https://github.com/ValveSoftware/Proton#runtime-config-options) for the full list of available options
+ - **launch_options**: the launch options to be used
+ - **steam_input**: a value of `enabled` will force the use of Steam Input for the specified game
+
+#### Example
 ```
-    systemctl --user enable steam-buddy.service
-    sudo systemctl enable steam-buddy-proxy.service
-    sudo systemctl enable steam-buddy-proxy.socket
+"321040":
+  compat_tool: proton_411
+  compat_config: noesync
+  launch_options: MY_VARIABLE=1 %command%
+  steam_input: enabled
 ```
 
-## Usage
-You can connect to Steam Buddy on GamerOS by opening a browser on another computer and entering `gameros.local`. If that does not work, then determine the IP address of your GamerOS system by looking at the network settings and enter it directly into your browser.
+Each game is specified by its Steam app id. Note that the app id MUST be quoted.
 
-After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
-To restart Steam you can click on the cog icon in the top right of the Steam Buddy UI and select the "Restart Steam" option.
+### Steam Shortcuts (steam-shortcuts)
+Reads one or more YAML formatted shortcut definition files stored under `/usr/share/steam-shortcuts/` or `~/.local/share/steam-shortcuts/` and adds the shortcuts to all available Steam accounts.
+NOTE: any existing shortcut data will be lost and replaced with shortcuts specified in the shortcut definition files.
 
-## Configuration
-The default RetroArch configuration files are located under `/usr/share/steam-buddy/config/`.
-You can override the default configuration by creating corresponding files under `~/.config/steam-buddy/`.
+#### Single shortcut per file example
+```
+name: Firefox                   # name of the shortcut as it will appear in Steam (required)
+cmd: firefox                    # the command to execute (required)
+dir: /full/path/to/working/dir  # the directory from which to execute the command
+params: github.com              # any parameters to invoke the command with
+banner: /path/to/image.png      # the grid banner image to use (this will be symlinked into Steam's grid directory)
+icon: firefox                   # small icon to show in Steam
+compat_tool: proton_411         # use the given compatibility tool, useful for running Windows executables
+compat_config: noesync          # use the given compatibility tool options
+hidden: false                   # 'false' to show the shortcut in Steam, 'true' to hide it
+tags:                           # a list of tags to be assigned to the shortcut in Steam
+  - Browser
+  - Custom Shortcut
+```
 
-## Screenshots
-
-![Platforms](screenshots/platforms.png?raw=true)
-![Flathub](screenshots/flathub.png?raw=true)
+#### Multiple shortcuts per file example
+```
+- name: Firefox
+  cmd: firefox
+  ...
+- name: Chromium
+  cmd: chromium
+  ...
+```
