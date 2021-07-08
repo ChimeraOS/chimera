@@ -45,7 +45,7 @@ class GOG(StorePlatform):
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
-            'compat_tool': None if content.native else 'proton_513',
+            'compat_tool': None if content.native else 'proton_63',
             'id': content.content_id
         }
 
