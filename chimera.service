@@ -1,10 +1,10 @@
 [Unit]
-Description=SteamBuddy
+Description=Chimera
 
 [Service]
-WorkingDirectory=/usr/share/steam-buddy
+WorkingDirectory=/usr/share/chimera
 ExecStartPre=/usr/bin/sleep 10
-ExecStart=/usr/bin/steam-buddy
+ExecStart=/usr/bin/chimera
 Restart=always
 
 [Install]

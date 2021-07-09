@@ -2,32 +2,32 @@ from setuptools import setup, find_packages
 from glob import glob
 
 setup(
-    name="Steam-Buddy",
+    name="Chimera",
     version="0.11.0",
     packages=find_packages(exclude=['tests']),
-    scripts=['steam-buddy',
+    scripts=['chimera',
              'steam-tweaks',
              'steam-compat-tool-stubs',
              'steam-shortcuts',
              'steam-config',
              'steam-patch',
              'tweaks-mfplat'
-    ],
+            ],
 
     data_files=[
-        ('share/steam-buddy/images', glob('images/*.png')),
-        ('share/steam-buddy/images/flathub', glob('images/flathub/*.png')),
-        ('share/steam-buddy/views', glob('views/*.tpl')),
-        ('share/steam-buddy/public', glob('public/*.js')),
-        ('share/steam-buddy/public', glob('public/*.css')),
-        ('share/steam-buddy/config', glob('config/*.cfg')),
-        ('share/steam-buddy/config', glob('config/*.conf')),
-        ('share/steam-buddy/bin',    glob('bin/*')),
+        ('share/chimera/images', glob('images/*.png')),
+        ('share/chimera/images/flathub', glob('images/flathub/*.png')),
+        ('share/chimera/views', glob('views/*.tpl')),
+        ('share/chimera/public', glob('public/*.js')),
+        ('share/chimera/public', glob('public/*.css')),
+        ('share/chimera/config', glob('config/*.cfg')),
+        ('share/chimera/config', glob('config/*.conf')),
+        ('share/chimera/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
         ('share/steam-tweaks', ['steam-tweaks.yaml']),
         ('share/steam-tweaks', ['steam-compat-tool-stub.tpl']),
-        ('share/doc/steam-buddy', ['README.md']),
-        ('share/doc/steam-buddy', ['LICENSE']),
+        ('share/doc/chimera', ['README.md']),
+        ('share/doc/chimera', ['LICENSE']),
     ],
 
     # Project uses reStructuredText, so ensure that the docutils get
@@ -47,13 +47,13 @@ setup(
     # metadata to display on PyPI
     author="Alesh Slovak",
     author_email="aleshslovak@gmail.com",
-    description="Steam Buddy is a web based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for GamerOS.",
-    keywords="steam steamos couch emulation flatpak flathub steam-buddy buddy gameros gamer gaming",
-    url="https://github.com/gamer-os/steam-buddy",   # project home page, if any
+    description="Chimera is a web based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for ChimeraOS.",
+    keywords="steam steamos couch emulation flatpak flathub chimera app chimeraos gamer gaming",
+    url="https://github.com/chimeraos/chimera",   # project home page, if any
     project_urls={
-        "Bug Tracker": "https://github.com/gamer-os/steam-buddy/issues",
-        "Documentation": "https://github.com/gamer-os/steam-buddy/blob/master/README.md",
-        "Source Code": "https://github.com/gamer-os/steam-buddy",
+        "Bug Tracker": "https://github.com/chimeraos/chimera/issues",
+        "Documentation": "https://github.com/chimeraos/chimera/blob/master/README.md",
+        "Source Code": "https://github.com/chimeraos/chimera",
     },
     classifiers=[
         'License :: OSI Approved :: MIT License'

@@ -1,4 +1,4 @@
-from steam_buddy.ssh_keys import SSHKeys, forbidden_strings
+from chimera_app.ssh_keys import SSHKeys, forbidden_strings
 
 
 def test_looks_like_ssh_key():

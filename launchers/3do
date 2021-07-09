@@ -1,3 +1,3 @@
 #! /bin/bash
 
-/usr/share/steam-buddy/bin/launcher 3do opera "$@"
+/usr/share/chimera/bin/launcher 3do opera "$@"

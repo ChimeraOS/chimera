@@ -6,13 +6,13 @@ import shutil
 import filecmp
 import subprocess
 from inotify_simple import INotify, flags
-from steam_buddy.utils import BuddyContext
-from steam_buddy.utils import file_exists
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import file_exists
 
 
 patches = {}
 watches = {}
-se = BuddyContext()
+se = ChimeraContext()
 inotify = INotify()
 watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
 steam_dir = inotify.add_watch(se.STEAM_DIR, watch_flags)

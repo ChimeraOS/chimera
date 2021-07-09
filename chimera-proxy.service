@@ -1,0 +1,9 @@
+[Unit]
+Requires=chimera-proxy.socket
+After=chimera-proxy.socket
+
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd 127.0.0.1:8844
+
+[Install]
+RequiredBy=chimera-proxy.socket

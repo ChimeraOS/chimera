@@ -7,11 +7,11 @@ if [ -z ${RETRO_CORE} ]; then
 	RETRO_CORE=${2}
 fi
 
-SAVE_DIR=${DATA_HOME}/steam-buddy/saves/${1}
-RETRO_CONFIG=/tmp/steam-buddy-retroarch.cfg
+SAVE_DIR=${DATA_HOME}/chimera/saves/${1}
+RETRO_CONFIG=/tmp/chimera-retroarch.cfg
 
-CORE_CONFIG=/usr/share/steam-buddy/config/${1}.cfg
-LOCAL_CONFIG=${CONFIG_HOME}/steam-buddy/${1}.cfg
+CORE_CONFIG=/usr/share/chimera/config/${1}.cfg
+LOCAL_CONFIG=${CONFIG_HOME}/chimera/${1}.cfg
 if [ -f ${LOCAL_CONFIG} ]; then
 	CORE_CONFIG=${LOCAL_CONFIG}
 fi
@@ -20,8 +20,8 @@ shift 2
 
 mkdir -p ${SAVE_DIR}
 
-COMMON_CONFIG=/usr/share/steam-buddy/config/retroarch-common.cfg
-LOCAL_COMMON_CONFIG=${CONFIG_HOME}/steam-buddy/retroarch-common.cfg
+COMMON_CONFIG=/usr/share/chimera/config/retroarch-common.cfg
+LOCAL_COMMON_CONFIG=${CONFIG_HOME}/chimera/retroarch-common.cfg
 if [ -f ${LOCAL_COMMON_CONFIG} ]; then
 	COMMON_CONFIG=${LOCAL_COMMON_CONFIG}
 fi

@@ -1,3 +1,3 @@
 #! /bin/bash
 
-/usr/share/steam-buddy/bin/launcher sms genesis_plus_gx "$@"
+/usr/share/chimera/bin/launcher sms genesis_plus_gx "$@"

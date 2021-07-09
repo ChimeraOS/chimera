@@ -1,24 +1,24 @@
 import subprocess
 import json
 import os
-from steam_buddy.utils import BuddyContext
-from steam_buddy.utils import ensure_directory
-from steam_buddy.config import BANNER_DIR
-from steam_buddy.config import CONTENT_DIR
-from steam_buddy.platforms.store_platform import StorePlatform, dic
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import ensure_directory
+from chimera_app.config import BANNER_DIR
+from chimera_app.config import CONTENT_DIR
+from chimera_app.platforms.store_platform import StorePlatform, dic
 
 
 
 
 class EpicStore(StorePlatform):
     def __init__(self):
-        se = BuddyContext()
+        se = ChimeraContext()
         self.METADATA_DIR = os.path.join(se.CONFIG_HOME,
                                          'legendary',
                                          'metadata')
 
     def is_authenticated(self):
-        se = BuddyContext()
+        se = ChimeraContext()
         return os.path.isfile(os.path.join(se.CONFIG_HOME,
                                            "legendary",
                                            "user.json"))

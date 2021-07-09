@@ -1,35 +1,35 @@
 ## What is it?
-Steam Buddy is a web-based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for GamerOS.
+Chimera is a web-based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for ChimeraOS.
 
 It also provides a set of tools for quality of life improvements for Steam.
 
 ## Installation
-On ArchLinux install `steam-buddy` package from the AUR. On GamerOS the package is pre-installed
+On ArchLinux install `chimera` package from the AUR. On ChimeraOS the package is pre-installed
 
-After installing the `steam-buddy` package, you must run the following commands to enable the web interface it and then restart your system:
+After installing the `chimera` package, you must run the following commands to enable the web interface it and then restart your system:
 ```
-    systemctl --user enable steam-buddy.service
-    sudo systemctl enable steam-buddy-proxy.service
-    sudo systemctl enable steam-buddy-proxy.socket
+    systemctl --user enable chimera.service
+    sudo systemctl enable chimera-proxy.service
+    sudo systemctl enable chimera-proxy.socket
 ```
 
 ## Usage
 
 ### Web interface
-You can connect to Steam Buddy on GamerOS by opening a browser on another computer and entering `gameros.local`. If that does not work, then determine the IP address of your GamerOS system by looking at the network settings and enter it directly into your browser.
+You can connect to Chimera on ChimeraOS by opening a browser on another computer and entering `chimeraos.local`. If that does not work, then determine the IP address of your ChimeraOS system by looking at the network settings and enter it directly into your browser.
 
 After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
 
-To restart Steam you can click on the cog icon in the top right of the Steam Buddy UI and select the "Restart Steam" option.
+To restart Steam you can click on the cog icon in the top right of the Chimera UI and select the "Restart Steam" option.
 
 ### Command line tools
-If you use GamerOS or use `steamos-compositor-plus` and have `steam-buddy` installed all the command line tools will run automatically when the Steam session starts.
+If you use ChimeraOS or use `steamos-compositor-plus` and have `chimera` installed all the command line tools will run automatically when the Steam session starts.
 
 You can also invoke each script listed below (see Command line tools configuration below) manually with the command given in brackets. Alternatively, run the `steam-tweaks` convenience script which runs all the tools. The tools should be invoked when Steam is not running. Any changes the tools make while Steam is running will be overwritten by Steam.
 
 ## Configuration
-The default RetroArch configuration files are located under `/usr/share/steam-buddy/config/`.
-You can override the default configuration by creating corresponding files under `~/.config/steam-buddy/`.
+The default RetroArch configuration files are located under `/usr/share/chimera/config/`.
+You can override the default configuration by creating corresponding files under `~/.config/chimera/`.
 
 ## Screenshots
 
@@ -39,9 +39,9 @@ You can override the default configuration by creating corresponding files under
 ## Web Features
 
 ### Install Flathub apps
-Only a limited set of applications are available for immediate installation from Flathub. Many applications on Flathub have compatibility issues with the GamerOS compositor and require testing. The set of available applications will be expanded over time.
+Only a limited set of applications are available for immediate installation from Flathub. Many applications on Flathub have compatibility issues with the ChimeraOS compositor and require testing. The set of available applications will be expanded over time.
 
-Steam Buddy also looks in `~/.local/share/steam-buddy/banners/flathub/` for a list of additionally allowed Flathub applications. Just add a PNG or JPEG image of size 460x215 or 920x430 with the Flathub app id as the file name under that directory. The Flathub app id can be obtained from the last part of the URL of the Flathub page for the application. For example, the id for Minecraft is `com.mojang.Minecraft`.
+Chimera also looks in `~/.local/share/chimera/banners/flathub/` for a list of additionally allowed Flathub applications. Just add a PNG or JPEG image of size 460x215 or 920x430 with the Flathub app id as the file name under that directory. The Flathub app id can be obtained from the last part of the URL of the Flathub page for the application. For example, the id for Minecraft is `com.mojang.Minecraft`.
 
 If the application works well please create a new issue with the app id and grid image for permanent whitelisting.
 
@@ -52,7 +52,7 @@ Games are automatically started with Proton. Not all games will work.
 
 ### Upload ROMs
 
-You can upload ROMs and banner images to Steam Buddy and they will be added to Steam. The emulators are pre-configured and ready to play out of the box with almost any controller.
+You can upload ROMs and banner images to Chimera and they will be added to Steam. The emulators are pre-configured and ready to play out of the box with almost any controller.
 
 The following platforms are currently supported:
 - Arcade

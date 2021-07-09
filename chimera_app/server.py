@@ -19,29 +19,29 @@ from bottle import abort
 from bottle import request
 from bottle import response
 from beaker.middleware import SessionMiddleware
-from steam_buddy.config import PLATFORMS
-from steam_buddy.config import SSH_KEY_HANDLER
-from steam_buddy.config import AUTHENTICATOR
-from steam_buddy.config import SETTINGS_HANDLER
-from steam_buddy.config import STEAMGRID_HANDLER
-from steam_buddy.config import FTP_SERVER
-from steam_buddy.config import SHORTCUT_DIR
-from steam_buddy.config import RESOURCE_DIR
-from steam_buddy.config import BANNER_DIR
-from steam_buddy.config import CONTENT_DIR
-from steam_buddy.config import UPLOADS_DIR
-from steam_buddy.config import SESSION_OPTIONS
-from steam_buddy.config import STREAMING_HANDLER
-from steam_buddy.config import MANGOHUD_HANDLER
-from steam_buddy.functions import load_shortcuts
-from steam_buddy.functions import sanitize
-from steam_buddy.functions import upsert_file
-from steam_buddy.functions import delete_file
-from steam_buddy.functions import generate_banner
-from steam_buddy.auth_decorator import authenticate
-from steam_buddy.platforms.epic_store import EpicStore
-from steam_buddy.platforms.flathub import Flathub
-from steam_buddy.platforms.gog import GOG
+from chimera_app.config import PLATFORMS
+from chimera_app.config import SSH_KEY_HANDLER
+from chimera_app.config import AUTHENTICATOR
+from chimera_app.config import SETTINGS_HANDLER
+from chimera_app.config import STEAMGRID_HANDLER
+from chimera_app.config import FTP_SERVER
+from chimera_app.config import SHORTCUT_DIR
+from chimera_app.config import RESOURCE_DIR
+from chimera_app.config import BANNER_DIR
+from chimera_app.config import CONTENT_DIR
+from chimera_app.config import UPLOADS_DIR
+from chimera_app.config import SESSION_OPTIONS
+from chimera_app.config import STREAMING_HANDLER
+from chimera_app.config import MANGOHUD_HANDLER
+from chimera_app.functions import load_shortcuts
+from chimera_app.functions import sanitize
+from chimera_app.functions import upsert_file
+from chimera_app.functions import delete_file
+from chimera_app.functions import generate_banner
+from chimera_app.auth_decorator import authenticate
+from chimera_app.platforms.epic_store import EpicStore
+from chimera_app.platforms.flathub import Flathub
+from chimera_app.platforms.gog import GOG
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -194,7 +194,7 @@ def shortcut_create():
 
     name = name.strip()
 
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     shortcuts = load_shortcuts(platform)
 
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -244,7 +244,7 @@ def shortcut_update():
     banner = request.forms.get('banner')
     content = request.forms.get('content')
 
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     shortcuts = load_shortcuts(platform)
 
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -286,7 +286,7 @@ def shortcut_delete():
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
 
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     shortcuts = load_shortcuts(platform)
 
     matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
@@ -369,7 +369,7 @@ def platform_install(platform, content_id):
     shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
 
     shortcuts.append(shortcut)
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
     redirect('/platforms/{platform}/edit/{content_id}'.format(platform=platform, content_id=content_id))
@@ -388,7 +388,7 @@ def uninstall(platform, content_id):
         if content.name == shortcut['name']:
             shortcuts.remove(shortcut)
             break
-    shortcuts_file = "{shortcuts_dir}/steam-buddy.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
+    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
     yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
     redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))

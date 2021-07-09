@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Steam Buddy</title>
+	<title>Chimera</title>
 	<meta name="viewport" content="width=device-width">
 	<link href="/public/style.css" rel="stylesheet">
 	<link href="/public/filepond.min.css" rel="stylesheet">

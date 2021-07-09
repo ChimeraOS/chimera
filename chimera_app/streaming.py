@@ -3,7 +3,7 @@ from time import strftime
 from os.path import expanduser
 from subprocess import Popen
 from subprocess import TimeoutExpired
-from steam_buddy.utils import ensure_directory
+from chimera_app.utils import ensure_directory
 
 
 class StreamServer:
@@ -46,7 +46,7 @@ class StreamServer:
                 ".mkv"
         else:
             OUTPUT_FORMAT = "-f mpegts -flush_packets 0"
-            STREAM = '"srt://localhost:8080?streamid=uplive.gameros/live/stream"'
+            STREAM = '"srt://localhost:8080?streamid=uplive.chimeraos/live/stream"'
 
         # Build the ffmpeg command line
         cmd = ["ffmpeg"]

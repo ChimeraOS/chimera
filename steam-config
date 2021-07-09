@@ -5,10 +5,10 @@ import time
 import yaml
 import shutil
 import urllib.request
-from steam_buddy.utils import BuddyContext
-from steam_buddy.utils import ensure_directory
-from steam_buddy.utils import ensure_directory_for_file
-from steam_buddy.utils import file_exists
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import ensure_directory
+from chimera_app.utils import ensure_directory_for_file
+from chimera_app.utils import file_exists
 
 
 def load_steam_config(path):
@@ -101,7 +101,7 @@ def update_steam_localconfig(tweaks_file, steam_data):
 
 
 def main():
-    se = BuddyContext()
+    se = ChimeraContext()
     ensure_directory(se.STEAM_DIR)
     if (file_exists(se.STATIC_TWEAKS_FILE) and
             not file_exists(se.MAIN_TWEAKS_FILE)):
@@ -111,7 +111,7 @@ def main():
     attempts = 0
     while attempts < 5:
         try:
-		    urllib.request.urlretrieve(
+            urllib.request.urlretrieve(
                 'https://raw.githubusercontent.com/ChimeraOS/chimera/master/steam-tweaks.yaml',
                 se.MAIN_TWEAKS_FILE)
             break
@@ -153,4 +153,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+    main()

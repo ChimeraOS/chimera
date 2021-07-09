@@ -2,8 +2,8 @@
 import os
 import bottle
 import shutil
-from steam_buddy.server import server
-from steam_buddy.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
+from chimera_app.server import server
+from chimera_app.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
 
 if __name__ == '__main__':
     if not os.environ.get("DISPLAY"):
