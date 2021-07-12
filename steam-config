@@ -153,4 +153,4 @@ def main():
 
 
 if __name__ == '__main__':
-	vdf.dump(config_data, open(config_file, 'w'), pretty=True)
+	main()
