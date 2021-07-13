@@ -8,3 +8,4 @@ pygame
 psutil
 bcrypt
 Pillow
+vdf

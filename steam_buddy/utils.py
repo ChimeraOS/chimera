@@ -1,5 +1,6 @@
 """Utilities for the steam_buddy tools"""
 import os
+from datetime import datetime
 
 
 def ensure_directory(directory):
@@ -14,6 +15,14 @@ def ensure_directory_for_file(file):
 
 def file_exists(file):
     return os.path.exists(file)
+
+
+def yearsago(years):
+    from_date = datetime.now().date()
+    try:
+        return from_date.replace(year=from_date.year - years)
+    except ValueError:
+        return from_date.replace(month=2, day=28, year=from_date.year - years)
 
 
 class BuddyContext:
@@ -43,6 +52,7 @@ class BuddyContext:
         self.STATIC_TWEAKS_FILE = self.__get_static_tweaks_file()
         self.MAIN_TWEAKS_FILE = self.__get_main_tweaks_file()
         self.LOCAL_TWEAKS_FILE = self.__get_local_tweaks_file()
+        self.TIME_WARP = os.environ.get('TIME_WARP')
 
     def __get_cache_home_dir(self):
         if 'XDG_CACHE_HOME' in os.environ:
