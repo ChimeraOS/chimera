@@ -714,6 +714,9 @@
 "578330": # LEGO City Undercover
   compat_tool: proton_513
 
+"829110": # LEGO DC Super-Villains
+  compat_tool: proton_63
+
 "21130": # LEGO Harry Potter: Years 1-4
   compat_tool: proton_42
 
