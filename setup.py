@@ -6,6 +6,7 @@ setup(
     version="0.11.0",
     packages=find_packages(exclude=['tests']),
     scripts=['chimera',
+             'migrate-to-chimera',
              'steam-tweaks',
              'steam-compat-tool-stubs',
              'steam-shortcuts',
