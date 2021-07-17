@@ -91,8 +91,15 @@ fi
 
 # Go to our directories and replace settings:
 if [ -f $HOME/.local/share/chimera/settings/settings.json ]; then
-    cd $HOME/.local/share/chimera/settings
+    # Migrate settings to new location
+    echo "Moving configuration to new location"
+    if ! [ -d $HOME/.config/chimera ] ; then
+        mkdir -p $HOME/.config/chimera
+    fi
+    cp -bv $HOME/.local/share/chimera/settings/settings.json $HOME/.config/chimera/settings.json
+    rm -r $HOME/.local/share/chimera/settings
     echo "Renamig relevant paths inside settings file"
+    cd $HOME/.config/chimera
     sed -i 's/steam-buddy/chimera/g' settings.json
 fi
 

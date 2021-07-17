@@ -23,7 +23,7 @@ SHORTCUT_DIR = se.SHORTCUT_DIRS[0]
 BANNER_DIR = se.DATA_HOME + '/chimera/banners'
 CONTENT_DIR = se.DATA_HOME + '/chimera/content'
 RECORDINGS_DIR = se.DATA_HOME + '/chimera/recordings'
-SETTINGS_DIR = se.DATA_HOME + '/chimera/settings'
+SETTINGS_DIR = se.CONFIG_HOME + '/chimera'
 UPLOADS_DIR = os.path.join(se.CACHE_HOME, 'chimera', 'uploads')
 MANGOHUD_DIR = se.CONFIG_HOME + "/MangoHud"
 
