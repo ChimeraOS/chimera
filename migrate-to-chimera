@@ -20,28 +20,18 @@ fi
 
 ## MIGRATION MAGIC ##
 
-# Check if there are config files from steam-buddy
-if [ -d $HOME/.config/steam-buddy ] ; then
-    if [ -d $HOME/.config/chimera ] ; then
-        cp -Rbv $HOME/.config/steam-buddy/* $HOME/.config/chimera/.
-        rm -rfv $HOME/.config/steam-buddy
-        echo "Configuration directories have been merged and existing chimera files been backed up"
-    else
-        mv $HOME/.config/steam-buddy $HOME/.config/chimera
-        echo "Configuration directory has been moved"
+# Go to our directories and replace settings:
+if [ -f $HOME/.local/share/steam-buddy/settings/settings.json ]; then
+    # Migrate settings to new location
+    echo "Moving configuration to new location"
+    if ! [ -d $HOME/.config/chimera ] ; then
+        mkdir -p $HOME/.config/chimera
     fi
-fi
-
-# Migrate user data directories and files from steam-buddy
-if [ -d $HOME/.local/share/steam-buddy ] ; then
-    if [ -d $HOME/.local/share/chimera ] ; then
-        cp -Rbv $HOME/.local/share/steam-buddy/* $HOME/.local/share/chimera/.
-        rm -rfv $HOME/.local/share/steam-buddy
-        echo "Data directories have been merged and existing chimera files been backed up"
-    else
-        mv $HOME/.local/share/steam-buddy $HOME/.local/share/chimera
-        echo "Data directory has been moved"
-    fi
+    cp -bv $HOME/.local/share/steam-buddy/settings/settings.json $HOME/.config/chimera/settings.json
+    rm -rf $HOME/.local/share/chimera/settings
+    echo "Renamig relevant paths inside settings file"
+    cd $HOME/.config/chimera
+    sed -i 's/steam-buddy/chimera/g' settings.json
 fi
 
 # Check if there are platform specific yaml files
@@ -83,24 +73,10 @@ if [ -d $HOME/.local/share/steam-shortcuts ] ; then
 fi
 
 # Go to shortcuts and replace paths
-if [ -d $HOME/.local/share/chimera/settings ]; then
+if [ -d $HOME/.local/share/steam-shortcuts ]; then
     cd $HOME/.local/share/steam-shortcuts
     echo "Renamig relevant paths inside shortcuts files"
     find . -type f -name "*.yaml" -exec sed -i 's/steam-buddy/chimera/g' {} \; -print
-fi
-
-# Go to our directories and replace settings:
-if [ -f $HOME/.local/share/chimera/settings/settings.json ]; then
-    # Migrate settings to new location
-    echo "Moving configuration to new location"
-    if ! [ -d $HOME/.config/chimera ] ; then
-        mkdir -p $HOME/.config/chimera
-    fi
-    cp -bv $HOME/.local/share/chimera/settings/settings.json $HOME/.config/chimera/settings.json
-    rm -r $HOME/.local/share/chimera/settings
-    echo "Renamig relevant paths inside settings file"
-    cd $HOME/.config/chimera
-    sed -i 's/steam-buddy/chimera/g' settings.json
 fi
 
 # Go to steam-grid symlinks and relink them
@@ -124,6 +100,36 @@ for u in * ; do
     fi
 done
 
+# Check if there are config files from steam-buddy
+if [ -d $HOME/.config/steam-buddy ] ; then
+    if [ -d $HOME/.config/chimera ] ; then
+        cp -Rbv $HOME/.config/steam-buddy/* $HOME/.config/chimera/.
+        rm -rfv $HOME/.config/steam-buddy
+        echo "Configuration directories have been merged and existing chimera files been backed up"
+    else
+        mv $HOME/.config/steam-buddy $HOME/.config/chimera
+        echo "Configuration directory has been moved"
+    fi
+fi
+
+# Migrate cache
+if [ -d $HOME/.cache/steam-buddy ] ; then
+    # Remove chimera cache if exists
+    if [ -d $HOME/.cache/chimera ] ; then
+        rm -rf $HOME/.cache/chimera
+    fi
+    echo "Moving cache"
+    mv $HOME/.cache/steam-buddy $HOME/.cache/chimera
+fi
+
+# Migrate user data directories and files from steam-buddy
+if [ -d $HOME/.local/share/steam-buddy ] ; then
+    if [ -d $HOME/.local/share/chimera ] ; then
+        rm -rfv $HOME/.local/share/chimera
+    fi
+    echo "Moving data directory"
+    mv $HOME/.local/share/steam-buddy $HOME/.local/share/chimera
+fi
 
 # Logout the session since we need to restart everything in ChimeraOS
 case $arg in
