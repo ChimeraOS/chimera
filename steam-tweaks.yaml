@@ -788,7 +788,8 @@
   compat_tool: proton_513
 
 "529660": # Mages of Mystralia
-  compat_tool: proton_42
+  compat_tool: Proton-6.1-GE-2
+  compat_config: wined3d
 
 "1078920": # Main Assembly
   compat_tool: Proton-6.1-GE-2
@@ -861,7 +862,8 @@
   compat_tool: proton_513
 
 "666140": # My Time At Portia
-  compat_tool: proton_42
+  compat_tool: proton_63
+  compat_config: noesync,nofsync
 
 "1248990": # Mýrdalssandur, Iceland
   compat_tool: proton_5
@@ -904,7 +906,7 @@
 
 "219950": # NiGHTS Into Dreams
   compat_tool: proton_513
-  compat_config: noesync
+  compat_config: noesync,nofsync
 
 "405540": # Ninja Senki DX
   compat_tool: proton_513
