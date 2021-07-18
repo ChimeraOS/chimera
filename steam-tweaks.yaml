@@ -102,7 +102,7 @@
   compat_tool: proton_513
 
 "209000": # Batman: Arkham Origins
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "238460": # BattleBlock Theater; native version crashes on startup with AMD GPUs
   compat_tool: proton_513
@@ -718,7 +718,7 @@
   compat_tool: proton_63
 
 "21130": # LEGO Harry Potter: Years 1-4
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "405310": # LEGO MARVEL's Avengers
   compat_tool: proton_513
@@ -739,7 +739,7 @@
   compat_tool: proton_411
 
 "285160": # LEGO The Hobbit
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "332310": # LEGO Worlds
   compat_tool: proton_63
@@ -825,7 +825,7 @@
   compat_tool: proton_513
   
 "17410": # Mirror's Edge
-  compat_tool: proton_42
+  compat_tool: proton_63
   patch_dir: mirrors edge
   patches:
     - exec: echo "fc73cf63e54e9858a45e1786f5881ad9 17410_install.vdf" | md5sum --status -c && sed -i 122,143d 17410_install.vdf
@@ -843,7 +843,7 @@
   compat_tool: proton_513
 
 "237110": # Mortal Kombat Komplete Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "307780": # Mortal Kombat X
   compat_tool: proton_513
@@ -1457,7 +1457,7 @@
   compat_tool: proton_513
 
 "834530": # Yakuza Kiwami
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "882100": # XCOM: Chimera Squad
   compat_tool: proton_63
