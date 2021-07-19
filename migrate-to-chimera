@@ -36,7 +36,7 @@ if [ -f $HOME/.local/share/steam-buddy/settings/settings.json ]; then
     mv -Tbv $HOME/.local/share/steam-buddy/settings/settings.json $HOME/.config/chimera/settings.json
     echo "Renamig relevant paths inside settings file"
     cd $HOME/.config/chimera
-    sed -i 's/steam-buddy/chimera/g' settings.json
+    sed -i 's|/steam-buddy/|/chimera/|g' settings.json
 fi
 
 # Check if there are platform specific yaml files
