@@ -10,6 +10,12 @@ from chimera_app.utils import ensure_directory_for_file
 from chimera_app.utils import file_exists
 
 
+def apply_all_tweaks():
+    sc = SteamConfig()
+    sc.update()
+    sc.apply_tweaks()
+
+
 class SteamConfig:
     """This class is menat to handle all steam configuration files.
     The basic usage would be:
