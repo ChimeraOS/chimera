@@ -1,9 +1,9 @@
 [Unit]
-Description=SteamBuddy socket
+Description=Chimera socket
 
 [Socket]
 ListenStream=80
-Service=steam-buddy-proxy.service
+Service=chimera-proxy.service
 
 [Install]
 WantedBy=sockets.target

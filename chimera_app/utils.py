@@ -1,4 +1,4 @@
-"""Utilities for the steam_buddy tools"""
+"""Utilities for the chimera_app tools"""
 import os
 from datetime import datetime
 
@@ -25,16 +25,16 @@ def yearsago(years):
         return from_date.replace(month=2, day=28, year=from_date.year - years)
 
 
-class BuddyContext:
+class ChimeraContext:
     """Singleton class to manage the Steam environment.
     It contains variables and common functions to be used in all
-    steam_buddy tools"""
+    chimera tools"""
 
     _instance = None
 
     def __new__(cls):
         if cls._instance is None:
-            cls._instance = super(BuddyContext, cls).__new__(cls)
+            cls._instance = super(ChimeraContext, cls).__new__(cls)
             cls._instance.__init()
         return cls._instance
 

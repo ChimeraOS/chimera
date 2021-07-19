@@ -1,30 +1,30 @@
 import os
-from steam_buddy.utils import BuddyContext
-from steam_buddy.settings import Settings
-from steam_buddy.ftp.server import Server as FTPServer
-from steam_buddy.authenticator import Authenticator, generate_password
-from steam_buddy.ssh_keys import SSHKeys
-from steam_buddy.steamgrid.steamgrid import Steamgrid
-from steam_buddy.streaming import StreamServer
-from steam_buddy.mangohud_config import MangoHudConfig
+from chimera_app.utils import ChimeraContext
+from chimera_app.settings import Settings
+from chimera_app.ftp.server import Server as FTPServer
+from chimera_app.authenticator import Authenticator, generate_password
+from chimera_app.ssh_keys import SSHKeys
+from chimera_app.steamgrid.steamgrid import Steamgrid
+from chimera_app.streaming import StreamServer
+from chimera_app.mangohud_config import MangoHudConfig
 
 
-se = BuddyContext()
+se = ChimeraContext()
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
-    RESOURCE_DIR = "/usr/share/steam-buddy"
+    RESOURCE_DIR = "/usr/share/chimera"
 
-AUTHENTICATOR_PATH = os.path.abspath('bin/steam-buddy-authenticator')
+AUTHENTICATOR_PATH = os.path.abspath('bin/chimera-authenticator')
 if not os.path.isfile(AUTHENTICATOR_PATH):
-    AUTHENTICATOR_PATH = "/usr/share/steam-buddy/bin/steam-buddy-authenticator"
+    AUTHENTICATOR_PATH = "/usr/share/chimera/bin/chimera-authenticator"
 
 SHORTCUT_DIR = se.SHORTCUT_DIRS[0]
-BANNER_DIR = se.DATA_HOME + '/steam-buddy/banners'
-CONTENT_DIR = se.DATA_HOME + '/steam-buddy/content'
-RECORDINGS_DIR = se.DATA_HOME + '/steam-buddy/recordings'
-SETTINGS_DIR = se.DATA_HOME + '/steam-buddy/settings'
-UPLOADS_DIR = os.path.join(se.CACHE_HOME, 'steam-buddy', 'uploads')
+BANNER_DIR = se.DATA_HOME + '/chimera/banners'
+CONTENT_DIR = se.DATA_HOME + '/chimera/content'
+RECORDINGS_DIR = se.DATA_HOME + '/chimera/recordings'
+SETTINGS_DIR = se.CONFIG_HOME + '/chimera'
+UPLOADS_DIR = os.path.join(se.CACHE_HOME, 'chimera', 'uploads')
 MANGOHUD_DIR = se.CONFIG_HOME + "/MangoHud"
 
 PLATFORMS = {

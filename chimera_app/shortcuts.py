@@ -1,30 +1,30 @@
-"""Module to manage shortcuts in the entire buddy toolset"""
+"""Module to manage shortcuts in the entire chimera toolset"""
 
 from zlib import crc32
 import os
 import vdf
 import yaml
-from datetime import datetime, date
-from steam_buddy.utils import BuddyContext
-from steam_buddy.utils import file_exists
-from steam_buddy.utils import yearsago
+from datetime import date
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import file_exists
+from chimera_app.utils import yearsago
 
 
 def create_all_shortcuts():
-    bs = BuddyShortcuts()
+    bs = ChimeraShortcuts()
     bs.get_all_shortcuts()
     bs.write_all_shortcuts()
 
 
-class BuddyShortcuts:
+class ChimeraShortcuts:
     """This class is a collection of functions to manage shortcuts in the
-    buddy toolset.
+    chimera toolset.
     """
 
-    _context = BuddyContext()
+    _context = ChimeraContext()
 
     def __init__(self):
-        self._context = BuddyContext()
+        self._context = ChimeraContext()
         self.shortcuts = None
         self.steam_shortcuts = None
 
@@ -47,8 +47,8 @@ class BuddyShortcuts:
             sdict = {}
             n = 0
             for entry in self.shortcuts:
-                s, c = BuddyShortcuts.create_shortcut(entry,
-                                                      steam_shortcuts)
+                s, c = ChimeraShortcuts.create_shortcut(entry,
+                                                        steam_shortcuts)
                 sdict[str(n)] = s
                 compat_data.update(c)
                 n += 1
@@ -61,7 +61,7 @@ class BuddyShortcuts:
     @staticmethod
     def get_steam_shortcuts(user_dir):
         ss_file = user_dir + '/config/shortcuts.vdf'
-        return BuddyShortcuts.load_steam_shortcuts(ss_file)
+        return ChimeraShortcuts.load_steam_shortcuts(ss_file)
 
     @staticmethod
     def write_shortcuts(user_dir, shortcuts):
@@ -93,7 +93,7 @@ class BuddyShortcuts:
         """Returns the lower 32 bits of signed appid. Used for matching
         existing apps.
         """
-        return BuddyShortcuts.get_compat_id(exe, name) - 2**32
+        return ChimeraShortcuts.get_compat_id(exe, name) - 2**32
 
     @staticmethod
     def load_shortcuts(yaml_file):
@@ -145,16 +145,16 @@ class BuddyShortcuts:
             print('shortcut missing required field "cmd"; skipping')
             return
 
-        se = BuddyContext()
+        se = ChimeraContext()
 
-        shortcut_id = BuddyShortcuts.get_shortcut_id(entry['cmd'],
-                                                     entry['name'])
-        banner_id = str(BuddyShortcuts.get_banner_id(entry['cmd'],
-                                                     entry['name']))
-        compat_id = str(BuddyShortcuts.get_compat_id(entry['cmd'],
-                                                     entry['name']))
+        shortcut_id = ChimeraShortcuts.get_shortcut_id(entry['cmd'],
+                                                       entry['name'])
+        banner_id = str(ChimeraShortcuts.get_banner_id(entry['cmd'],
+                                                       entry['name']))
+        compat_id = str(ChimeraShortcuts.get_compat_id(entry['cmd'],
+                                                       entry['name']))
 
-        shortcut = BuddyShortcuts.match_app_id(steam_shortcuts, shortcut_id)
+        shortcut = ChimeraShortcuts.match_app_id(steam_shortcuts, shortcut_id)
         shortcut['appid'] = shortcut_id
         shortcut['AppName'] = entry['name']
         shortcut['Exe'] = entry['cmd']
@@ -186,7 +186,10 @@ class BuddyShortcuts:
         shortcut_tags = list(shortcut['tags'].values())
 
         TIME_WARP_TAG = 'Time Warp'
-        TIME_WARP_DATE = yearsago(int(se.TIME_WARP)).isoformat()
+        TIME_WARP_DATE = None
+
+        if se.TIME_WARP:
+            TIME_WARP_DATE = yearsago(int(se.TIME_WARP)).isoformat()
 
         if TIME_WARP_DATE:
             # handle the case where the time warp or release dates changed;

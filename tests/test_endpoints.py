@@ -1,7 +1,7 @@
 import os
 from webtest import TestApp
-from steam_buddy.server import server
-from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
+from chimera_app.server import server
+from chimera_app.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
 def test_runs(monkeypatch):
@@ -9,7 +9,7 @@ def test_runs(monkeypatch):
         if not os.path.isfile(AUTHENTICATOR_PATH):
             raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
 
-    from steam_buddy.authenticator import Authenticator
+    from chimera_app.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)
 
     app = TestApp(server)

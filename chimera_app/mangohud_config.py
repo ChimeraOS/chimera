@@ -1,7 +1,7 @@
 import os
 from configparser import ConfigParser
-from steam_buddy.utils import ensure_directory_for_file
-from steam_buddy.utils import file_exists
+from chimera_app.utils import ensure_directory_for_file
+from chimera_app.utils import file_exists
 
 
 class MangoHudConfig:

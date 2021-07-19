@@ -3,9 +3,9 @@ import os
 import shutil
 import yaml
 from PIL import Image, ImageFont, ImageDraw
-from steam_buddy.utils import ensure_directory
-from steam_buddy.utils import file_exists
-from steam_buddy.utils import BuddyContext
+from chimera_app.utils import ensure_directory
+from chimera_app.utils import file_exists
+from chimera_app.utils import ChimeraContext
 
 
 def sanitize(string):
@@ -20,11 +20,11 @@ def sanitize(string):
 
 def load_shortcuts(platform):
     shortcuts = []
-    se = BuddyContext()
+    se = ChimeraContext()
     ensure_directory(se.SHORTCUT_DIRS[0])
 
     shortcuts_file = se.SHORTCUT_DIRS[0] + \
-        "/steam-buddy.{platform}.yaml".format(platform=platform)
+        "/chimera.{platform}.yaml".format(platform=platform)
     if file_exists(shortcuts_file):
         shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from steam_buddy.shortcuts import create_all_shortcuts
+from chimera_app.shortcuts import create_all_shortcuts
 
 
 create_all_shortcuts()

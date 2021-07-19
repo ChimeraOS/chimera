@@ -2,8 +2,8 @@ import os
 import subprocess
 import requests
 from typing import List, Dict
-from steam_buddy.platforms.store_platform import StorePlatform, dic
-from steam_buddy.config import RESOURCE_DIR, BANNER_DIR
+from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.config import RESOURCE_DIR, BANNER_DIR
 
 
 FLATPAK_WRAPPER = "bin/flatpak-wrapper"
@@ -16,8 +16,8 @@ def listdir(path):
         return []
 
 
-local = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'steam-buddy/banners/flathub')
-files = listdir('images/flathub') + listdir(local) + listdir('/usr/share/steam-buddy/images/flathub/')
+local = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'chimera/banners/flathub')
+files = listdir('images/flathub') + listdir(local) + listdir('/usr/share/chimera/images/flathub/')
 whitelist = [os.path.splitext(f)[0] for f in files]
 
 

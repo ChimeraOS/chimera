@@ -1,5 +1,6 @@
 #! /bin/bash
 
+migrate-to-chimera --logout
 steam-compat-tool-stubs
 steam-shortcuts
 steam-config
