@@ -11,8 +11,8 @@ fi
 
 if ! [ -d $HOME/.config/steam-buddy ] && \
     ! [ -d $HOME/.local/share/steam-buddy ] && \
-    ! [ -d $HOME/.cache/steam-buddy ] && \
-    ! [ -d $HOME/.local/share/steam-shortcuts ];
+    ! [ -d $HOME/.local/share/steam-shortcuts ] && \
+    ! [ -d $HOME/.cache/steam-buddy ] ;
 then
     # Nothing to migrate, we can exit
     echo "Found nothing to migrate"
