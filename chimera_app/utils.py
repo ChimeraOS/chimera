@@ -79,10 +79,7 @@ class ChimeraContext:
         return self.CACHE_HOME + '/steam-shortcuts-compat.yaml'
 
     def __get_shortcut_dirs(self):
-        shortcut_dirs = [self.DATA_HOME + '/steam-shortcuts']
-        if os.path.isdir('/usr/share/steam-shortcuts'):
-            shortcut_dirs.append('/usr/share/steam-shortcuts')
-        return shortcut_dirs
+        return self.DATA_HOME + '/chimera/shortcuts'
 
     def __get_steam_dir(self):
         return self.DATA_HOME + '/Steam'
