@@ -25,7 +25,7 @@ setup(
         ('share/chimera/config', glob('config/*.conf')),
         ('share/chimera/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
-        ('share/steam-tweaks', ['steam-tweaks.yaml']),
+        ('share/chimera', ['steam-tweaks.yaml']),
         ('share/steam-tweaks', ['steam-compat-tool-stub.tpl']),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),

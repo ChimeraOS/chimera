@@ -106,4 +106,4 @@ class ChimeraContext:
         return self.CONFIG_HOME + '/steam-tweaks.yaml'
 
     def __get_static_tweaks_file(self):
-        return '/usr/share/steam-tweaks/steam-tweaks.yaml'
+        return '/usr/share/chimera/steam-tweaks.yaml'
