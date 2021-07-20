@@ -1,31 +1,6 @@
-#! /bin/bash
+#!/usr/bin/env python
 
-if [[ -n "$XDG_DATA_HOME" ]]; then
-        DATA_HOME="$XDG_DATA_HOME"
-else
-        DATA_HOME="$HOME/.local/share"
-fi
+from chimera_app.compat_tools import install_all_compat_tools
 
-SRC_DIR="/usr/share/steam-tweaks/compat-tools"
-TARGET_DIR="$DATA_HOME/Steam/compatibilitytools.d"
-mkdir -p "$TARGET_DIR"
 
-for STUB_DIR in $(ls -1 "$SRC_DIR"); do
-	if [[ -d "$TARGET_DIR/$STUB_DIR" ]]; then
-		echo "Skipping $STUB_DIR"
-		continue
-	fi
-
-	cp -r "$SRC_DIR/$STUB_DIR" "$TARGET_DIR/"
-	cp /usr/share/steam-tweaks/steam-compat-tool-stub.tpl "$TARGET_DIR/$STUB_DIR/"
-
-	pushd "$TARGET_DIR/$STUB_DIR"
-	source ./stub.info
-
-	sed -i "s,%TOOL_URL%,$TOOL_URL," steam-compat-tool-stub.tpl
-	sed -i "s,%TOOL_MD5SUM%,$TOOL_MD5SUM," steam-compat-tool-stub.tpl
-	sed -i "s,%TOOL_CMD%,$TOOL_CMD," steam-compat-tool-stub.tpl
-
-	mv steam-compat-tool-stub.tpl $TOOL_CMD
-	popd
-done
+install_all_compat_tools()
