@@ -111,7 +111,7 @@ class SteamConfig:
         return data
 
     @staticmethod
-    def download_tweaks_file(file_path, num_atempts=5, static_file=None):
+    def download_tweaks_file(file_path, num_attempts=5, static_file=None):
         """Downloads the latest tweak file from our server. It will try
         num_atempts or fail. If the file can't be reached after num_atempts
         then it will be replaced by a static file designated by static_file
@@ -124,10 +124,13 @@ class SteamConfig:
                'chimera/master/steam-tweaks.yaml')
         ret_val = False
         attempts = 0
-        while (attempts < num_atempts):
+        while (attempts < num_attempts):
             try:
                 r = requests.get(url, timeout=1)
             except requests.Timeout:
+                continue
+            except:
+                print(f'Unexpected error: {sys.exc_info()[0]}')
                 continue
             if r.status_code == 200:
                 open(file_path, 'wb').write(r.content)
@@ -145,9 +148,7 @@ class SteamConfig:
                 else:
                     print(f'{file_path} does not exist')
             else:
-                print(f'Could not get file from {url} in {num_atempts} atempts')
-        else:
-            print(f'Could not get file from {url} in {num_atempts} atempts')
+                print(f'Could not get file from {url} in {num_attempts} atempts')
 
         return ret_val
 
