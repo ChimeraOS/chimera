@@ -4,6 +4,10 @@ from chimera_app.server import server
 from chimera_app.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
+# Prevent pytest from trying to collect webtest's TestApp as tests:
+TestApp.__test__ = False
+
+
 def test_runs(monkeypatch):
     def mock_launch(self):
         if not os.path.isfile(AUTHENTICATOR_PATH):
