@@ -12,3 +12,4 @@ Pillow
 vdf
 pytest
 pytidylib
+requests-mock
