@@ -172,7 +172,7 @@ def test_failure_download_tweaks_file(tweaks_not_found,
                                       tweaks_file_empty):
     """Test a download failure of tweaks file with no static fallback"""
     assert(not SC.download_tweaks_file(tweaks_file_empty.name,
-                                    num_atempts=1)
+                                    num_attempts=1)
            )
 
 
@@ -182,7 +182,7 @@ def test_static_download_tweaks_file(tweaks_content,
                                      static_tweaks_file):
     """Test a download failure of tweaks file with static file fallback"""
     assert(SC.download_tweaks_file(tweaks_file_empty.name,
-                                   num_atempts=1,
+                                   num_attempts=1,
                                    static_file=static_tweaks_file.name
                                    )
            )
