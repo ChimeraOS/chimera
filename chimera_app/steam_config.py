@@ -38,13 +38,13 @@ class SteamConfig:
 
         self.apply_to_main_config(sc.MAIN_TWEAKS_FILE,
                                   config_data,
-                                  Priority=209)  # add global entries if file exists
+                                  priority=209)  # add global entries if file exists
         self.apply_to_main_config(sc.LOCAL_TWEAKS_FILE,
                                   config_data,
-                                  Priority=229)  # add local entries if file exists
+                                  priority=229)  # add local entries if file exists
         self.apply_to_main_config(sc.COMPAT_DATA_FILE,
                                   config_data,
-                                  Priority=209)  # add shortcut compat data
+                                  priority=209)  # add shortcut compat data
         self.write(config_data, sc.STEAM_CONFIG_FILE)
 
         for user_dir in sc.STEAM_USER_DIRS:
