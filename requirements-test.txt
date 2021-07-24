@@ -13,3 +13,4 @@ vdf
 pytest
 pytidylib
 requests-mock
+pyfakefs
