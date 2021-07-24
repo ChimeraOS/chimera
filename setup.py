@@ -1,19 +1,19 @@
-from setuptools import setup, find_packages
+"Setup chimera app"
 from glob import glob
+from setuptools import setup, find_packages
 
 setup(
     name="Chimera",
     version="0.11.0",
     packages=find_packages(exclude=['tests']),
-    scripts=['chimera',
-             'migrate-to-chimera',
+    entry_points={
+        'console_scripts': ['chimera = chimera_app.__main__:main']
+                  },
+    scripts=['migrate-to-chimera',
              'steam-tweaks',
-             'steam-compat-tool-stubs',
-             'steam-shortcuts',
-             'steam-config',
              'steam-patch',
              'tweaks-mfplat'
-            ],
+             ],
 
     data_files=[
         ('share/chimera/images', glob('images/*.png')),
@@ -48,12 +48,16 @@ setup(
     # metadata to display on PyPI
     author="Alesh Slovak",
     author_email="aleshslovak@gmail.com",
-    description="Chimera is a web based tool for installing non-Steam software to your Linux based couch gaming system. It was primarily developed for ChimeraOS.",
-    keywords="steam steamos couch emulation flatpak flathub chimera app chimeraos gamer gaming",
+    description=("Chimera is a web based tool for installing non-Steam "
+                 "software to your Linux based couch gaming system. It "
+                 "was primarily developed for ChimeraOS."),
+    keywords=("steam steamos couch emulation flatpak flathub chimera app "
+              "chimeraos gamer gaming"),
     url="https://github.com/chimeraos/chimera",   # project home page, if any
     project_urls={
         "Bug Tracker": "https://github.com/chimeraos/chimera/issues",
-        "Documentation": "https://github.com/chimeraos/chimera/blob/master/README.md",
+        "Documentation": ("https://github.com/chimeraos/chimera/"
+                          "blob/master/README.md"),
         "Source Code": "https://github.com/chimeraos/chimera",
     },
     classifiers=[
