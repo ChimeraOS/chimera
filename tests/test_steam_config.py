@@ -222,10 +222,11 @@ def test_write(local_config_content,
 
 def test_apply_to_main_config(static_tweaks_file,
                               main_config_content):
-    SC.apply_to_main_config(static_tweaks_file.name, main_config_content)
+    SC.apply_to_main_config(static_tweaks_file.name, main_config_content, priority=209)
 
     compat = main_config_content['InstallConfigStore']['Software']['Valve']['Steam']['CompatToolMapping']
     assert(compat['12345678']['name'] == 'compat_tool')
+    assert(compat['12345678']['Priority'] == 209)
 
 
 def test_apply_to_local_config(static_tweaks_file,
