@@ -79,9 +79,16 @@ if [ -d $HOME/.local/share/steam-shortcuts ] ; then
             echo "Renaming steam-buddy.${p}.yaml to chimera.${p}.yaml"
             mv -Tbv "steam-buddy.${p}.yaml" "chimera.${p}.yaml"
             echo "Renamig paths inside chimera.${p}.yaml"
-            sed -i 'si|/steam-buddy/|/chimera/|g' "chimera.${p}.yaml"
+            sed -i 's|/steam-buddy/|/chimera/|g' "chimera.${p}.yaml"
         fi
     done
+fi
+
+# Replace paths inside any other yaml file
+if [ -d $HOME/.local/share/chimera/shortcuts ] ; then
+    cd $HOME/.local/share/chimera/shortcuts
+    echo "Renamig paths inside custom yaml files"
+    find . -type f -name "*.yaml" -exec sed -i 's|/steam-buddy/|/chimera/|g' {} \;
 fi
 
 # Go to steam-grid symlinks and relink them
