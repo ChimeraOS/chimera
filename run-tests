@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for test in $(find ./tests -type f -name "test*.py"); do
+    python -m pytest ${test} -vv --full-trace || exit 1;
+done

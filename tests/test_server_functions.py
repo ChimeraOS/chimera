@@ -1,11 +1,20 @@
 import os
 import sys
 import importlib
-sys.modules["steam_buddy.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
+sys.modules["chimera_app.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
 from tidylib import tidy_document
 from bottle import request
-from steam_buddy.server import root, platform_page, new, settings, logout, login
-from steam_buddy.config import PLATFORMS, AUTHENTICATOR_PATH
+from chimera_app.server import \
+        root, \
+        platform_page, \
+        new, \
+        settings, \
+        logout, \
+        login, \
+        mangohud_edit, \
+        streaming_config, \
+        virtual_keyboard
+from chimera_app.config import PLATFORMS, AUTHENTICATOR_PATH
 
 
 def validate_html(endpoint, document):
@@ -41,7 +50,7 @@ def test_platform():
 
 def test_new():
     for p in PLATFORMS:
-        if p != 'epic-store' and p != 'flathub':
+        if p not in ['epic-store', 'flathub', 'gog']:
             document = new(p)
             validate_html("new({})".format(p), document)
 
@@ -50,6 +59,21 @@ def test_settings():
     request.environ["HTTP_HOST"] = "localhost:8844"
     document = settings()
     validate_html("settings", document)
+
+
+def test_mangohud_edit():
+    document = mangohud_edit()
+    validate_html('mangohud_edit', document)
+
+
+def test_streaming_config():
+    document = streaming_config()
+    validate_html('streaming_config', document)
+
+
+def test_virtual_keyoard():
+    document = virtual_keyboard()
+    validate_html('virtual_keyboard', document)
 
 
 def test_logout():
@@ -66,7 +90,7 @@ def test_login(monkeypatch):
         if not os.path.isfile(AUTHENTICATOR_PATH):
             raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
 
-    from steam_buddy.authenticator import Authenticator
+    from chimera_app.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)
 
     document = login()

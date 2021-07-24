@@ -20,9 +20,9 @@ if [ -z "${CHROME}" ]; then
 	exit 1
 fi
 
-# Start steam-buddy
+# Start chimera
 cd ..
-./steam-buddy &
+./chimera &
 sleep 3
 
 # Take the screenshots
@@ -30,5 +30,5 @@ cd -
 ${CHROME} --headless --disable-gpu --window-size=1920,1080 --screenshot=platforms.png http://localhost:8844/
 ${CHROME} --headless --disable-gpu --window-size=1920,1080 --screenshot=flathub.png http://localhost:8844/platforms/flathub/new
 
-# Stop steam-buddy
+# Stop chimera
 kill %1

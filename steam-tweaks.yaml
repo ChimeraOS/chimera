@@ -4,7 +4,7 @@
 # ANY ENTRIES IN THAT FILE WILL OVERRIDE ENTRIES IN THIS FILE
 
 "791180": # 1 Screen Platformer
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "435790": # 10 Second Ninja X
   compat_tool: proton_411
@@ -33,6 +33,9 @@
 
 "331870": # AER Memories of Old; fix black screen in native version
   launch_options: '%command% -screen-fullscreen 0'
+
+"221380": # Age of Empires II (2013)
+  compat_tool: proton_411
 
 "1210150": # Ageless
   compat_tool: proton_513
@@ -78,7 +81,7 @@
   compat_tool: Proton-6.1-GE-2
 
 "688420": # Bad North
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "1035850": # Balancelot  
   compat_tool: Proton-5.21-GE-1
@@ -99,7 +102,7 @@
   compat_tool: proton_513
 
 "209000": # Batman: Arkham Origins
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "238460": # BattleBlock Theater; native version crashes on startup with AMD GPUs
   compat_tool: proton_513
@@ -142,7 +145,7 @@
   launch_options: -nointro
 
 "218060": # BIT.TRIP Presents... Runner2: Future Legend of Rhythm Alien; native version has severe controller issues
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "729660": # Blackout Z: Slaughterhouse Edition
   compat_tool: proton_513
@@ -168,13 +171,13 @@
   compat_tool: proton_513
 
 "692850": # Bloodstained: Ritual of the Night
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "449960": # Book of Demons
   compat_tool: proton_411
 
 "965680": # Boomerang Fu
-  compat_tool: proton_5
+  compat_tool: proton_63
 
 "1011630": # Border Force
   compat_tool: proton_513
@@ -183,13 +186,16 @@
   compat_tool: proton_5
 
 "491040": # Bot Vice; native version does not recognize controllers
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "324510": # Boundless
   compat_tool: proton_5
 
 "371520": # Bounty Train
   compat_tool: proton_513
+
+"1590320": # Bro Falls: Ultimate Showdown
+  compat_tool: proton_63
 
 "225080": # Brothers - A Tale of Two Sons
   compat_tool: proton_513
@@ -210,19 +216,25 @@
   compat_tool: proton_5
 
 "204360": # Castle Crashers; Valve whitelisted proton version no longer works
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "544730": # Catan Universe
   compat_tool: proton_513
 
 "319450": # Chariot
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "518060": # Chess Ultra
   compat_tool: proton_411
 
 "390610": # Circa Infinity; native version crashes on startup
   compat_tool: proton_37
+
+"8800": # Civilization IV: Beyond the Sword
+  compat_tool: proton_63
+
+"3990": # Civilization IV: Warlords
+  compat_tool: proton_63
 
 "602770": # Clatter
   compat_tool: proton_513
@@ -245,6 +257,9 @@
 "870780": # Control
   compat_tool: proton_513
 
+"1000030": # Cook Serve Delicious! 3?!  
+  compat_tool: proton_513
+
 "320340": # Cosmonautica
   compat_tool: proton_513
 
@@ -252,18 +267,20 @@
   compat_tool: proton_513
 
 "731490": # Crash Bandicoot N. Sane Trilogy
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "26900": # Crayon Physics Deluxe
   compat_tool: proton_513
 
 "71230": # Crazy Taxi
-  compat_tool: proton_411
-  compat_config: d9vk
+  compat_tool: proton_63
 
 "873940": # Crying Suns
   compat_tool: proton_5
 
+“829590”: # Cryofall
+  compat_tool: proton_63
+  
 "928840": # Cybarian: The Time Travelling Warrior
   compat_tool: proton_5
 
@@ -276,6 +293,9 @@
 
 "939100": # Darksburg
   compat_tool: proton_5
+
+"710920": # Darksiders Genesis
+  compat_tool: Proton-6.1-GE-2
 
 "388410": # Darksiders II Deathinitive Edition
   compat_tool: proton_5
@@ -321,6 +341,9 @@
 "755980": # Deployment
   compat_tool: proton_513
 
+"671510": # DESOLATE
+  compat_tool: proton_513
+
 "329050": # Devil May Cry 4 Special Edition
   compat_tool: proton_513
 
@@ -328,7 +351,7 @@
   compat_tool: proton_5
 
 "12840": # DiRT 2
-  compat_tool: proton_37
+  compat_tool: proton_63
   patch_dir: Dirt 2
   patches:
     - exec: echo "02c6dd46d6d89347d721ba87dcf443c3 12840_install.vdf" | md5sum --status -c && sed -i 56,69d 12840_install.vdf
@@ -340,11 +363,11 @@
         dst: xlive.dll
 
 "321040": # DiRT 3 Complete Edition
-  compat_tool: proton_411
+  compat_tool: proton_63
   compat_config: noesync,nofsync
 
 "690790": # DiRT Rally 2.0
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "201700": # DiRT Showdown
   steam_input: enabled
@@ -356,7 +379,7 @@
   compat_tool: proton_411
 
 "525040": # The Disney Afternoon Collection
-  compat_tool: proton_42
+  compat_tool: proton_63
   compat_config: forcelgadd
 
 "635200": # Distrust: Polar Survival
@@ -405,6 +428,9 @@
   compat_tool: proton_411
   compat_config: d9vk,noesync,nofsync
 
+"975950": # Effie
+  compat_tool: Proton-6.1-GE-2
+
 "812160": # Etherborn
   compat_tool: proton_411
 
@@ -425,10 +451,9 @@
   launch_options: rm -f F1_2019_dx12.exe && ln -s F1_2019.exe F1_2019_dx12.exe; %command%
 
 "1080110": # F1 2020
-  compat_tool: proton_5
-  compat_config: seccomp
+  compat_tool: proton_63
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
-
+  
 "995980": # Fae Tactics 
   compat_tool: proton_513
 
@@ -446,6 +471,9 @@
     - copy:
         src: data/common/xlive.dll
         dst: xlive.dll
+
+"904360": # Family Man
+  compat_tool: proton_513
 
 "959520": # Fantasy Blacksmith
   compat_tool: proton_513
@@ -515,8 +543,11 @@
 "555000": # Goat of Duty  
   compat_tool: proton_5
 
+"1154810": # Going Under
+  compat_tool: proton_63
+
 "275390": # Guacamelee! Super Turbo Championship Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "520440": # GUILTY GEAR Xrd -REVELATOR-
   compat_tool: Proton-5.21-GE-1
@@ -528,7 +559,7 @@
   compat_tool: proton_513
 
 "12750": # GRID (2008)
-  compat_tool: proton_5
+  compat_tool: proton_63
   patch_dir: Grid
   patches:
     - exec: echo "2960d17d77d44b259674e0b099b9e5a6 installscript.vdf" | md5sum --status -c && sed -i '62i \\t\t\t"Command 1"\t\t"/S"^M' installscript.vdf
@@ -538,10 +569,10 @@
   compat_tool: proton_5
 
 "396900": # Grip: Combat Racing
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "683320": # Gris
-  compat_tool: Proton-5.21-GE-1
+  compat_tool: proton_63
   launch_options: '%command%'
 
 "1145360": # Hades
@@ -563,7 +594,7 @@
   compat_tool: proton_513
 
 "905340": # Heave Ho
-  compat_tool: proton_513
+  compat_tool: proton_63
 
 "960910": # Heavy Rain
   compat_tool: proton_5
@@ -600,6 +631,9 @@
 "453340": # Hustle Cat
   compat_tool: proton_411
 
+"854940": # Ikenfell
+  compat_tool: proton_513
+
 "890720": # In Other Waters
   compat_tool: proton_513
  
@@ -628,14 +662,14 @@
   compat_tool: proton_411
 
 "205950": # Jet Set Radio
-  compat_tool: proton_42
+  compat_tool: proton_63
   launch_options: mv jetsetradio.exe jsrsetup.exe; %command%
 
 "270810": # Jones On Fire
   compat_tool: proton_513
 
 "638230": # Journey
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "648350": # Jurassic World Evolution
   compat_tool: proton_513
@@ -679,14 +713,17 @@
 "578330": # LEGO City Undercover
   compat_tool: proton_513
 
+"829110": # LEGO DC Super-Villains
+  compat_tool: proton_63
+
 "21130": # LEGO Harry Potter: Years 1-4
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "405310": # LEGO MARVEL's Avengers
   compat_tool: proton_513
 
 "249130": # LEGO MARVEL Super Heroes
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "647830": # LEGO MARVEL Super Heroes 2
   compat_tool: proton_513
@@ -701,10 +738,10 @@
   compat_tool: proton_411
 
 "285160": # LEGO The Hobbit
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "332310": # LEGO Worlds
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "306680": # Lexica
   compat_tool: Proton-5.21-GE-1
@@ -719,7 +756,7 @@
   compat_tool: proton_513
 
 "424840": # Little Nightmares
-  compat_tool: proton_513
+  compat_tool: proton_63
   launch_options: -onethread
 
 "262690": # Little Racers STREET
@@ -750,7 +787,8 @@
   compat_tool: proton_513
 
 "529660": # Mages of Mystralia
-  compat_tool: proton_42
+  compat_tool: Proton-6.1-GE-2
+  compat_config: wined3d
 
 "1078920": # Main Assembly
   compat_tool: Proton-6.1-GE-2
@@ -777,6 +815,9 @@
   compat_tool: proton_42
   compat_config: noesync,nofsync
 
+"1302050": # Milky Way Prince - The Vampire Star
+  compat_tool: Proton-6.1-GE-2
+
 "489520": # Minion Masters
   compat_tool: proton_513
 
@@ -784,7 +825,7 @@
   compat_tool: proton_513
   
 "17410": # Mirror's Edge
-  compat_tool: proton_42
+  compat_tool: proton_63
   patch_dir: mirrors edge
   patches:
     - exec: echo "fc73cf63e54e9858a45e1786f5881ad9 17410_install.vdf" | md5sum --status -c && sed -i 122,143d 17410_install.vdf
@@ -796,10 +837,13 @@
   compat_tool: proton_513
 
 "939560": # Monster Trampoline
-  compat_tool: proton_316
+  compat_tool: proton_63
+
+"1331910": # Morkredd  
+  compat_tool: proton_513
 
 "237110": # Mortal Kombat Komplete Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "307780": # Mortal Kombat X
   compat_tool: proton_513
@@ -817,7 +861,8 @@
   compat_tool: proton_513
 
 "666140": # My Time At Portia
-  compat_tool: proton_42
+  compat_tool: proton_63
+  compat_config: noesync,nofsync
 
 "1248990": # Mýrdalssandur, Iceland
   compat_tool: proton_5
@@ -860,7 +905,7 @@
 
 "219950": # NiGHTS Into Dreams
   compat_tool: proton_513
-  compat_config: noesync
+  compat_config: noesync,nofsync
 
 "405540": # Ninja Senki DX
   compat_tool: proton_513
@@ -896,13 +941,13 @@
   compat_tool: proton_513
 
 "102600": # Orcs Must Die!
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "201790": # Orcs Must Die! 2
   compat_tool: proton_411
 
 "387290": # Ori and the Blind Forest: Definitive Edition
-  compat_tool: proton_42
+  compat_tool: proton_5
 
 "402710": # Osiris: New Dawn  
   compat_tool: proton_513
@@ -922,8 +967,14 @@
 "622440": # Pandemic: The Board Game
   compat_tool: proton_513
 
+"1178880": # Panzer Dragoon: Remake  
+  compat_tool: Proton-6.1-GE-2
+  
 "1001230": # Partial Control
   compat_tool: proton_513
+
+"1181400": # Path of Giants
+  compat_tool: proton_5
 
 "505230": # Pathologic 2
   compat_tool: proton_513
@@ -935,8 +986,8 @@
   compat_tool: proton_411
   launch_options: tweaks-mfplat 4.11 || true && %command%
 
-"1181400": # Path of Giants
-  compat_tool: proton_5
+"1037910": # Paw Paw Paw
+  compat_tool: proton_63
 
 "1013310": # Peaky Blinders: Mastermind
   compat_tool: proton_513
@@ -948,7 +999,7 @@
   compat_tool: proton_5
 
 "749800": # PixelJunk Monsters Ultimate; native version does not recognize controllers
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "255870": # PixelJunk Shooter; native version crashes on startup
   compat_tool: proton_411
@@ -972,7 +1023,7 @@
   compat_tool: proton_513
     
 "971620": # Puyo Puyo Champions
-  compat_tool: proton_411
+  compat_tool: proton_63
   launch_options: WINEDLLOVERRIDES="xaudio2_7=native,builtin" %command%
 
 "292380": # Racer 8
@@ -985,7 +1036,7 @@
   compat_tool: proton_63
 
 "207490": # Rayman Origins
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "290300": # Rebel Galaxy
   compat_tool: proton_513
@@ -1017,11 +1068,14 @@
 "254700": # Resident Evil 4
   compat_tool: proton_411
 
+"760810": # Retimed
+  compat_tool: proton_513
+
 "290040": # Retro Game Crunch
   compat_tool: proton_513
  
 "1152020": # Return Of The Zombie King
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "9010": # Return to Castle Wolfenstein
   compat_tool: proton_5
@@ -1039,11 +1093,26 @@
   compat_tool: proton_513
 
 "252950": # Rocket League
-  compat_tool: proton_513
+  compat_tool: proton_63
   launch_options: '%command%'
 
+"1092630": # Rogue Glitch
+  compat_tool: proton_63
+
+"4770": # Rome: Total War - Alexander
+  compat_tool: Proton-6.1-GE-2
+
+"864680": # Rover Mechanic Simulator
+  compat_tool: proton_513
+
 "516130": # Runner3
-  compat_tool: proton_411
+  compat_tool: proton_63
+
+"418340": # RWBY Grimm Eclipse
+  compat_tool: proton_63
+
+"718560": # Scythe: Digital Edition
+  compat_tool: proton_513
 
 "32360": # The Secret of Monkey Island: Special Edition
   compat_tool: proton_411
@@ -1051,39 +1120,94 @@
 "814380": # Sekiro: Shadows Die Twice
   compat_tool: proton_513
 
+"585450": # Shadows Awakening
+  compat_tool: Proton-6.1-GE-2
+
+"385560": # Shadow Complex Remastered
+  compat_tool: proton_513
+
+"277890": # Shantae: Risky's Revenge - Directors Cut
+  compat_tool: proton_513
+
+"878670": # Shenmue III
+  compat_tool: proton_513
+
+"11130": # Sherlock_Holmes: The Mystery of the Mummy
+  compat_tool: proton_513
+
 "809890": # Shining Resonance Refrain
   compat_tool: proton_5
 
+"3900": # Sid Meier's Civilization IV
+  compat_tool: proton_63
+
+"16810": # Sid Meier's Civilization IV: Colonization
+  compat_tool: proton_63
+
 "289070": # Sid Meier's Civilization VI
   launch_options: LD_PRELOAD=/usr/lib/libfreetype.so.6 %command%
+
+"3920": # Sid Meier's Pirates!
+  compat_tool: proton_63
+
+"7600": # Sid Meier's Railroads
+  compat_tool: proton_513
+
+"282210": # Sid Meier's Starships
+  compat_tool: proton_63
+  launch_options: rm Starships64.exe && ln -s Starships.exe Starships64.exe; %command%
+
+"712730": # SIMULACRA
+  compat_tool: proton_513
+
+"204880": # Sins of a Solar Empire: Rebellion 
+  compat_tool: proton_513
+
+"201290": # Sins of a Solar Empire: Trinity  
+  compat_tool: proton_513
+
+"976700": # Size Matters
+  compat_tool: proton_513
 
 "619320": # Skatemasta Tcheco
   compat_tool: proton_63
 
 "91100": # SkyDrift
-  compat_tool: proton_411
-  compat_config: d9vk
+  compat_tool: proton_63
 
 "361350": # Skyhook
   steam_input: enabled
 
+"1018850": # Smile For Me
+  compat_tool: Proton-6.1-GE-2
+
 "544330": # Snake Pass
   compat_tool: proton_5
 
+"238090": # Sniper Elite 3
+  compat_tool: proton_513
+  launch_options: PROTON_SET_GAME_DRIVE=1 %command%
+ 
 "973580": # Sniper Ghost Warrior Contracts
   compat_tool: proton_63
 
 "1096570": # SONG OF HORROR COMPLETE EDITION
   compat_tool: Proton-5.21-GE-1
 
+"460700": # Song of the Deep
+  compat_tool: proton_513
+
+"1062480": # Songs of Skydale
+  compat_tool: proton_513
+
 "212480": # Sonic & All-Stars Racing Transformed
   compat_tool: proton_63
 
 "71250": # Sonic Adventure DX
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "200940": # Sonic CD
-  compat_tool: proton_411
+  compat_tool: proton_63
   launch_options: WINEDLLOVERRIDES="xaudio2_7=native,builtin" %command%
   patch_dir: Sonic CD
   patches:
@@ -1095,15 +1219,15 @@
   compat_tool: proton_411
 
 "71340": # Sonic Generations
-  compat_tool: proton_411
-  compat_config: d9vk,noesync,nofsync
+  compat_tool: proton_63
+  compat_config: noesync,nofsync
 
 "584400": # Sonic Mania
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "544750": # Soul Calibur VI
-  compat_tool: proton_513
-  launch_options: tweaks-mfplat 5.13 || true && %command%
+  compat_tool: Proton-6.10-GE-1
+  launch_options: '%command%'
 
 "744050": # Space Invaders Extreme
   compat_tool: proton_513
@@ -1111,15 +1235,29 @@
 "50300": # Spec Ops: The Line
   steam_input: enabled
 
+"468670": # Speed Brawl  
+  compat_tool: Proton-6.1-GE-2
+
+"263280": # Spintires
+  compat_tool: Proton-6.1-GE-2
+
 "996580": # Spyro Reignited Trilogy
-  compat_tool: Proton-5.21-GE-1
-  launch_options: '%command% -nohmd'
+  compat_tool: proton_63
 
 "1058020": # STAR WARS Battlefront (Classic, 2004)
   compat_tool: proton_5
 
 "32400": # STAR WARS: Dark Forces
   compat_tool: boxtron
+
+"828900": # The Stillness of the Wind
+  compat_tool: proton_513
+
+"1063490": # Still There
+  compat_tool: proton_513
+
+"439190": # Stories: The Path of Destinies
+  compat_tool: proton_513
 
 "312670": # Strange Brigade
   compat_tool: proton_411
@@ -1137,7 +1275,22 @@
 "1035560": # Struggling
   compat_tool: proton_5
 
+"7800": # Stubbs the Zombie in Rebel Without a Pulse
+  compat_tool: proton_63
+
+"1057750": # The Suicide of Rachel Foster
+  compat_tool: Proton-6.1-GE-2
+
 "702700": # Super Bomberman R
+  compat_tool: proton_513
+
+"869750": # Super Chicken Catchers
+  compat_tool: proton_513
+
+"314070": # Super Mega Baseball: Extra Innings
+  compat_tool: proton_513
+
+"670080": # SuperLuminauts
   compat_tool: proton_513
 
 "375120": # Super Star Path; native version does not recognize controllers
@@ -1146,20 +1299,59 @@
 "1000560": # Supraland Demo; native version has sound issues
   compat_tool: proton_5
 
+"63500": # Swords and Soldiers HD
+  compat_tool: proton_513
+
 "619780": # The Swords of Ditto: Mormo's Curse; native version controller mappings are bad
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "410700": # System Shock: Classic
   compat_tool: boxtron
 
+"838410": # Tabletop Playground
+  compat_tool: proton_63
+
+"568090": # Tattletail
+  compat_tool: proton_63
+
+"302850": # Team Indie
+  compat_tool: proton_513
+
 "785260": # Team Sonic Racing
   compat_tool: proton_411
 
-"574980": # Them's Fightin' Herds
-  compat_tool: proton_42
+"800270": # Terraforming Mars
+  compat_tool: proton_513
+
+"573600": # Think of the Children
+  compat_tool: proton_513
+
+"214700": # Thirty Flights of Loving
+  compat_tool: proton_513
+
+"595280": # Throne of Lies: Medieval Politics
+  compat_tool: proton_63
+
+"1003090": # Through the Darkest of Times
+  compat_tool: Proton-6.1-GE-2
 
 "108200": # Ticket to Ride
   compat_tool: proton_513
+
+"340270": # TIMEframe
+  compat_tool: proton_513
+
+"475150": # Titan Quest Anniversary Edition
+  compat_tool: proton_513
+
+"224960": # Tomb Raider I
+  compat_tool: boxtron
+
+"225300": # Tomb Raider II
+ compat_tool: Proton-6.1-GE-2
+
+"225320": # Tomb Raider III 
+ compat_tool: Proton-6.1-GE-2
 
 "674500": # Total Tank Simulator
   compat_tool: proton_513
@@ -1169,7 +1361,7 @@
   compat_config: noesync,nofsync
 
 "585420": # Trailmakers
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "914010": # Train Station Renovation  
   compat_tool: Proton-5.21-GE-1
@@ -1178,7 +1370,7 @@
   compat_tool: Proton-5.21-GE-1
 
 "319910": # Trine 3: The Artifacts of Power; native version shows generic gamepad hints
-  compat_tool: proton_42
+  compat_tool: proton_5
 
 "690640": # Trine 4: The Nightmare Prince
   compat_tool: proton_513
@@ -1193,7 +1385,7 @@
   compat_tool: proton_411
 
 "45760": # Ultra Street Fighter IV
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "837470": # Untitled Goose Game
   compat_tool: proton_513
@@ -1205,13 +1397,16 @@
   compat_tool: Proton-5.21-GE-1
 
 "427290": # Vampyr
-  compat_tool: proton_42
+  compat_tool: proton_63
+
+"1063310": # Vane
+  compat_tool: proton_513
 
 "857980": # Void Bastards
   compat_tool: proton_411
 
 "530320": # Wandersong
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "607050": # Wargroove
   compat_tool: proton_411
@@ -1230,10 +1425,10 @@
   compat_tool: proton_513
 
 "292030": # The Witcher 3: Wild Hunt
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "499450": # The Witcher 3: Wild Hunt - Game of the Year Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "2270": # Wolfenstein 3D
   compat_tool: proton_5
@@ -1256,11 +1451,14 @@
 "354830": # Wolfenstein: The Old Blood German Edition
   compat_tool: proton_513
 
+"228380": # Wreckfest
+  compat_tool: proton_513
+
 "1142100": # WWE 2K BATTLEGROUNDS
   compat_tool: proton_513
 
 "834530": # Yakuza Kiwami
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "882100": # XCOM: Chimera Squad
   compat_tool: proton_63

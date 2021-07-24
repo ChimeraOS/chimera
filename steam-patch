@@ -6,32 +6,20 @@ import shutil
 import filecmp
 import subprocess
 from inotify_simple import INotify, flags
-
-
-if 'XDG_DATA_HOME' in os.environ:
-	DATA_HOME = os.environ['XDG_DATA_HOME']
-else:
-	DATA_HOME = os.environ['HOME'] + '/.local/share'
-
-if 'XDG_CONFIG_HOME' in os.environ:
-	CONFIG_HOME = os.environ['XDG_CONFIG_HOME']
-else:
-	CONFIG_HOME = os.environ['HOME'] + '/.config'
-
-STATIC_FILE    = 'steam-tweaks.yaml'
-MAIN_FILE      = os.path.join(DATA_HOME, 'steam-tweaks.yaml')
-OVERRIDE_FILE  = os.path.join(CONFIG_HOME, 'steam-tweaks.yaml')
-STEAM_DIR      = os.path.join(DATA_HOME, 'Steam/steamapps/common')
-
-inotify = INotify()
-watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
-steam_dir = inotify.add_watch(STEAM_DIR, watch_flags)
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import file_exists
 
 
 patches = {}
 watches = {}
+se = ChimeraContext()
+inotify = INotify()
+watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
+steam_dir = inotify.add_watch(se.STEAM_DIR, watch_flags)
+
+
 def apply_patch(game_dir):
-    if not os.path.exists(os.path.join(STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(se.STEAM_DIR, game_dir)):
         print('apply_patch dir not exists:', game_dir)
         return
 
@@ -40,28 +28,31 @@ def apply_patch(game_dir):
     for spec in patch_specs:
         if 'exec' in spec:
             cmd = spec['exec']
-            subprocess.call([ cmd ], shell=True, cwd=os.path.join(STEAM_DIR, game_dir))
+            subprocess.call([cmd],
+                            shell=True,
+                            cwd=os.path.join(se.STEAM_DIR, game_dir))
         elif 'copy' in spec:
             args = spec['copy']
-            dst = os.path.join(STEAM_DIR, game_dir, args['dst'])
+            dst = os.path.join(se.STEAM_DIR, game_dir, args['dst'])
             if not os.path.exists(dst) or not filecmp.cmp(args['src'], dst):
                 if os.path.exists(os.path.dirname(dst)):
                     print('command: copy', args['dst'])
                     shutil.copyfile(args['src'], dst)
 
+
 def start_watch(game_dir):
-    if not os.path.exists(os.path.join(STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(se.STEAM_DIR, game_dir)):
         print('start_watch dir not exists:', game_dir)
         return
 
     print('starting watch:', game_dir)
-    wd = inotify.add_watch(os.path.join(STEAM_DIR, game_dir), watch_flags)
+    wd = inotify.add_watch(os.path.join(se.STEAM_DIR, game_dir), watch_flags)
     watches[wd] = game_dir
     apply_patch(game_dir)
 
 
 def load_data(data_path):
-    if not os.path.exists(data_path):
+    if not file_exists(data_path):
         return
 
     print('load_data:', data_path)
@@ -74,13 +65,19 @@ def load_data(data_path):
 
     data.clear()
 
-load_data(STATIC_FILE)
-load_data(MAIN_FILE)
-load_data(OVERRIDE_FILE)
 
-while True:
-    for event in inotify.read():
-        if event.wd == steam_dir and event.name in patches:
-            start_watch(event.name)
-        if event.wd in watches:
-            apply_patch(watches[event.wd])
+def main():
+    load_data(se.STATIC_TWEAKS_FILE)
+    load_data(se.MAIN_TWEAKS_FILE)
+    load_data(se.LOCAL_TWEAKS_FILE)
+
+    while True:
+        for event in inotify.read():
+            if event.wd == steam_dir and event.name in patches:
+                start_watch(event.name)
+            if event.wd in watches:
+                apply_patch(watches[event.wd])
+
+
+if __name__ == '__main__':
+    main()

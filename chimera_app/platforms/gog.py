@@ -1,20 +1,23 @@
 import subprocess
 import json
 import os
-import glob
 import shutil
 from io import BytesIO
-from steam_buddy.config import CACHE_DIR, CONFIG_DIR, BANNER_DIR, CONTENT_DIR
-from steam_buddy.platforms.store_platform import StorePlatform, dic
-from steam_buddy.functions import load_shortcuts
-
+from chimera_app.utils import ChimeraContext
+from chimera_app.utils import ensure_directory
+from chimera_app.utils import file_exists
+from chimera_app.config import CONTENT_DIR
+from chimera_app.config import BANNER_DIR
+from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.functions import load_shortcuts
 
 
 class GOG(StorePlatform):
     def is_authenticated(self):
         num_lines = 0
-        path = os.path.join(CONFIG_DIR, "wyvern", "wyvern.toml")
-        if os.path.isfile(path):
+        se = ChimeraContext()
+        path = os.path.join(se.CONFIG_HOME, "wyvern", "wyvern.toml")
+        if file_exists(path):
             num_lines = sum(1 for line in open(path))
 
         if num_lines > 1:
@@ -28,13 +31,10 @@ class GOG(StorePlatform):
     def get_shortcut(self, content):
         ext = '.png'
         base_path = os.path.join(BANNER_DIR, 'gog/')
-        try:
-            os.makedirs(base_path)
-        except:
-            pass
+        ensure_directory(base_path)
 
         img_path = base_path + content.content_id + ext
-        subprocess.check_output(["curl", content.image_url, "-o", img_path ])
+        subprocess.check_output(["curl", content.image_url, "-o", img_path])
 
         game_dir = os.path.join(CONTENT_DIR, 'gog', content.content_id)
 
@@ -45,7 +45,7 @@ class GOG(StorePlatform):
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
-            'compat_tool': None if content.native else 'proton_513',
+            'compat_tool': None if content.native else 'proton_63',
             'id': content.content_id
         }
 
@@ -85,15 +85,10 @@ class GOG(StorePlatform):
         pass
 
     def _install(self, content) -> subprocess:
-        cachedir = os.path.join(CACHE_DIR, 'steam-buddy')
-        try:
-            shutil.rmtree(cachedir)
-        except:
-            pass
-        try:
-            os.mkdir(cachedir)
-        except:
-            pass
+        se = ChimeraContext()
+        cachedir = os.path.join(se.CACHE_HOME, 'chimera')
+        shutil.rmtree(cachedir, ignore_errors=True)
+        ensure_directory(cachedir)
 
         if not content.native:
             cmd = ["bin/gog-install", content.content_id, os.path.join(CONTENT_DIR, 'gog', content.content_id)]

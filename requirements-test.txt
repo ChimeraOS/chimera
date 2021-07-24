@@ -9,5 +9,7 @@ flake8
 WebTest
 bcrypt
 Pillow
+vdf
 pytest
 pytidylib
+requests-mock
