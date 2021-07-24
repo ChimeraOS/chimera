@@ -12,12 +12,12 @@ def install_all_compat_tools():
     cc = ChimeraContext()
     ensure_directory(cc.STEAM_COMPAT_TOOLS)
     for tool_dir in os.listdir(cc.STATIC_COMPAT_TOOLS):
-        steam_tool = cc.STEAM_COMPAT_TOOLS + tool_dir
-        static_tool = cc.STATIC_COMPAT_TOOLS + tool_dir
+        steam_tool = os.path.join(cc.STEAM_COMPAT_TOOLS, tool_dir)
+        static_tool = os.path.join(cc.STATIC_COMPAT_TOOLS, tool_dir)
         if not directory_exists(steam_tool):
             shutil.copytree(static_tool,
                             steam_tool)
-            si = CompatToolStubInfo.load_stub_info(static_tool + '/stub.info')
+            si = CompatToolStubInfo.load_stub_info(os.path.join(static_tool, 'stub.info'))
             ct = CompatTool(si)
             ct.write_stub(steam_tool)
 
@@ -57,8 +57,8 @@ class CompatTool():
 
     def __init__(self, stub_info):
         self._context = ChimeraContext()
-        self._template = open(self._context.STATIC_DATA +
-                              'compat-tool-stub.tpl',
+        self._template = open(os.path.join(self._context.STATIC_DATA,
+                              'steam-compat-tool-stub.tpl'),
                               'r').read()
         self.stub = stub_info
 
@@ -69,5 +69,7 @@ class CompatTool():
             '%TOOL_MD5SUM%': self.stub.md5sum,
             '%TOOL_CMD%': self.stub.cmd
         }
-        with open(path, 'w') as stub_file:
+        stub_path = os.path.join(path, self.stub.cmd)
+        with open(stub_path, 'w') as stub_file:
             stub_file.write(replace_all(self._template, replacements))
+        os.chmod(stub_path, 0o775)
