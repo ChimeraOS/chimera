@@ -145,7 +145,7 @@
   launch_options: -nointro
 
 "218060": # BIT.TRIP Presents... Runner2: Future Legend of Rhythm Alien; native version has severe controller issues
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "729660": # Blackout Z: Slaughterhouse Edition
   compat_tool: proton_513
@@ -171,7 +171,7 @@
   compat_tool: proton_513
 
 "692850": # Bloodstained: Ritual of the Night
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "449960": # Book of Demons
   compat_tool: proton_411
@@ -186,7 +186,7 @@
   compat_tool: proton_5
 
 "491040": # Bot Vice; native version does not recognize controllers
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "324510": # Boundless
   compat_tool: proton_5
@@ -216,7 +216,7 @@
   compat_tool: proton_5
 
 "204360": # Castle Crashers; Valve whitelisted proton version no longer works
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "544730": # Catan Universe
   compat_tool: proton_513
@@ -273,8 +273,7 @@
   compat_tool: proton_513
 
 "71230": # Crazy Taxi
-  compat_tool: proton_411
-  compat_config: d9vk
+  compat_tool: proton_63
 
 "873940": # Crying Suns
   compat_tool: proton_5
@@ -670,7 +669,7 @@
   compat_tool: proton_513
 
 "638230": # Journey
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "648350": # Jurassic World Evolution
   compat_tool: proton_513
@@ -1024,7 +1023,7 @@
   compat_tool: proton_513
     
 "971620": # Puyo Puyo Champions
-  compat_tool: proton_411
+  compat_tool: proton_63
   launch_options: WINEDLLOVERRIDES="xaudio2_7=native,builtin" %command%
 
 "292380": # Racer 8
@@ -1037,7 +1036,7 @@
   compat_tool: proton_63
 
 "207490": # Rayman Origins
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "290300": # Rebel Galaxy
   compat_tool: proton_513
@@ -1208,7 +1207,7 @@
   compat_tool: proton_63
 
 "200940": # Sonic CD
-  compat_tool: proton_411
+  compat_tool: proton_63
   launch_options: WINEDLLOVERRIDES="xaudio2_7=native,builtin" %command%
   patch_dir: Sonic CD
   patches:
@@ -1224,7 +1223,7 @@
   compat_config: noesync,nofsync
 
 "584400": # Sonic Mania
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "544750": # Soul Calibur VI
   compat_tool: Proton-6.10-GE-1
@@ -1304,7 +1303,7 @@
   compat_tool: proton_513
 
 "619780": # The Swords of Ditto: Mormo's Curse; native version controller mappings are bad
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "410700": # System Shock: Classic
   compat_tool: boxtron
@@ -1398,7 +1397,7 @@
   compat_tool: Proton-5.21-GE-1
 
 "427290": # Vampyr
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "1063310": # Vane
   compat_tool: proton_513
@@ -1426,10 +1425,10 @@
   compat_tool: proton_513
 
 "292030": # The Witcher 3: Wild Hunt
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "499450": # The Witcher 3: Wild Hunt - Game of the Year Edition
-  compat_tool: proton_42
+  compat_tool: proton_63
 
 "2270": # Wolfenstein 3D
   compat_tool: proton_5
