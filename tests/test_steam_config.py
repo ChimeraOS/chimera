@@ -1,4 +1,5 @@
 import os
+import time
 import tempfile
 import pytest
 import vdf
@@ -133,8 +134,10 @@ def tweaks_url_content(requests_mock,
 
 @pytest.fixture
 def tweaks_not_found(requests_mock,
+                     monkeypatch,
                      tweaks_url):
     """Mock a 404 code when searching for the tweaks file online"""
+    monkeypatch.setattr(time, 'sleep', lambda s: None)
     requests_mock.get(tweaks_url, status_code=404)
 
 
