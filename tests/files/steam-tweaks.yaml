@@ -1,0 +1,14 @@
+"285820": # Action Henk
+  launch_options: LD_LIBRARY_PATH= %command%
+  steam_input: enabled
+
+"331870": # AER Memories of Old; fix black screen in native version
+  launch_options: '%command% -screen-fullscreen 0'
+
+"221380": # Age of Empires II (2013)
+  compat_tool: proton_411
+
+"409710": # BioShock Remastered
+  compat_tool: proton_513
+  compat_config: noesync,nofsync
+  launch_options: -nointro
