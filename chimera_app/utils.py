@@ -86,7 +86,7 @@ class ChimeraContext:
 
     def __get_data_home_dir(self):
         if 'XDG_DATA_HOME' in os.environ:
-            data_home = os.environ['XDG_CACHE_HOME']
+            data_home = os.environ['XDG_DATA_HOME']
         else:
             data_home = os.environ['HOME'] + '/.local/share'
         return data_home
@@ -122,7 +122,7 @@ class ChimeraContext:
         return self.STEAM_DIR + '/config/config.vdf'
 
     def __get_main_tweaks_file(self):
-        return self.DATA_HOME + '/steam-tweaks.yaml'
+        return self.DATA_HOME + '/chimera/steam-tweaks.yaml'
 
     def __get_local_tweaks_file(self):
         return self.CONFIG_HOME + '/steam-tweaks.yaml'

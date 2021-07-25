@@ -24,7 +24,8 @@ class SteamConfig:
         sc.apply_tweaks()
     """
 
-    _context = ChimeraContext()
+    def __init__(self):
+        self._context = ChimeraContext()
 
     def update(self):
         self.download_tweaks_file(self._context.MAIN_TWEAKS_FILE,
@@ -63,7 +64,9 @@ class SteamConfig:
 
     @staticmethod
     def write(config_data, config_file):
-        vdf.dump(config_data, open(config_file, 'w'), pretty=True)
+        conf = vdf.dumps(config_data, pretty=True)
+        with open(config_file, 'w') as file:
+            file.write(conf)
 
     @staticmethod
     def load_main(path):
@@ -197,4 +200,3 @@ class SteamConfig:
                 if key not in launch_options:
                     launch_options[key] = {}
                 launch_options[key]['LaunchOptions'] = data[key]['launch_options']
-
