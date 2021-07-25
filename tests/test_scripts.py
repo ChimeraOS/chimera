@@ -2,17 +2,15 @@
 
 import time
 import os
-import pytest
 import vdf
-from chimera_app.steam_config import SteamConfig as SC
+import pytest
+from chimera_app.shortcuts import create_all_shortcuts
 from chimera_app.steam_config import apply_all_tweaks
 from chimera_app.compat_tools import install_all_compat_tools
-from chimera_app.utils import ChimeraContext as CC
 
 
 @pytest.fixture
-def fake_data(monkeypatch,
-              fs):
+def fake_data(fs):
     files_path = os.path.join(os.path.dirname(__file__), 'files')
 
     fs.add_real_file(os.path.join(files_path, 'steam-tweaks.yaml'),
@@ -28,9 +26,18 @@ def fake_data(monkeypatch,
                                        'compat-tools',
                                        'Proton-6.10-GE-1'),
                           target_path='/usr/share/chimera/compat-tools/Proton-6.10-GE-1')
+    fs.create_dir(os.path.expanduser('~/.cache'))
     fs.create_dir(os.path.expanduser('~/.local/share/chimera'))
     fs.create_dir(os.path.expanduser('~/.local/share/Steam/config'))
-    fs.create_dir(os.path.expanduser('~/.local/share/Steam/userdata/user-id/'))
+    fs.create_dir(os.path.expanduser('~/.local/share/Steam/userdata/12345678/'))
+    fs.add_real_file(os.path.join(files_path, 'test-shortcuts-single.yaml'),
+                     target_path=os.path.expanduser(
+                         '~/.local/share/chimera/shortcuts/single.yaml')
+                     )
+    fs.add_real_file(os.path.join(files_path, 'test-shortcuts-multi.yaml'),
+                     target_path=os.path.expanduser(
+                         '~/.local/share/chimera/shortcuts/multi.yaml')
+                     )
 
     yield fs
 
@@ -49,7 +56,7 @@ def test_config_static(monkeypatch,
     config_file = os.path.expanduser(
         '~/.local/share/Steam/config/config.vdf')
     user_config_file = os.path.expanduser(
-        '~/.local/share/Steam/userdata/user-id/config/localconfig.vdf')
+        '~/.local/share/Steam/userdata/12345678/config/localconfig.vdf')
 
     monkeypatch.setattr(time, 'sleep', lambda s: None)
     requests_mock.get(url, status_code=404)
@@ -89,3 +96,16 @@ def test_compat_static(fake_data):
     assert(os.path.exists(os.path.join(proton_ge_dir, 'proton')))
     assert(os.path.exists(os.path.join(proton_ge_dir, 'toolmanifest.vdf')))
     assert(os.path.exists(os.path.join(proton_ge_dir, 'compatibilitytool.vdf')))
+
+
+def test_shortcuts_static(fake_data):
+    shortcuts_file = os.path.expanduser(
+        '~/.local/share/Steam/userdata/12345678/config/shortcuts.vdf')
+
+    create_all_shortcuts()
+
+    assert(os.path.exists(shortcuts_file))
+    sh_data = vdf.binary_load(open(shortcuts_file, 'rb'))
+    assert(sh_data['shortcuts']['0']['AppName'] == 'Firefox')
+    assert(sh_data['shortcuts']['1']['AppName'] == 'SuperTux Native')
+    assert(sh_data['shortcuts']['2']['AppName'] == 'SuperTux')

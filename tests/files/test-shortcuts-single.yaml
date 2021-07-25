@@ -1,0 +1,6 @@
+name: Firefox
+cmd: firefox
+dir: "~"
+hidden: false
+tags:
+ - Native
