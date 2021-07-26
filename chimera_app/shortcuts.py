@@ -21,8 +21,6 @@ class ChimeraShortcuts:
     chimera toolset.
     """
 
-    _context = ChimeraContext()
-
     def __init__(self):
         self._context = ChimeraContext()
         self.shortcuts = None
@@ -30,9 +28,10 @@ class ChimeraShortcuts:
 
     def get_all_shortcuts(self):
         data = []
-        for d in self._context.SHORTCUT_DIRS:
-            for f in os.listdir(d):
-                data = data + self.load_shortcuts('/'.join([d, f]))
+        d = self._context.SHORTCUT_DIRS
+        for f in os.listdir(d):
+            file_name = os.path.join(d, f)
+            data = data + self.load_shortcuts(file_name)
         self.shortcuts = data
 
     def write_all_shortcuts(self):

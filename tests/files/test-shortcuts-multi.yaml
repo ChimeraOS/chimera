@@ -1,0 +1,17 @@
+- banner: /usr/share/chimera/images/flathub/org.supertuxproject.SuperTux.png
+  name: SuperTux Native
+  cmd: supertux2
+  dir: "~"
+  hidden: false
+  tags:
+   - Native
+
+
+- banner: /home/joaquin/develop/chimera/images/flathub/org.supertuxproject.SuperTux.png
+  cmd: flatpak run
+  dir: '~'
+  hidden: false
+  name: SuperTux
+  params: org.supertuxproject.SuperTux
+  tags:
+  - Flathub

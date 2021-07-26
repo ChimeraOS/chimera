@@ -107,12 +107,12 @@ class ChimeraContext:
         return self.STEAM_DIR + '/steamapps/common'
 
     def __get_steam_user_dirs(self):
-        base = self.STEAM_DIR + '/userdata'
+        base = os.path.join(self.STEAM_DIR, 'userdata')
         ensure_directory(base)
         user_dirs = []
         for d in os.listdir(base):
             if d not in ['anonymous', 'ac', '0']:
-                user_dirs.append('/'.join([base, d]))
+                user_dirs.append(os.path.join(base, d))
         return user_dirs
 
     def __get_steam_compat_tools_dir(self):
