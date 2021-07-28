@@ -6,6 +6,11 @@ import zipfile
 import requests
 
 
+def update_data(force=False) -> bool:
+    dl = Downloader()
+    return dl.update(force=force)
+
+
 class Downloader():
     """Downlaoder for data files from our repository
     Usage:
