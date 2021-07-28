@@ -1,17 +1,10 @@
+"""Unit tests for steam_config module relevant functions"""
+
 import os
-import time
 import tempfile
 import pytest
 import vdf
 from chimera_app.steam_config import SteamConfig as SC
-
-
-@pytest.fixture
-def tweaks_url():
-    """Returns the url used to fetch the online tweaks file"""
-    url = ('https://raw.githubusercontent.com/ChimeraOS/'
-           'chimera/master/steam-tweaks.yaml')
-    return url
 
 
 @pytest.fixture
@@ -125,23 +118,6 @@ def tweaks_content():
 
 
 @pytest.fixture
-def tweaks_url_content(requests_mock,
-                       tweaks_url,
-                       tweaks_content):
-    """This mocks the content of a tweaks file downloaded from our site"""
-    requests_mock.get(tweaks_url, content=tweaks_content.encode())
-
-
-@pytest.fixture
-def tweaks_not_found(requests_mock,
-                     monkeypatch,
-                     tweaks_url):
-    """Mock a 404 code when searching for the tweaks file online"""
-    monkeypatch.setattr(time, 'sleep', lambda s: None)
-    requests_mock.get(tweaks_url, status_code=404)
-
-
-@pytest.fixture
 def tweaks_file_empty():
     """This fixture will yield a temporary file to use as user tweaks file"""
     tmp_file = tempfile.NamedTemporaryFile(delete=False)
@@ -151,9 +127,9 @@ def tweaks_file_empty():
 
 
 @pytest.fixture
-def static_tweaks_file(tweaks_content):
-    """This fixture will yield a static tweaks file as if where delivered
-    with the chimera package
+def tweaks_file(tweaks_content):
+    """This fixture will yield a tweaks file as it where downloaded from the
+    repository
     """
     tmp_file_static = tempfile.NamedTemporaryFile(delete=False)
     open(tmp_file_static.name, 'wb').write(tweaks_content.encode())
@@ -161,35 +137,6 @@ def static_tweaks_file(tweaks_content):
     yield tmp_file_static
     tmp_file_static.close()
     os.unlink(tmp_file_static.name)
-
-
-def test_success_download_tweaks_file(tweaks_content,
-                                      tweaks_url_content,
-                                      tweaks_file_empty):
-    """Test a successful download"""
-    assert(SC.download_tweaks_file(tweaks_file_empty.name))
-    assert(tweaks_file_empty.read() == tweaks_content.encode())
-
-
-def test_failure_download_tweaks_file(tweaks_not_found,
-                                      tweaks_file_empty):
-    """Test a download failure of tweaks file with no static fallback"""
-    assert(not SC.download_tweaks_file(tweaks_file_empty.name,
-                                    num_attempts=1)
-           )
-
-
-def test_static_download_tweaks_file(tweaks_content,
-                                     tweaks_not_found,
-                                     tweaks_file_empty,
-                                     static_tweaks_file):
-    """Test a download failure of tweaks file with static file fallback"""
-    assert(SC.download_tweaks_file(tweaks_file_empty.name,
-                                   num_attempts=1,
-                                   static_file=static_tweaks_file.name
-                                   )
-           )
-    assert(open(tweaks_file_empty.name).read() == tweaks_content)
 
 
 def test_load_main(main_config_file,
@@ -214,27 +161,37 @@ def test_write(local_config_content,
              main_config_file_empty.name)
 
     mf_content = vdf.load(open(main_config_file_empty.name))
-    assert(mf_content['InstallConfigStore'] == main_config_content['InstallConfigStore'])
-    steam_file = mf_content['InstallConfigStore']['Software']['Valve']['Steam']
-    steam_data = main_config_content['InstallConfigStore']['Software']['Valve']['Steam']
+    assert(mf_content['InstallConfigStore'] ==
+           main_config_content['InstallConfigStore'])
+    steam_file = (mf_content['InstallConfigStore']['Software']['Valve']
+                  ['Steam'])
+    steam_data = (main_config_content['InstallConfigStore']['Software']
+                  ['Valve']['Steam'])
     assert(steam_file['CompatToolMapping'] == steam_data['CompatToolMapping'])
 
     lf_content = vdf.load(open(local_config_file_empty.name))
-    assert(lf_content['UserLocalConfigStore'] == local_config_content['UserLocalConfigStore'])
+    assert(lf_content['UserLocalConfigStore'] ==
+           local_config_content['UserLocalConfigStore'])
 
 
-def test_apply_to_main_config(static_tweaks_file,
+def test_apply_to_main_config(tweaks_file,
                               main_config_content):
-    SC.apply_to_main_config(static_tweaks_file.name, main_config_content, priority=209)
+    SC.apply_to_main_config(tweaks_file.name,
+                            main_config_content,
+                            priority=209
+                            )
 
-    compat = main_config_content['InstallConfigStore']['Software']['Valve']['Steam']['CompatToolMapping']
+    compat = (main_config_content['InstallConfigStore']['Software']['Valve']
+              ['Steam']['CompatToolMapping'])
     assert(compat['12345678']['name'] == 'compat_tool')
     assert(compat['12345678']['Priority'] == 209)
 
 
-def test_apply_to_local_config(static_tweaks_file,
+def test_apply_to_local_config(tweaks_file,
                                local_config_content):
-    SC.apply_to_local_config(static_tweaks_file.name, local_config_content)
+    SC.apply_to_local_config(tweaks_file.name, local_config_content)
 
-    launch_options = local_config_content['UserLocalConfigStore']['Software']['Valve']['Steam']['Apps']
-    assert(launch_options['321040']['LaunchOptions'] == 'MY_VARIABLE=1 %command%')
+    launch_options = (local_config_content['UserLocalConfigStore']['Software']
+                      ['Valve']['Steam']['Apps'])
+    assert(launch_options['321040']['LaunchOptions'] ==
+           'MY_VARIABLE=1 %command%')

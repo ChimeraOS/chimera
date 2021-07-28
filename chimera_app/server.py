@@ -33,11 +33,11 @@ from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
 from chimera_app.config import STREAMING_HANDLER
 from chimera_app.config import MANGOHUD_HANDLER
-from chimera_app.functions import load_shortcuts
-from chimera_app.functions import sanitize
-from chimera_app.functions import upsert_file
-from chimera_app.functions import delete_file
-from chimera_app.functions import generate_banner
+from chimera_app.utils import load_shortcuts
+from chimera_app.utils import sanitize
+from chimera_app.utils import upsert_file
+from chimera_app.utils import delete_file
+from chimera_app.utils import generate_banner
 from chimera_app.auth_decorator import authenticate
 from chimera_app.platforms.epic_store import EpicStore
 from chimera_app.platforms.flathub import Flathub

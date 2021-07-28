@@ -4,7 +4,6 @@ import shutil
 import json
 import zipfile
 import requests
-from chimera_app.utils import file_exists
 
 
 class Downloader():
@@ -30,7 +29,8 @@ class Downloader():
         self.db_path = os.path.expanduser(db_path)
 
     def fetch_latest(self) -> None:
-        api_url = 'https://api.github.com/repos/chimeraos/chimera-data/branches'
+        api_url = ('https://api.github.com/repos/chimeraos/'
+                   'chimera-data/branches')
         resp = requests.get(api_url)
         db_path = os.path.join(self.db_path, "branches.json")
         with open(db_path, 'w') as db_file:
@@ -39,7 +39,7 @@ class Downloader():
     def get_installed(self) -> dict:
         version_path = os.path.join(self.db_path, "versions.json")
         version = {}
-        if file_exists(version_path):
+        if os.path.exists(version_path):
             with open(version_path) as version_file:
                 version = json.load(version_file)
         return version
@@ -55,7 +55,7 @@ class Downloader():
     def get_available_versions(self) -> list:
         branches_path = os.path.join(self.db_path, "branches.json")
         versions = []
-        if file_exists(branches_path):
+        if os.path.exists(branches_path):
             with open(branches_path) as branches_file:
                 branches = json.load(branches_file)
                 for branch in branches:

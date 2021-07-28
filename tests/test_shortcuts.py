@@ -1,3 +1,5 @@
+"""Unit tests for relevant shortcuts module functions"""
+
 import os
 import tempfile
 from chimera_app.shortcuts import ChimeraShortcuts as CShort

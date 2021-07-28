@@ -6,20 +6,18 @@ import shutil
 import filecmp
 import subprocess
 from inotify_simple import INotify, flags
-from chimera_app.utils import ChimeraContext
-from chimera_app.utils import file_exists
+import chimera_app.context as context
 
 
 patches = {}
 watches = {}
-se = ChimeraContext()
 inotify = INotify()
 watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
-steam_dir = inotify.add_watch(se.STEAM_DIR, watch_flags)
+steam_dir = inotify.add_watch(context.STEAM_DIR, watch_flags)
 
 
 def apply_patch(game_dir):
-    if not os.path.exists(os.path.join(se.STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(context.STEAM_DIR, game_dir)):
         print('apply_patch dir not exists:', game_dir)
         return
 
@@ -30,10 +28,10 @@ def apply_patch(game_dir):
             cmd = spec['exec']
             subprocess.call([cmd],
                             shell=True,
-                            cwd=os.path.join(se.STEAM_DIR, game_dir))
+                            cwd=os.path.join(context.STEAM_DIR, game_dir))
         elif 'copy' in spec:
             args = spec['copy']
-            dst = os.path.join(se.STEAM_DIR, game_dir, args['dst'])
+            dst = os.path.join(context.STEAM_DIR, game_dir, args['dst'])
             if not os.path.exists(dst) or not filecmp.cmp(args['src'], dst):
                 if os.path.exists(os.path.dirname(dst)):
                     print('command: copy', args['dst'])
@@ -41,18 +39,19 @@ def apply_patch(game_dir):
 
 
 def start_watch(game_dir):
-    if not os.path.exists(os.path.join(se.STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(context.STEAM_DIR, game_dir)):
         print('start_watch dir not exists:', game_dir)
         return
 
     print('starting watch:', game_dir)
-    wd = inotify.add_watch(os.path.join(se.STEAM_DIR, game_dir), watch_flags)
+    wd = inotify.add_watch(os.path.join(context.STEAM_DIR, game_dir),
+                           watch_flags)
     watches[wd] = game_dir
     apply_patch(game_dir)
 
 
 def load_data(data_path):
-    if not file_exists(data_path):
+    if not os.path.exists(data_path):
         return
 
     print('load_data:', data_path)
@@ -67,9 +66,8 @@ def load_data(data_path):
 
 
 def main():
-    load_data(se.STATIC_TWEAKS_FILE)
-    load_data(se.MAIN_TWEAKS_FILE)
-    load_data(se.LOCAL_TWEAKS_FILE)
+    load_data(context.MAIN_TWEAKS_FILE)
+    load_data(context.LOCAL_TWEAKS_FILE)
 
     while True:
         for event in inotify.read():
