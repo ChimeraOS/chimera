@@ -66,6 +66,10 @@ def load_data(data_path):
 
 
 def main():
+    if not os.path.isdir(context.PATCH_DIR):
+        print(f'Patches directory does not exist ({context.PATCH_DIR})')
+        return
+    os.chdir(context.PATCH_DIR)
     load_data(context.MAIN_TWEAKS_FILE)
     load_data(context.LOCAL_TWEAKS_FILE)
 
