@@ -6,9 +6,10 @@ import os
 def __get_steam_user_dirs(steam_dir):
     base = os.path.join(steam_dir, 'userdata')
     user_dirs = []
-    for d in os.listdir(base):
-        if d not in ['anonymous', 'ac', '0']:
-            user_dirs.append(os.path.join(base, d))
+    if os.path.isdir(base):
+        for d in os.listdir(base):
+            if d not in ['anonymous', 'ac', '0']:
+                user_dirs.append(os.path.join(base, d))
     return user_dirs
 
 
