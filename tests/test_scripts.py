@@ -79,6 +79,7 @@ def test_compat_with_empty(empty_data):
 
     compat_tools.install_all_compat_tools()
 
+    assert(not os.path.exists(compat_tools_dir))
     assert(not os.path.exists(proton_ge_dir))
 
 

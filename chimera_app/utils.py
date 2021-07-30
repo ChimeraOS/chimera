@@ -2,7 +2,9 @@
 import os
 import re
 import shutil
+import subprocess
 from datetime import datetime
+import psutil
 import yaml
 from PIL import Image, ImageFont, ImageDraw
 import chimera_app.context as context
@@ -161,3 +163,25 @@ def generate_banner(text, path):
     title.text((text_x, text_y), text, font=font, fill=(255, 255, 255))
 
     banner.save(path)
+
+
+def client_running() -> False:
+    """Check if the Steam client is running"""
+    pid_path = os.path.expanduser('~/.steam/steam.pid')
+    if not os.path.exists(pid_path):
+        return False
+    with open(pid_path) as pid_file:
+        pid = pid_file.read()
+    try:
+        maybe_steam = psutil.Process(pid)
+    except psutil.NoSuchProcess:
+        return False
+    return maybe_steam.name() == 'steam'
+
+
+def install_by_id(steam_id: str) -> None:
+    if client_running():
+        subprocess.run(['steam', 'steam://install/' + steam_id],
+                       check=True)
+    else:
+        raise Exception('Steam Client is not running')
