@@ -77,13 +77,13 @@
 "979120": # Autonauts
   compat_tool: proton_513
 
-"484900": # Aven Colony 
+"484900": # Aven Colony
   compat_tool: Proton-6.1-GE-2
 
 "688420": # Bad North
   compat_tool: proton_63
 
-"1035850": # Balancelot  
+"1035850": # Balancelot
   compat_tool: Proton-5.21-GE-1
 
 "214790": # The Basement Collection
@@ -257,7 +257,7 @@
 "870780": # Control
   compat_tool: proton_63
 
-"1000030": # Cook Serve Delicious! 3?!  
+"1000030": # Cook Serve Delicious! 3?!
   compat_tool: proton_513
 
 "320340": # Cosmonautica
@@ -280,7 +280,7 @@
 
 “829590”: # Cryofall
   compat_tool: proton_63
-  
+
 "928840": # Cybarian: The Time Travelling Warrior
   compat_tool: proton_5
 
@@ -309,7 +309,7 @@
 
 "423950": # Deadlight: Directors Cut
   compat_tool: proton_513
-  
+
 "520720": # Dear Esther: Landmark Edition
   compat_tool: proton_411
 
@@ -333,7 +333,7 @@
 
 "310510": # Deathtrap
   compat_tool: proton_513
-  
+
 "755980": # Deployment
   compat_tool: proton_513
 
@@ -413,7 +413,7 @@
 
 "392110": # Endless Space 2
   compat_tool: Proton-5.21-GE-1
-  
+
 "1368450": # Endless Zone
   compat_tool: proton_513
 
@@ -436,7 +436,7 @@
 "1020470": # Evoland Legendary Edition; native version unplayable due to cropped display
   compat_tool: proton_411
 
-"359310": # Evoland 2  
+"359310": # Evoland 2
   compat_tool: proton_513
 
 "737800": # F1 2018
@@ -449,8 +449,8 @@
 "1080110": # F1 2020
   compat_tool: proton_63
   launch_options: rm -f F1_2020_dx12.exe && ln -s F1_2020.exe F1_2020_dx12.exe; %command%
-  
-"995980": # Fae Tactics 
+
+"995980": # Fae Tactics
   compat_tool: proton_513
 
 "38400": # Fallout: A Post Nuclear Role Playing Game
@@ -486,7 +486,7 @@
 "318600": # The Flame in the Flood
   compat_tool: proton_513
 
-"405970": # Flat Kingdom Paper's Cut Edition  
+"405970": # Flat Kingdom Paper's Cut Edition
   compat_tool: proton_513
 
 "966330": # Flower
@@ -508,7 +508,7 @@
 
 "1142500": # Fun with Ragdolls: The Game
   compat_tool: proton_513
-  
+
 "202200": # Galactic Civilizations II: Ultimate Edition
   compat_tool: proton_513
 
@@ -523,7 +523,7 @@
 
 "916730": # Gato Roboto
   compat_tool: proton_513
-  
+
 "704270": # Generation Zero
   compat_tool: proton_411
 
@@ -532,11 +532,11 @@
 
 "9500": # Gish
   compat_tool: proton_513
-  
+
 "1102500": # A Glider's Journey
   compat_tool: proton_513
 
-"555000": # Goat of Duty  
+"555000": # Goat of Duty
   compat_tool: proton_5
 
 "1154810": # Going Under
@@ -561,7 +561,7 @@
     - exec: echo "2960d17d77d44b259674e0b099b9e5a6 installscript.vdf" | md5sum --status -c && sed -i '62i \\t\t\t"Command 1"\t\t"/S"^M' installscript.vdf
     - exec: echo "5c42dc1c0cfb483cee86df0779332168 system/hardware_settings_restrictions.xml" | md5sum --status -c && sed -i 150d system/hardware_settings_restrictions.xml
 
-"703860": # GRID (2019)  
+"703860": # GRID (2019)
   compat_tool: proton_5
 
 "396900": # Grip: Combat Racing
@@ -632,7 +632,7 @@
 
 "890720": # In Other Waters
   compat_tool: proton_513
- 
+
 "400170": # The Incredible Adventures of Van Helsing: Final Cut
   compat_tool: proton_411
 
@@ -819,7 +819,7 @@
 
 "940910": # Minoria
   compat_tool: proton_513
-  
+
 "17410": # Mirror's Edge
   compat_tool: proton_63
   patch_dir: mirrors edge
@@ -835,7 +835,7 @@
 "939560": # Monster Trampoline
   compat_tool: proton_63
 
-"1331910": # Morkredd  
+"1331910": # Morkredd
   compat_tool: proton_513
 
 "237110": # Mortal Kombat Komplete Edition
@@ -850,7 +850,7 @@
 "996770": # Moving Out
   compat_tool: Proton-6.1-GE-2
 
-"1049820": # Must Dash Amigos  
+"1049820": # Must Dash Amigos
   compat_tool: proton_513
 
 "1427800": # Mutant Ops
@@ -945,12 +945,12 @@
 "387290": # Ori and the Blind Forest: Definitive Edition
   compat_tool: proton_5
 
-"402710": # Osiris: New Dawn  
+"402710": # Osiris: New Dawn
   compat_tool: proton_513
 
 "794260": # Outward
   compat_tool: Proton-5.21-GE-1
-  
+
 "441380": # PAC-MAN CHAMPIONSHIP EDITION 2
   compat_tool: proton_513
 
@@ -963,9 +963,9 @@
 "622440": # Pandemic: The Board Game
   compat_tool: proton_513
 
-"1178880": # Panzer Dragoon: Remake  
+"1178880": # Panzer Dragoon: Remake
   compat_tool: Proton-6.1-GE-2
-  
+
 "1001230": # Partial Control
   compat_tool: proton_513
 
@@ -1013,7 +1013,7 @@
 
 "392070": # Pumped BMX +
   compat_tool: proton_513
-    
+
 "971620": # Puyo Puyo Champions
   compat_tool: proton_63
   launch_options: WINEDLLOVERRIDES="xaudio2_7=native,builtin" %command%
@@ -1036,7 +1036,7 @@
 "1057560": # Rebound Dodgeball Evolved
   compat_tool: Proton-6.1-GE-2
 
-"257170": # Rebuild 3: Gangs of Deadsville  
+"257170": # Rebuild 3: Gangs of Deadsville
   compat_tool: proton_513
 
 "1106790": # Red Horizon
@@ -1047,7 +1047,7 @@
 
 "265590": # The Red Solstice
   compat_tool: proton_513
- 
+
 "1140630": # Red Wings: Aces of the Sky
   compat_tool: Proton-6.1-GE-2
 
@@ -1065,7 +1065,7 @@
 
 "290040": # Retro Game Crunch
   compat_tool: proton_513
- 
+
 "1152020": # Return Of The Zombie King
   compat_tool: proton_63
 
@@ -1152,10 +1152,10 @@
 "712730": # SIMULACRA
   compat_tool: proton_513
 
-"204880": # Sins of a Solar Empire: Rebellion 
+"204880": # Sins of a Solar Empire: Rebellion
   compat_tool: proton_513
 
-"201290": # Sins of a Solar Empire: Trinity  
+"201290": # Sins of a Solar Empire: Trinity
   compat_tool: proton_513
 
 "976700": # Size Matters
@@ -1179,7 +1179,7 @@
 "238090": # Sniper Elite 3
   compat_tool: proton_513
   launch_options: PROTON_SET_GAME_DRIVE=1 %command%
- 
+
 "973580": # Sniper Ghost Warrior Contracts
   compat_tool: proton_63
 
@@ -1227,7 +1227,7 @@
 "50300": # Spec Ops: The Line
   steam_input: enabled
 
-"468670": # Speed Brawl  
+"468670": # Speed Brawl
   compat_tool: Proton-6.1-GE-2
 
 "263280": # Spintires
@@ -1342,7 +1342,7 @@
 "225300": # Tomb Raider II
  compat_tool: Proton-6.1-GE-2
 
-"225320": # Tomb Raider III 
+"225320": # Tomb Raider III
  compat_tool: Proton-6.1-GE-2
 
 "674500": # Total Tank Simulator
@@ -1355,9 +1355,9 @@
 "585420": # Trailmakers
   compat_tool: proton_63
 
-"914010": # Train Station Renovation  
+"914010": # Train Station Renovation
   compat_tool: Proton-5.21-GE-1
- 
+
 "924980": # Trials of Mana
   compat_tool: Proton-5.21-GE-1
 
@@ -1406,7 +1406,7 @@
 
 "774241": # Warhammer: Chaosbane
   compat_tool: proton_513
-  
+
 "865360": # We Were Here Together
   compat_tool: proton_411
 
@@ -1454,7 +1454,7 @@
 
 "882100": # XCOM: Chimera Squad
   compat_tool: proton_63
-  
+
 "927380": # Yakuza Kiwami 2
   compat_tool: proton_5
 
