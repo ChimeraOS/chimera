@@ -235,6 +235,6 @@ class ChimeraShortcuts:
             compat_data[compat_id]['compat_tool'] = entry['compat_tool']
             if 'compat_config' in entry:
                 (compat_data[compat_id]
-                 ['compat_config']) = entry['compat_config']
+                            ['compat_config']) = entry['compat_config']
 
         return shortcut, compat_data
