@@ -1,19 +1,22 @@
 """Module to manage shortcuts in the entire chimera toolset"""
 
-from zlib import crc32
 import os
+from datetime import date
+from zlib import crc32
 import vdf
 import yaml
-from datetime import date
-from chimera_app.utils import ChimeraContext
-from chimera_app.utils import file_exists
+import chimera_app.context as context
 from chimera_app.utils import yearsago
 
 
 def create_all_shortcuts():
-    bs = ChimeraShortcuts()
-    bs.get_all_shortcuts()
-    bs.write_all_shortcuts()
+    """Convenience function to create all shortcuts with default parameters"""
+    if (not os.path.isdir(context.SHORTCUT_DIRS)):
+        print(f'Shortcuts directory does not exist ({context.SHORTCUT_DIRS})')
+        return
+    shortcuts = ChimeraShortcuts()
+    shortcuts.get_all_shortcuts()
+    shortcuts.write_all_shortcuts()
 
 
 class ChimeraShortcuts:
@@ -22,13 +25,12 @@ class ChimeraShortcuts:
     """
 
     def __init__(self):
-        self._context = ChimeraContext()
         self.shortcuts = None
         self.steam_shortcuts = None
 
     def get_all_shortcuts(self):
         data = []
-        d = self._context.SHORTCUT_DIRS
+        d = context.SHORTCUT_DIRS
         for f in os.listdir(d):
             file_name = os.path.join(d, f)
             data = data + self.load_shortcuts(file_name)
@@ -40,7 +42,7 @@ class ChimeraShortcuts:
 
         compat_data = {}
         # Get current shortcuts for each user
-        for user_dir in self._context.STEAM_USER_DIRS:
+        for user_dir in context.STEAM_USER_DIRS:
             steam_shortcuts = self.get_steam_shortcuts(user_dir)
 
             sdict = {}
@@ -54,7 +56,7 @@ class ChimeraShortcuts:
             self.write_shortcuts(user_dir, sdict)
 
         yaml.dump(compat_data,
-                  open(self._context.COMPAT_DATA_FILE, 'w'),
+                  open(context.COMPAT_DATA_FILE, 'w'),
                   default_flow_style=False)
 
     @staticmethod
@@ -101,9 +103,9 @@ class ChimeraShortcuts:
         definitions.
         """
         data = []
-        if file_exists(yaml_file):
+        if os.path.exists(yaml_file):
             data = yaml.load(open(yaml_file, 'r'), Loader=yaml.FullLoader)
-            if type(data) is dict:
+            if isinstance(data, dict):
                 data = [data]
         return data
 
@@ -113,7 +115,7 @@ class ChimeraShortcuts:
         with the data.
         """
         data = {}
-        if file_exists(vdf_file):
+        if os.path.exists(vdf_file):
             s = vdf.binary_load(open(vdf_file, 'rb'))
             if 'shortcuts' in s:
                 data = s['shortcuts']
@@ -143,8 +145,6 @@ class ChimeraShortcuts:
         if 'cmd' not in entry:
             print('shortcut missing required field "cmd"; skipping')
             return
-
-        se = ChimeraContext()
 
         shortcut_id = ChimeraShortcuts.get_shortcut_id(entry['cmd'],
                                                        entry['name'])
@@ -187,8 +187,8 @@ class ChimeraShortcuts:
         TIME_WARP_TAG = 'Time Warp'
         TIME_WARP_DATE = None
 
-        if se.TIME_WARP:
-            TIME_WARP_DATE = yearsago(int(se.TIME_WARP)).isoformat()
+        if context.TIME_WARP:
+            TIME_WARP_DATE = yearsago(int(context.TIME_WARP)).isoformat()
 
         if TIME_WARP_DATE:
             # handle the case where the time warp or release dates changed;
@@ -196,14 +196,17 @@ class ChimeraShortcuts:
             if TIME_WARP_TAG in shortcut_tags:
                 shortcut_tags.remove(TIME_WARP_TAG)
 
-            release_date = entry['release_date'] if 'release_date' in entry else None
+            release_date = (entry['release_date']
+                            if 'release_date' in entry
+                            else None)
             if type(release_date) is date:
                 release_date = release_date.isoformat()
 
             if type(release_date) is int:
                 release_date = str(release_date)
 
-            if release_date and type(release_date) is str and release_date <= TIME_WARP_DATE:
+            if (release_date and type(release_date) is str and
+                    release_date <= TIME_WARP_DATE):
                 entry['tags'].append(TIME_WARP_TAG)
 
         entry['tags'].extend(shortcut_tags)
@@ -216,7 +219,7 @@ class ChimeraShortcuts:
 
         if 'banner' in entry:
             _, ext = os.path.splitext(entry['banner'])
-            for user_dir in se.STEAM_USER_DIRS:
+            for user_dir in context.STEAM_USER_DIRS:
                 dst_dir = user_dir + '/config/grid/'
                 if not os.path.isdir(dst_dir):
                     os.makedirs(dst_dir)
@@ -231,6 +234,7 @@ class ChimeraShortcuts:
                 compat_data[compat_id] = {}
             compat_data[compat_id]['compat_tool'] = entry['compat_tool']
             if 'compat_config' in entry:
-                compat_data[compat_id]['compat_config'] = entry['compat_config']
+                (compat_data[compat_id]
+                            ['compat_config']) = entry['compat_config']
 
         return shortcut, compat_data

@@ -1,6 +1,6 @@
 import os
-from chimera_app.utils import ChimeraContext
 from chimera_app.settings import Settings
+import chimera_app.context as context
 from chimera_app.ftp.server import Server as FTPServer
 from chimera_app.authenticator import Authenticator, generate_password
 from chimera_app.ssh_keys import SSHKeys
@@ -8,8 +8,6 @@ from chimera_app.steamgrid.steamgrid import Steamgrid
 from chimera_app.streaming import StreamServer
 from chimera_app.mangohud_config import MangoHudConfig
 
-
-se = ChimeraContext()
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
@@ -19,13 +17,13 @@ AUTHENTICATOR_PATH = os.path.abspath('bin/chimera-authenticator')
 if not os.path.isfile(AUTHENTICATOR_PATH):
     AUTHENTICATOR_PATH = "/usr/share/chimera/bin/chimera-authenticator"
 
-SHORTCUT_DIR = se.SHORTCUT_DIRS[0]
-BANNER_DIR = se.DATA_HOME + '/chimera/banners'
-CONTENT_DIR = se.DATA_HOME + '/chimera/content'
-RECORDINGS_DIR = se.DATA_HOME + '/chimera/recordings'
-SETTINGS_DIR = se.CONFIG_HOME + '/chimera'
-UPLOADS_DIR = os.path.join(se.CACHE_HOME, 'chimera', 'uploads')
-MANGOHUD_DIR = se.CONFIG_HOME + "/MangoHud"
+SHORTCUT_DIR = context.SHORTCUT_DIRS[0]
+BANNER_DIR = context.DATA_HOME + '/chimera/banners'
+CONTENT_DIR = context.DATA_HOME + '/chimera/content'
+RECORDINGS_DIR = context.DATA_HOME + '/chimera/recordings'
+SETTINGS_DIR = context.CONFIG_HOME + '/chimera'
+UPLOADS_DIR = os.path.join(context.CACHE_HOME, 'chimera', 'uploads')
+MANGOHUD_DIR = context.CONFIG_HOME + "/MangoHud"
 
 PLATFORMS = {
     "32x":         "32X",

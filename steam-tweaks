@@ -1,4 +1,4 @@
 #! /bin/bash
 
 migrate-to-chimera --logout
-chimera --tweaks
+chimera --update --tweaks

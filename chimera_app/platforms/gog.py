@@ -2,22 +2,19 @@ import subprocess
 import json
 import os
 import shutil
-from io import BytesIO
-from chimera_app.utils import ChimeraContext
+import chimera_app.context as context
 from chimera_app.utils import ensure_directory
-from chimera_app.utils import file_exists
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import BANNER_DIR
 from chimera_app.platforms.store_platform import StorePlatform, dic
-from chimera_app.functions import load_shortcuts
+from chimera_app.utils import load_shortcuts
 
 
 class GOG(StorePlatform):
     def is_authenticated(self):
         num_lines = 0
-        se = ChimeraContext()
-        path = os.path.join(se.CONFIG_HOME, "wyvern", "wyvern.toml")
-        if file_exists(path):
+        path = os.path.join(context.CONFIG_HOME, "wyvern", "wyvern.toml")
+        if os.path.exists(path):
             num_lines = sum(1 for line in open(path))
 
         if num_lines > 1:
@@ -51,13 +48,11 @@ class GOG(StorePlatform):
 
     def get_installed_content(self) -> list:
         games = self.__get_all_content()
-        return [game for game in games if game.installed == True]
-
+        return [game for game in games if game.installed]
 
     def get_available_content(self) -> list:
         games = self.__get_all_content()
-        return [game for game in games if game.installed == False]
-
+        return [game for game in games if not game.installed]
 
     def __get_all_content(self) -> list:
         content = []
@@ -85,8 +80,7 @@ class GOG(StorePlatform):
         pass
 
     def _install(self, content) -> subprocess:
-        se = ChimeraContext()
-        cachedir = os.path.join(se.CACHE_HOME, 'chimera')
+        cachedir = os.path.join(context.CACHE_HOME, 'chimera')
         shutil.rmtree(cachedir, ignore_errors=True)
         ensure_directory(cachedir)
 

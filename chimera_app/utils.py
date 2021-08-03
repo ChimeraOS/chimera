@@ -1,6 +1,11 @@
 """Utilities for the chimera_app tools"""
 import os
+import re
+import shutil
 from datetime import datetime
+import yaml
+from PIL import Image, ImageFont, ImageDraw
+import chimera_app.context as context
 
 
 def ensure_directory(directory):
@@ -11,14 +16,6 @@ def ensure_directory(directory):
 def ensure_directory_for_file(file):
     d = os.path.dirname(file)
     ensure_directory(d)
-
-
-def file_exists(file):
-    return os.path.exists(file)
-
-
-def directory_exists(directory):
-    return os.path.isdir(directory)
 
 
 def yearsago(years):
@@ -35,97 +32,132 @@ def replace_all(text, dic):
     return text
 
 
-class ChimeraContext:
-    """Singleton class to manage the Steam environment.
-    It contains variables and common functions to be used in all
-    chimera tools"""
+def sanitize(string):
+    if isinstance(string, str):
+        retval = string
+        for r in ['\n', '\r', '/', '\\', '\0']:
+            retval = retval.replace(r, '_')
+        retval.replace('"', '')
+        return retval
+    return string
 
-    _instance = None
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(ChimeraContext, cls).__new__(cls)
-            cls._instance.__init()
-        return cls._instance
+def load_shortcuts(platform):
+    shortcuts = []
+    ensure_directory(context.SHORTCUT_DIRS[0])
 
-    def __init(self):
-        """Initialize all directories and common file names"""
-        self.STATIC_DATA = self.__get_static_data_dir()
-        self.CACHE_HOME = self.__get_cache_home_dir()
-        self.CONFIG_HOME = self.__get_config_home_dir()
-        self.DATA_HOME = self.__get_data_home_dir()
-        self.COMPAT_DATA_FILE = self.__get_compat_data_file()
-        self.SHORTCUT_DIRS = self.__get_shortcut_dirs()
-        self.STATIC_COMPAT_TOOLS = self.__get_static_compat_tools_dir()
-        self.STEAM_DIR = self.__get_steam_dir()
-        self.STEAM_APPS_DIR = self.__get_steam_apps_dir()
-        self.STEAM_USER_DIRS = self.__get_steam_user_dirs()
-        self.STEAM_COMPAT_TOOLS = self.__get_steam_compat_tools_dir()
-        self.STEAM_CONFIG_FILE = self.__get_steam_config_file()
-        self.STATIC_TWEAKS_FILE = self.__get_static_tweaks_file()
-        self.MAIN_TWEAKS_FILE = self.__get_main_tweaks_file()
-        self.LOCAL_TWEAKS_FILE = self.__get_local_tweaks_file()
-        self.TIME_WARP = os.environ.get('TIME_WARP')
+    shortcuts_file = (context.SHORTCUT_DIRS[0] +
+                      "/chimera.{platform}.yaml".format(platform=platform))
+    if os.path.exists(shortcuts_file):
+        shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
 
-    def __get_static_data_dir(self):
-        return '/usr/share/chimera'
+    if not shortcuts:
+        shortcuts = []
 
-    def __get_cache_home_dir(self):
-        if 'XDG_CACHE_HOME' in os.environ:
-            cache = os.environ['XDG_CACHE_HOME']
-        else:
-            cache = os.environ['HOME'] + '/.cache'
-        return cache
+    return shortcuts
 
-    def __get_config_home_dir(self):
-        if 'XDG_CONFIG_HOME' in os.environ:
-            config = os.environ['XDG_CONFIG_HOME']
-        else:
-            config = os.environ['HOME'] + '/.config'
-        return config
 
-    def __get_data_home_dir(self):
-        if 'XDG_DATA_HOME' in os.environ:
-            data_home = os.environ['XDG_DATA_HOME']
-        else:
-            data_home = os.environ['HOME'] + '/.local/share'
-        return data_home
+def delete_file_link(base_dir, platform, name):
+    e = re.escape(name) + r"\.[^.]+$"
+    d = os.path.join(base_dir, platform)
+    links = []
+    if os.path.isdir(d):
+        links = [os.path.join(d, l) for l in os.listdir(d) if re.match(e, l)]
 
-    def __get_compat_data_file(self):
-        return self.CACHE_HOME + '/steam-shortcuts-compat.yaml'
+    if len(links) < 1:
+        return
 
-    def __get_shortcut_dirs(self):
-        return self.DATA_HOME + '/chimera/shortcuts'
+    for link in links:
+        if os.path.islink(link) or os.path.exists(link):
+            os.remove(link)
 
-    def __get_static_compat_tools_dir(self):
-        return '/usr/share/chimera/compat-tools'
 
-    def __get_steam_dir(self):
-        return self.DATA_HOME + '/Steam'
+def is_direct(platform, content_type):
+    return ((platform == "arcade" or platform == "neo-geo") and
+            content_type == "content")
 
-    def __get_steam_apps_dir(self):
-        return self.STEAM_DIR + '/steamapps/common'
 
-    def __get_steam_user_dirs(self):
-        base = os.path.join(self.STEAM_DIR, 'userdata')
-        ensure_directory(base)
-        user_dirs = []
-        for d in os.listdir(base):
-            if d not in ['anonymous', 'ac', '0']:
-                user_dirs.append(os.path.join(base, d))
-        return user_dirs
+def upsert_file(src_path, base_dir, platform, name, dst_name):
+    if not src_path:
+        return
 
-    def __get_steam_compat_tools_dir(self):
-        return self.STEAM_DIR + '/compatibilitytools.d'
+    content_type = os.path.basename(base_dir)
+    filename = sanitize(dst_name)
+    file_dir = f"{base_dir}/{platform}/.{name}"
 
-    def __get_steam_config_file(self):
-        return self.STEAM_DIR + '/config/config.vdf'
+    # mame ROM files have dependencies on each other,
+    # so store them all in a single directory
+    if is_direct(platform, content_type):
+        file_dir = f"{base_dir}/{platform}/.{platform}"
 
-    def __get_main_tweaks_file(self):
-        return self.DATA_HOME + '/chimera/steam-tweaks.yaml'
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
 
-    def __get_local_tweaks_file(self):
-        return self.CONFIG_HOME + '/steam-tweaks.yaml'
+    file_path = f"{file_dir}/{filename}"
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
-    def __get_static_tweaks_file(self):
-        return '/usr/share/chimera/steam-tweaks.yaml'
+    shutil.move(src_path, file_path)
+
+    _, ext = os.path.splitext(filename)
+    dst = f"{base_dir}/{platform}/{name}{ext}"
+
+    delete_file_link(base_dir, platform, name)
+    os.symlink(file_path, dst)
+
+    # mame requires ROM files to have a specific name,
+    # so launch original file directly
+    if is_direct(platform, content_type):
+        return file_path
+
+    return dst
+
+
+def strip(string):
+    if string.startswith('"') and string.endswith('"'):
+        return string[1:-1]
+    return string
+
+
+def delete_file(base_dir, platform, name):
+    if is_direct(platform, os.path.basename(base_dir)):
+        shortcuts = load_shortcuts(platform)
+        matches = ([e for e in shortcuts if e['name'] == name
+                    and e['cmd'] == platform])
+        shortcut = matches[0]
+        if 'dir' in shortcut and 'params' in shortcut:
+            file_path = os.path.join(strip(shortcut['dir']),
+                                     strip(shortcut['params']))
+            if os.path.exists(file_path):
+                os.remove(file_path)
+    else:
+        file_dir = f"{base_dir}/{platform}/.{name}"
+        if os.path.exists(file_dir):
+            shutil.rmtree(file_dir)
+
+    delete_file_link(base_dir, platform, name)
+
+
+def generate_banner(text, path):
+    # The thumbnail size used by Steam is set
+    banner_width = 460
+    banner_height = 215
+    banner = Image.new('RGB', (banner_width, banner_height), color=(0, 0, 0))
+
+    font = ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf",
+                              24)
+
+    text_width, text_height = font.getsize(text)
+
+    # Shorten the text if it doesn't fit on the image
+    while text_width > banner_width:
+        text = text[:-4] + "..."
+        text_width, text_height = font.getsize(text)
+
+    text_x = int(banner_width / 2 - text_width / 2)
+    text_y = int(banner_height / 2 - text_height / 2)
+
+    title = ImageDraw.Draw(banner)
+    title.text((text_x, text_y), text, font=font, fill=(255, 255, 255))
+
+    banner.save(path)

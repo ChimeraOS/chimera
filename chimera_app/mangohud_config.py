@@ -1,7 +1,6 @@
 import os
 from configparser import ConfigParser
 from chimera_app.utils import ensure_directory_for_file
-from chimera_app.utils import file_exists
 
 
 class MangoHudConfig:
@@ -12,7 +11,7 @@ class MangoHudConfig:
         self.__read_toggle_key()
 
     def __setup_environment(self):
-        if not file_exists(self.config_file):
+        if not os.path.exists(self.config_file):
             self.reset_config()
 
     def __read_toggle_key(self):
@@ -20,7 +19,7 @@ class MangoHudConfig:
         parser = ConfigParser(allow_no_value=True)
 
         # Check in file for override
-        if file_exists(self.config_file):
+        if os.path.exists(self.config_file):
             f = open(self.config_file, "r")
             parser.read_string("[Mangohud]\n" + f.read())
             f.close()
@@ -45,7 +44,7 @@ class MangoHudConfig:
         self.save_config("\n".join(defaultt_config))
 
     def get_current_config(self):
-        if file_exists(self.config_file):
+        if os.path.exists(self.config_file):
             f = open(self.config_file, "r")
             current_config = f.read()
             f.close()
