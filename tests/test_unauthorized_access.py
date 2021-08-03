@@ -299,12 +299,6 @@ def test_virtual_keyboard_string(unauthorized_app):
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
-def test_exit_game(unauthorized_app):
-    resp = unauthorized_app.get('/exit_game')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
 def test_reboot_system(unauthorized_app):
     resp = unauthorized_app.get('/reboot')
     assert(resp.status_code == 302)
