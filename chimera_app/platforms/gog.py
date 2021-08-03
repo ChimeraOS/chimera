@@ -52,7 +52,7 @@ class GOG(StorePlatform):
 
     def get_available_content(self) -> list:
         games = self.__get_all_content()
-        return [game for game in games if game.installed]
+        return [game for game in games if not game.installed]
 
     def __get_all_content(self) -> list:
         content = []
