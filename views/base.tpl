@@ -59,7 +59,6 @@
 			% end
             <div class="menuitems" id="mainmenu">
                 <a href="/settings">Settings</a>
-                <a href="/exit_game">Exit Game</a>
                 <a href="/steam/restart">Restart Steam</a>
                 <a href="/retroarch/load_state">Load Emulator State</a>
                 <a href="/retroarch/save_state">Save Emulator State</a>

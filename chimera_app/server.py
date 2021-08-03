@@ -720,15 +720,6 @@ def virtual_keyboard_string():
         redirect('/virtual_keyboard')
 
 
-@route('/exit_game')
-@authenticate
-def exit_game():
-    try:
-        subprocess.call(["bin/exit-game"])
-    finally:
-        redirect('/')
-
-
 @route('/reboot')
 @authenticate
 def reboot_system():
