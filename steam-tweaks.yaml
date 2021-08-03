@@ -303,10 +303,6 @@
 "606280": # Darksiders III
   compat_tool: proton_5
 
-"462780": # Darksiders Warmastered Edition
-  compat_tool: proton_5
-  launch_options: tweaks-mfplat 5.0 || true && %command%
-  
 "838380": # DEAD OR ALIVE 6
   compat_tool: proton_411
   launch_options: '%command%'
@@ -981,10 +977,6 @@
 
 "1071590": # Pathologic 2 Demo
   compat_tool: proton_513
-
-"758730": # Paw Patrol: On A Roll
-  compat_tool: proton_411
-  launch_options: tweaks-mfplat 4.11 || true && %command%
 
 "1037910": # Paw Paw Paw
   compat_tool: proton_63

@@ -12,7 +12,6 @@ setup(
     scripts=['migrate-to-chimera',
              'steam-tweaks',
              'steam-patch',
-             'tweaks-mfplat'
              ],
 
     data_files=[
