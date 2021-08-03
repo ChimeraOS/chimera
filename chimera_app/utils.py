@@ -8,6 +8,7 @@ import psutil
 import yaml
 from PIL import Image, ImageFont, ImageDraw
 import chimera_app.context as context
+import chimera_app.shortcuts as shortcuts
 
 
 def ensure_directory(directory):
@@ -123,10 +124,8 @@ def strip(string):
 
 def delete_file(base_dir, platform, name):
     if is_direct(platform, os.path.basename(base_dir)):
-        shortcuts = load_shortcuts(platform)
-        matches = ([e for e in shortcuts if e['name'] == name
-                    and e['cmd'] == platform])
-        shortcut = matches[0]
+        shortcuts_file = shortcuts.PlatformShortcutsFile(platform)
+        shortcut = shortcuts_file.get_shortcut_match(name, platform)
         if 'dir' in shortcut and 'params' in shortcut:
             file_path = os.path.join(strip(shortcut['dir']),
                                      strip(shortcut['params']))
