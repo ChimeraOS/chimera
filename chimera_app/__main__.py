@@ -15,11 +15,11 @@ def setup_argparse():
         description='Chimera app for managing ChimeraOS')
 
     parser.add_argument('-u', '--update',
-                        action="store-true",
+                        action="store_true",
                         help='Update data from repository'
                         )
     parser.add_argument('-f', '--force-update',
-                        action="store-true",
+                        action="store_true",
                         help='Force update even if already updated'
                         )
     group_ex = parser.add_mutually_exclusive_group()
