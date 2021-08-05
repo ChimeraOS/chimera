@@ -17,7 +17,7 @@ AUTHENTICATOR_PATH = os.path.abspath('bin/chimera-authenticator')
 if not os.path.isfile(AUTHENTICATOR_PATH):
     AUTHENTICATOR_PATH = "/usr/share/chimera/bin/chimera-authenticator"
 
-SHORTCUT_DIR = context.SHORTCUT_DIRS[0]
+SHORTCUT_DIR = context.SHORTCUT_DIRS
 BANNER_DIR = context.DATA_HOME + '/chimera/banners'
 CONTENT_DIR = context.DATA_HOME + '/chimera/content'
 RECORDINGS_DIR = context.DATA_HOME + '/chimera/recordings'
