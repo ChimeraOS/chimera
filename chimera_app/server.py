@@ -31,6 +31,8 @@ from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
 from chimera_app.config import STREAMING_HANDLER
 from chimera_app.config import MANGOHUD_HANDLER
+from chimera_app.compat_tools import OFFICIAL_COMPAT_TOOLS
+from chimera_app.compat_tools import OfficialCompatTool
 from chimera_app.utils import sanitize
 from chimera_app.utils import upsert_file
 from chimera_app.utils import delete_file
@@ -396,8 +398,19 @@ def platform_install(platform, content_id):
     PLATFORM_HANDLERS[platform].install_content(content)
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.add_shortcut(PLATFORM_HANDLERS[platform].get_shortcut(content))
+    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+    shortcuts.add_shortcut(shortcut)
     shortcuts.save()
+
+    if ('compat_tool' in shortcut
+            and shortcut['compat_tool'] in OFFICIAL_COMPAT_TOOLS):
+        name = shortcut['compat_tool']
+        tool_id = OFFICIAL_COMPAT_TOOLS[name]
+        compat_tool = OfficialCompatTool(name, tool_id)
+        try:
+            compat_tool.install()
+        except Exception as e:
+            print(e)
 
     redirect(f'/platforms/{platform}/edit/{content_id}')
 
