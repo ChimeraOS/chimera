@@ -6,8 +6,8 @@ import chimera_app.context as context
 from chimera_app.utils import ensure_directory
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import BANNER_DIR
+from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, dic
-from chimera_app.utils import load_shortcuts
 
 
 class GOG(StorePlatform):
@@ -57,7 +57,9 @@ class GOG(StorePlatform):
     def __get_all_content(self) -> list:
         content = []
 
-        installed = load_shortcuts('gog')
+        shortcuts_file = PlatformShortcutsFile('gog')
+        shortcuts_file.load_data()
+        installed = shortcuts_file.get_shortcuts_data()
         installed_ids = [game['id'] for game in installed]
 
         text = subprocess.check_output(["wyvern", "ls", "--json"])

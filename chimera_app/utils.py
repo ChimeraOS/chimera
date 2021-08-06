@@ -5,7 +5,6 @@ import shutil
 import subprocess
 from datetime import datetime
 import psutil
-import yaml
 from PIL import Image, ImageFont, ImageDraw
 import chimera_app.context as context
 import chimera_app.shortcuts as shortcuts
@@ -43,21 +42,6 @@ def sanitize(string):
         retval.replace('"', '')
         return retval
     return string
-
-
-def load_shortcuts(platform):
-    shortcuts = []
-    ensure_directory(context.SHORTCUT_DIRS)
-
-    shortcuts_file = (context.SHORTCUT_DIRS +
-                      "/chimera.{platform}.yaml".format(platform=platform))
-    if os.path.exists(shortcuts_file):
-        shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
-
-    if not shortcuts:
-        shortcuts = []
-
-    return shortcuts
 
 
 def delete_file_link(base_dir, platform, name):
