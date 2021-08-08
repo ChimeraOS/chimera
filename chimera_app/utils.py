@@ -44,9 +44,9 @@ def sanitize(string):
 
 def load_shortcuts(platform):
     shortcuts = []
-    ensure_directory(context.SHORTCUT_DIRS[0])
+    ensure_directory(context.SHORTCUT_DIRS)
 
-    shortcuts_file = (context.SHORTCUT_DIRS[0] +
+    shortcuts_file = (context.SHORTCUT_DIRS +
                       "/chimera.{platform}.yaml".format(platform=platform))
     if os.path.exists(shortcuts_file):
         shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
