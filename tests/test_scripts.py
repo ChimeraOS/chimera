@@ -4,9 +4,9 @@ import os
 import vdf
 import pytest
 import chimera_app
-from chimera_app.shortcuts import create_all_shortcuts
-from chimera_app.steam_config import apply_all_tweaks
-from chimera_app.compat_tools import install_all_compat_tools
+import chimera_app.shortcuts as shortcuts
+import chimera_app.steam_config as steam_config
+import chimera_app.compat_tools as compat_tools
 
 
 @pytest.fixture
@@ -66,7 +66,7 @@ def test_config_with_empty(empty_data):
     user_config_file = os.path.expanduser(
         '~/.local/share/Steam/userdata/12345678/config/localconfig.vdf')
 
-    apply_all_tweaks()
+    steam_config.apply_all_tweaks()
 
     assert(not os.path.exists(config_file))
     assert(not os.path.exists(user_config_file))
@@ -77,7 +77,7 @@ def test_compat_with_empty(empty_data):
         '~/.local/share/Steam/compatibilitytools.d')
     proton_ge_dir = os.path.join(compat_tools_dir, 'Proton-6.10-GE-1')
 
-    install_all_compat_tools()
+    compat_tools.install_all_compat_tools()
 
     assert(not os.path.exists(proton_ge_dir))
 
@@ -86,7 +86,7 @@ def test_shortcuts_with_empty(empty_data):
     shortcuts_file = os.path.expanduser(
         '~/.local/share/Steam/userdata/12345678/config/shortcuts.vdf')
 
-    create_all_shortcuts()
+    shortcuts.create_all_shortcuts()
 
     assert(not os.path.exists(shortcuts_file))
 
@@ -99,7 +99,7 @@ def test_config_with_data(fake_data):
     user_config_file = os.path.expanduser(
         '~/.local/share/Steam/userdata/12345678/config/localconfig.vdf')
 
-    apply_all_tweaks()
+    steam_config.apply_all_tweaks()
 
     assert(os.path.exists(config_file))
     conf_vdf = vdf.load(open(config_file))
@@ -129,7 +129,7 @@ def test_compat_with_data(fake_data):
         '~/.local/share/Steam/compatibilitytools.d')
     proton_ge_dir = os.path.join(compat_tools_dir, 'Proton-6.10-GE-1')
 
-    install_all_compat_tools()
+    compat_tools.install_all_compat_tools()
 
     assert(os.path.exists(proton_ge_dir))
     assert(os.path.exists(os.path.join(proton_ge_dir, 'proton')))
@@ -142,7 +142,7 @@ def test_shortcuts_with_data(fake_data):
     shortcuts_file = os.path.expanduser(
         '~/.local/share/Steam/userdata/12345678/config/shortcuts.vdf')
 
-    create_all_shortcuts()
+    shortcuts.create_all_shortcuts()
 
     assert(os.path.exists(shortcuts_file))
     sh_data = vdf.binary_load(open(shortcuts_file, 'rb'))
