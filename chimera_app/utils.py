@@ -2,10 +2,12 @@
 import os
 import re
 import shutil
+import subprocess
 from datetime import datetime
-import yaml
+import psutil
 from PIL import Image, ImageFont, ImageDraw
 import chimera_app.context as context
+import chimera_app.shortcuts as shortcuts
 
 
 def ensure_directory(directory):
@@ -40,21 +42,6 @@ def sanitize(string):
         retval.replace('"', '')
         return retval
     return string
-
-
-def load_shortcuts(platform):
-    shortcuts = []
-    ensure_directory(context.SHORTCUT_DIRS)
-
-    shortcuts_file = (context.SHORTCUT_DIRS +
-                      "/chimera.{platform}.yaml".format(platform=platform))
-    if os.path.exists(shortcuts_file):
-        shortcuts = yaml.load(open(shortcuts_file), Loader=yaml.Loader)
-
-    if not shortcuts:
-        shortcuts = []
-
-    return shortcuts
 
 
 def delete_file_link(base_dir, platform, name):
@@ -121,10 +108,8 @@ def strip(string):
 
 def delete_file(base_dir, platform, name):
     if is_direct(platform, os.path.basename(base_dir)):
-        shortcuts = load_shortcuts(platform)
-        matches = ([e for e in shortcuts if e['name'] == name
-                    and e['cmd'] == platform])
-        shortcut = matches[0]
+        shortcuts_file = shortcuts.PlatformShortcutsFile(platform)
+        shortcut = shortcuts_file.get_shortcut_match(name, platform)
         if 'dir' in shortcut and 'params' in shortcut:
             file_path = os.path.join(strip(shortcut['dir']),
                                      strip(shortcut['params']))
@@ -161,3 +146,25 @@ def generate_banner(text, path):
     title.text((text_x, text_y), text, font=font, fill=(255, 255, 255))
 
     banner.save(path)
+
+
+def client_running() -> False:
+    """Check if the Steam client is running"""
+    pid_path = os.path.expanduser('~/.steam/steam.pid')
+    if not os.path.exists(pid_path):
+        return False
+    with open(pid_path) as pid_file:
+        pid = pid_file.read()
+    try:
+        maybe_steam = psutil.Process(pid)
+    except psutil.NoSuchProcess:
+        return False
+    return maybe_steam.name() == 'steam'
+
+
+def install_by_id(steam_id: str) -> None:
+    if client_running():
+        subprocess.run(['steam', 'steam://install/' + steam_id],
+                       check=True)
+    else:
+        raise Exception('Steam Client is not running')

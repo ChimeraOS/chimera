@@ -16,8 +16,12 @@ def listdir(path):
         return []
 
 
-local = os.path.join(os.getenv('XDG_DATA_HOME', os.path.expanduser('~/.local/share')), 'chimera/banners/flathub')
-files = listdir('images/flathub') + listdir(local) + listdir('/usr/share/chimera/images/flathub/')
+local = os.path.join(os.getenv('XDG_DATA_HOME',
+                               os.path.expanduser('~/.local/share')),
+                     'chimera/banners/flathub')
+files = (listdir('images/flathub')
+         + listdir(local)
+         + listdir('/usr/share/chimera/images/flathub/'))
 whitelist = [os.path.splitext(f)[0] for f in files]
 
 
@@ -29,7 +33,7 @@ class Flathub(StorePlatform):
             flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
             self.__add_repo("flathub", flathub_url)
             self.__api_url = "https://flathub.org/api/v1/apps"
-        except:
+        except Exception:
             print('Error: Failed to initialize flathub support')
 
     def is_authenticated(self):
@@ -39,10 +43,16 @@ class Flathub(StorePlatform):
         return_value = None
         try:
             # This only adds the flatpak repo if it isn't already installed
-            return_value = subprocess.call(["flatpak", "remote-add", "--user", "--if-not-exists", name, url])
+            return_value = subprocess.call(["flatpak",
+                                            "remote-add",
+                                            "--user",
+                                            "--if-not-exists",
+                                            name,
+                                            url])
         finally:
             if return_value != 0:
-                print("Error: Failed to add the {name} repo to with url {url} flatpak".format(name=name, url=url))
+                print(("Error: Failed to add the {name} repo "
+                      "with url {url} flatpak").format(name=name, url=url))
 
     def __get_application_list(self):
         applications = []
@@ -65,15 +75,23 @@ class Flathub(StorePlatform):
                         installed = True
                         version = app['version']
 
-                applications.append(dic({"content_id": flatpak_id, "summary": description, "name": name,
-                                         "installed_version": version, "available_version": available_version,
-                                         "image_url": image_url, "installed": installed, "operation": None}))
+                applications.append(dic({"content_id": flatpak_id,
+                                         "summary": description,
+                                         "name": name,
+                                         "installed_version": version,
+                                         "available_version": available_version,
+                                         "image_url": image_url,
+                                         "installed": installed,
+                                         "operation": None}))
 
         return applications
 
     def __get_installed_list(self) -> List[Dict[str, any]]:
         installed_list = []
-        for line in subprocess.check_output(["flatpak", "list", "--user", "--app"]).splitlines():
+        for line in subprocess.check_output(["flatpak",
+                                             "list",
+                                             "--user",
+                                             "--app"]).splitlines():
             if isinstance(line, bytes):
                 line = line.decode("utf-8")
             try:
@@ -123,13 +141,29 @@ class Flathub(StorePlatform):
         return [app for app in apps if not app.installed]
 
     def _install(self, content) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "install", "--user", "-y", "flathub", content.content_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER,
+                                 "install",
+                                 "--user",
+                                 "-y",
+                                 "flathub",
+                                 content.content_id],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
 
     def _uninstall(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "uninstall", "--user", "-y", content_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER,
+                                 "uninstall",
+                                 "--user",
+                                 "-y",
+                                 content_id],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
 
     def _update(self, content_id) -> subprocess:
-        return subprocess.Popen([FLATPAK_WRAPPER, "update", "--user", "-y", content_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen([FLATPAK_WRAPPER,
+                                 "update",
+                                 "--user",
+                                 "-y",
+                                 content_id],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)

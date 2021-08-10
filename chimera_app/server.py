@@ -5,7 +5,6 @@ import socket
 import tempfile
 import json
 import html
-import yaml
 import bcrypt
 import requests
 import shutil
@@ -25,7 +24,6 @@ from chimera_app.config import AUTHENTICATOR
 from chimera_app.config import SETTINGS_HANDLER
 from chimera_app.config import STEAMGRID_HANDLER
 from chimera_app.config import FTP_SERVER
-from chimera_app.config import SHORTCUT_DIR
 from chimera_app.config import RESOURCE_DIR
 from chimera_app.config import BANNER_DIR
 from chimera_app.config import CONTENT_DIR
@@ -33,15 +31,18 @@ from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
 from chimera_app.config import STREAMING_HANDLER
 from chimera_app.config import MANGOHUD_HANDLER
-from chimera_app.utils import load_shortcuts
+from chimera_app.compat_tools import OFFICIAL_COMPAT_TOOLS
+from chimera_app.compat_tools import OfficialCompatTool
 from chimera_app.utils import sanitize
 from chimera_app.utils import upsert_file
 from chimera_app.utils import delete_file
 from chimera_app.utils import generate_banner
+from chimera_app.utils import ensure_directory_for_file
 from chimera_app.auth_decorator import authenticate
 from chimera_app.platforms.epic_store import EpicStore
 from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
+from chimera_app.shortcuts import PlatformShortcutsFile
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
@@ -58,7 +59,7 @@ PLATFORM_HANDLERS = {
 def authenticate_platform(selected_platform):
     if selected_platform in PLATFORM_HANDLERS:
         if not PLATFORM_HANDLERS[selected_platform].is_authenticated():
-            redirect('/platforms/{platform}'.format(platform=selected_platform))
+            redirect(f'/platforms/{selected_platform}')
             return False
     return True
 
@@ -82,22 +83,33 @@ def platform_page(platform):
                 platformName=PLATFORMS[platform]
             )
         else:
-            return template('custom_login', platform=platform, platformName=PLATFORMS[platform])
+            return template('custom_login',
+                            platform=platform,
+                            platformName=PLATFORMS[platform])
 
-    shortcuts = sorted(load_shortcuts(platform), key=lambda s: s['name'])
+    shortcut_file = PlatformShortcutsFile(platform)
+    shortcut_file.load_data()
+    shortcuts = sorted(shortcut_file.get_shortcuts_data(),
+                       key=lambda s: s['name'])
     data = []
     for shortcut in shortcuts:
         filename = None
         banner = None
-        hidden = 'hidden' if 'hidden' in shortcut and shortcut['hidden'] else ''
+        hidden = ('hidden'
+                  if 'hidden' in shortcut and shortcut['hidden']
+                  else '')
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
-            banner = '/banners/{platform}/{filename}'.format(platform=platform, filename=filename)
-        data.append({'hidden': hidden, 'filename': filename, 'banner': banner, 'name': shortcut['name']})
+            banner = f'/banners/{platform}/{filename}'
+        data.append({'hidden': hidden,
+                     'filename': filename,
+                     'banner': banner,
+                     'name': shortcut['name']})
 
-    return template(
-        'platform.tpl', shortcuts=data, platform=platform, platformName=PLATFORMS[platform]
-    )
+    return template('platform.tpl',
+                    shortcuts=data,
+                    platform=platform,
+                    platformName=PLATFORMS[platform])
 
 
 @route('/platforms/<platform>/authenticate', method='POST')
@@ -114,7 +126,7 @@ def platform_authenticate(platform):
 @route('/banners/<platform>/<filename>')
 @authenticate
 def banners(platform, filename):
-    base = "{banner_dir}/{platform}".format(banner_dir=BANNER_DIR, platform=platform)
+    base = f'{BANNER_DIR}/{platform}'
     return static_file(filename, root='{base}'.format(base=base))
 
 
@@ -126,13 +138,21 @@ def new(platform):
             return
 
         return template(
-            'custom', app_list=PLATFORM_HANDLERS[platform].get_available_content(), isInstalledOverview=False,
-            isNew=True, platform=platform, platformName=PLATFORMS[platform]
+            'custom',
+            app_list=PLATFORM_HANDLERS[platform].get_available_content(),
+            isInstalledOverview=False,
+            isNew=True,
+            platform=platform,
+            platformName=PLATFORMS[platform]
         )
-    return template(
-        'new.tpl', isNew=True, isEditing=False, platform=platform,
-        platformName=PLATFORMS[platform], name='', hidden=''
-    )
+    return template('new.tpl',
+                    isNew=True,
+                    isEditing=False,
+                    platform=platform,
+                    platformName=PLATFORMS[platform],
+                    name='',
+                    hidden=''
+                    )
 
 
 @route('/platforms/<platform>/edit/<name>')
@@ -152,13 +172,16 @@ def edit(platform, name):
         else:
             abort(404, 'Content not found')
 
-    shortcuts = load_shortcuts(platform)
+    shortcuts = PlatformShortcutsFile(platform)
+    shortcut = shortcuts.get_shortcut_match(name, platform)
 
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
-    shortcut = matches[0]
-
-    return template('new.tpl', isEditing=True, platform=platform, platformName=PLATFORMS[platform],
-                    name=name, hidden=shortcut['hidden'])
+    return template('new.tpl',
+                    isEditing=True,
+                    platform=platform,
+                    platformName=PLATFORMS[platform],
+                    name=name,
+                    hidden=shortcut['hidden']
+                    )
 
 
 @route('/images/flathub/<content_id>')
@@ -189,27 +212,28 @@ def shortcut_create():
     content = request.forms.get('content')
 
     if not name or name.strip() == '':
-        redirect('/platforms/{platform}/new'.format(platform=platform))
+        redirect(f'/platforms/{platform}/new')
         return
 
     name = name.strip()
 
-    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    shortcuts = load_shortcuts(platform)
+    shortcuts = PlatformShortcutsFile(platform)
 
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
-    if len(matches) > 0:
+    if shortcuts.get_shortcut_match(name, platform):
         return 'Shortcut already exists'
 
     banner_path = None
     if banner:
         (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
-        banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
+        banner_path = upsert_file(banner_src_path,
+                                  BANNER_DIR,
+                                  platform,
+                                  name,
+                                  banner_dst_name)
     else:
-        banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
-        if not os.path.isdir(os.path.dirname(banner_path)):
-            os.makedirs(os.path.dirname(banner_path))
+        banner_path = os.path.join(BANNER_DIR, platform, f"{name}.png")
+        ensure_directory_for_file(banner_path)
         if banner_url:
             download = requests.get(banner_url)
             with open(banner_path, "wb") as banner_file:
@@ -218,18 +242,26 @@ def shortcut_create():
             generate_banner(name, banner_path)
 
     shortcut = {
-        'name': name, 'cmd': platform, 'hidden': hidden == 'on', 'banner': banner_path, 'tags': [PLATFORMS[platform]]
+        'name': name,
+        'cmd': platform,
+        'hidden': hidden == 'on',
+        'banner': banner_path,
+        'tags': [PLATFORMS[platform]]
     }
 
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
-        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
+        content_path = upsert_file(content_src_path,
+                                   CONTENT_DIR,
+                                   platform,
+                                   name,
+                                   content_dst_name)
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
         shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
-    shortcuts.append(shortcut)
-    yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+    shortcuts.add_shortcut(shortcut)
+    shortcuts.save()
 
     redirect('/platforms/{platform}'.format(platform=platform))
 
@@ -237,28 +269,29 @@ def shortcut_create():
 @route('/shortcuts/edit', method='POST')
 @authenticate
 def shortcut_update():
-    name = sanitize(request.forms.get('original_name'))  # do not allow editing name
+    # do not allow editing name
+    name = sanitize(request.forms.get('original_name'))
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
     banner_url = request.forms.get('banner-url')
     banner = request.forms.get('banner')
     content = request.forms.get('content')
 
-    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    shortcuts = load_shortcuts(platform)
-
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
-    shortcut = matches[0]
+    shortcuts = PlatformShortcutsFile(platform)
+    shortcut = shortcuts.get_shortcut_match(name, platform)
 
     banner_path = None
     if banner:
         (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
-        banner_path = upsert_file(banner_src_path, BANNER_DIR, platform, name, banner_dst_name)
+        banner_path = upsert_file(banner_src_path,
+                                  BANNER_DIR,
+                                  platform,
+                                  name,
+                                  banner_dst_name)
     elif banner_url:
-        banner_path = os.path.join(BANNER_DIR, platform, "{}.png".format(name))
-        if not os.path.isdir(os.path.dirname(banner_path)):
-            os.makedirs(os.path.dirname(banner_path))
+        banner_path = os.path.join(BANNER_DIR, platform, f"{name}.png")
+        ensure_directory_for_file(banner_path)
         download = requests.get(banner_url)
         with open(banner_path, "wb") as banner_file:
             banner_file.write(download.content)
@@ -271,11 +304,15 @@ def shortcut_update():
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
-        content_path = upsert_file(content_src_path, CONTENT_DIR, platform, name, content_dst_name)
+        content_path = upsert_file(content_src_path,
+                                   CONTENT_DIR,
+                                   platform,
+                                   name,
+                                   content_dst_name)
         shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
         shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
-    yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+    shortcuts.save()
 
     redirect('/platforms/{platform}'.format(platform=platform))
 
@@ -286,17 +323,12 @@ def shortcut_delete():
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
 
-    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    shortcuts = load_shortcuts(platform)
-
-    matches = [e for e in shortcuts if e['name'] == name and e['cmd'] == platform]
-    shortcut = matches[0]
+    shortcuts = PlatformShortcutsFile(platform)
+    shortcuts.remove_shortcut_by_name(name)
+    shortcuts.save()
 
     delete_file(CONTENT_DIR, platform, name)
     delete_file(BANNER_DIR, platform, name)
-
-    shortcuts.remove(shortcut)
-    yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
 
     redirect('/platforms/{platform}'.format(platform=platform))
 
@@ -365,14 +397,22 @@ def platform_install(platform, content_id):
 
     PLATFORM_HANDLERS[platform].install_content(content)
 
-    shortcuts = load_shortcuts(platform)
+    shortcuts = PlatformShortcutsFile(platform)
     shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+    shortcuts.add_shortcut(shortcut)
+    shortcuts.save()
 
-    shortcuts.append(shortcut)
-    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+    if ('compat_tool' in shortcut
+            and shortcut['compat_tool'] in OFFICIAL_COMPAT_TOOLS):
+        name = shortcut['compat_tool']
+        tool_id = OFFICIAL_COMPAT_TOOLS[name]
+        compat_tool = OfficialCompatTool(name, tool_id)
+        try:
+            compat_tool.install()
+        except Exception as e:
+            print(e)
 
-    redirect('/platforms/{platform}/edit/{content_id}'.format(platform=platform, content_id=content_id))
+    redirect(f'/platforms/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/uninstall/<content_id>')
@@ -383,15 +423,11 @@ def uninstall(platform, content_id):
         abort(404, 'Content not found')
     PLATFORM_HANDLERS[platform].uninstall_content(content_id)
 
-    shortcuts = load_shortcuts(platform)
-    for shortcut in shortcuts:
-        if content.name == shortcut['name']:
-            shortcuts.remove(shortcut)
-            break
-    shortcuts_file = "{shortcuts_dir}/chimera.{platform}.yaml".format(shortcuts_dir=SHORTCUT_DIR, platform=platform)
-    yaml.dump(shortcuts, open(shortcuts_file, 'w'), default_flow_style=False)
+    shortcuts = PlatformShortcutsFile(platform)
+    shortcuts.remove_shortcut(content.name, platform)
+    shortcuts.save()
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
+    redirect(f'/platforms/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/update/<content_id>')
@@ -402,7 +438,7 @@ def content_update(platform, content_id):
         abort(404, 'Content not found')
     PLATFORM_HANDLERS[platform].update_content(content_id)
 
-    redirect('/platforms/{platform}/edit/{name}'.format(platform=platform, name=content_id))
+    redirect(f'/platforms/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/progress/<content_id>')

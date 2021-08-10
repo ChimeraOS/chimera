@@ -6,8 +6,8 @@ import chimera_app.context as context
 from chimera_app.utils import ensure_directory
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import BANNER_DIR
+from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, dic
-from chimera_app.utils import load_shortcuts
 
 
 class GOG(StorePlatform):
@@ -57,7 +57,9 @@ class GOG(StorePlatform):
     def __get_all_content(self) -> list:
         content = []
 
-        installed = load_shortcuts('gog')
+        shortcuts_file = PlatformShortcutsFile('gog')
+        shortcuts_file.load_data()
+        installed = shortcuts_file.get_shortcuts_data()
         installed_ids = [game['id'] for game in installed]
 
         text = subprocess.check_output(["wyvern", "ls", "--json"])
@@ -72,7 +74,15 @@ class GOG(StorePlatform):
             cid = str(info.id)
 
             img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
-            content.append(dic({ "content_id": cid, "summary": "", "name": info.title, "native": info.worksOn['Linux'], "installed_version": None, "available_version": None, "image_url": img, "installed": cid in installed_ids, 'operation' : None }))
+            content.append(dic({"content_id": cid,
+                                "summary": "",
+                                "name": info.title,
+                                "native": info.worksOn['Linux'],
+                                "installed_version": None,
+                                "available_version": None,
+                                "image_url": img,
+                                "installed": cid in installed_ids,
+                                'operation': None}))
 
         return content
 
@@ -85,13 +95,28 @@ class GOG(StorePlatform):
         ensure_directory(cachedir)
 
         if not content.native:
-            cmd = ["bin/gog-install", content.content_id, os.path.join(CONTENT_DIR, 'gog', content.content_id)]
-            return subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            cmd = ["bin/gog-install",
+                   content.content_id,
+                   os.path.join(CONTENT_DIR, 'gog', content.content_id)]
+            return subprocess.Popen(cmd,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT)
 
-        cmd = ["wyvern", "down", "--id", content.content_id, "--install", os.path.join(CONTENT_DIR, 'gog', content.content_id)]
-        return subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cachedir)
+        cmd = ["wyvern",
+               "down",
+               "--id",
+               content.content_id,
+               "--install",
+               os.path.join(CONTENT_DIR, 'gog', content.content_id)]
+        return subprocess.Popen(cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT,
+                                cwd=cachedir)
 
     def _uninstall(self, content_id) -> subprocess:
         game_dir = os.path.join(CONTENT_DIR, 'gog', content_id)
-        return subprocess.Popen(["rm", "-rf", game_dir],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return subprocess.Popen(["rm",
+                                 "-rf",
+                                 game_dir],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
