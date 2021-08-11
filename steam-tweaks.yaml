@@ -9,6 +9,9 @@
 "435790": # 10 Second Ninja X
   compat_tool: proton_411
 
+"255280": # 1954 Alcatraz
+  compat_tool: proton_63
+
 "238930": # 7 Grand Steps: What Ancients Begat
   compat_tool: proton_5
 
@@ -46,6 +49,9 @@
 "1171660": # The Ambassador: Fractured Timelines
   compat_tool: proton_5
 
+"945360": # Among Us  
+  compat_tool: proton_63
+  
 "390720": # Anarcute
   compat_tool: proton_513
 
@@ -150,6 +156,12 @@
 "729660": # Blackout Z: Slaughterhouse Edition
   compat_tool: proton_513
 
+"249650": # Blackguards
+   compat_tool: proton_63
+
+"314830": # Blackguards 2 
+  compat_tool: proton_63
+
 "927250": # Bladed Fury
   compat_tool: proton_411
 
@@ -171,6 +183,9 @@
   compat_tool: proton_513
 
 "692850": # Bloodstained: Ritual of the Night
+  compat_tool: proton_63
+
+"1220150": # Blue Fire
   compat_tool: proton_63
 
 "449960": # Book of Demons
@@ -211,6 +226,9 @@
 
 "24740": # Burnout Paradise: The Ultimate Box
   compat_tool: proton_411
+
+"808090": # Bury Me, My Love
+  compat_tool: proton_63
 
 "598810": # Carcassonne: The Official Board Game
   compat_tool: proton_5
@@ -275,6 +293,9 @@
 "71230": # Crazy Taxi
   compat_tool: proton_63
 
+"204940": # Crusader Kings Complete
+  compat_tool: proton_63
+
 "873940": # Crying Suns
   compat_tool: proton_5
 
@@ -287,9 +308,15 @@
 "405500": # Dangerous Golf
   compat_tool: proton_5
 
+2203830": # The Dark Eye: Chains of Satinav
+  compat_tool: proton_63
+
 "243200": # The Dark Eye: Memoria
   compat_tool: proton_37
   launch_options: SDL_AUDIODRIVER="directsound" %command%
+
+"280640": # Dark Shadows - Army of Evil
+  compat_tool: Proton-6.9-GE-2
 
 "939100": # Darksburg
   compat_tool: proton_5
@@ -324,6 +351,9 @@
 
 "548430": # Deep Rock Galactic
   compat_tool: proton_411
+
+"384310": # Dead In Bermuda
+  compat_tool: proton_63
 
 "353700": # The Deadly Tower of Monsters
   compat_tool: proton_5
@@ -425,6 +455,9 @@
   compat_config: d9vk,noesync,nofsync
 
 "975950": # Effie
+  compat_tool: Proton-6.1-GE-2
+
+"727850": # ELDERBORN
   compat_tool: Proton-6.1-GE-2
 
 "812160": # Etherborn
@@ -684,6 +717,9 @@
   patch_dir: KillerIsDead
   patches:
     - exec: mv KidGame/Config/KidEngine.ini KidGame/Config/KidEngine.ini.bak && sed '/\[XAudio2.XAudio2Device\]/{n;N;N;N;N;N;d}' KidGame/Config/KidEngine.ini.bak | sed '/\[XAudio2.XAudio2Device\]/'a'MaxChannels=64\nCommonAudioPoolSize=320\nMinCompressedDurationGame=0.3\nMinCompressedDurationEditor=500\nLowPassFilterResonance=0.9\nWorkAroundXDKRegression=FALSE' > KidGame/Config/KidEngine.ini
+
+"1179210": # Kill It With Fire
+  compat_tool: proton_513
 
 "603460": # King and Assassins
   compat_tool: proton_513
@@ -966,6 +1002,9 @@
 "1178880": # Panzer Dragoon: Remake
   compat_tool: Proton-6.1-GE-2
 
+"1160220": # Paradise Killer
+  compat_tool: proton_513
+
 "1001230": # Partial Control
   compat_tool: proton_513
 
@@ -1028,6 +1067,9 @@
   compat_tool: proton_63
 
 "207490": # Rayman Origins
+  compat_tool: proton_63
+
+"1158450": # GALAXIUM
   compat_tool: proton_63
 
 "290300": # Rebel Galaxy
@@ -1102,6 +1144,9 @@
 
 "418340": # RWBY Grimm Eclipse
   compat_tool: proton_63
+
+"944010": # S.W.I.N.E. HD Remaster
+  compat_tool: proton_513
 
 "718560": # Scythe: Digital Edition
   compat_tool: proton_513
@@ -1291,6 +1336,9 @@
 "1000560": # Supraland Demo; native version has sound issues
   compat_tool: proton_5
 
+"644830": # The Surge 2
+  compat_tool: proton_63
+
 "63500": # Swords and Soldiers HD
   compat_tool: proton_513
 
@@ -1336,6 +1384,15 @@
 "475150": # Titan Quest Anniversary Edition
   compat_tool: proton_513
 
+"8000": # Tomb Raider: Anniversary
+  compat_tool: proton_63
+
+"7000": # Tomb Raider: Legend
+  compat_tool: proton_63
+
+"8140": # Tomb_Raider: Underworld
+  compat_tool: proton_42
+
 "224960": # Tomb Raider I
   compat_tool: boxtron
 
@@ -1345,8 +1402,26 @@
 "225320": # Tomb Raider III
  compat_tool: Proton-6.1-GE-2
 
+"225020": # Tomb_Raider VI: The Angel of Darkness
+   compat_tool: Proton-6.1-GE-2
+
+"41500": # Torchlight
+  compat_tool: proton_513
+
 "674500": # Total Tank Simulator
   compat_tool: proton_513
+
+"508440": # Totally Accurate Battle Simulator
+  compat_tool: proton_63
+
+"1597220": # Tower Ball - Incremental Tower Defense
+  compat_tool: proton_63
+
+"938380": # Townsmen - A Kingdom Rebuilt
+  compat_tool: proton_411
+
+"392410": # Toy Odyssey: The Lost and Found
+  compat_tool: proton_63
 
 "287260": # Toybox Turbos
   compat_tool: proton_513
@@ -1367,21 +1442,43 @@
 "690640": # Trine 4: The Nightmare Prince
   compat_tool: proton_513
 
+"393190": # TSIOQUE
+ compat_tool: proton_63
+
+"23490": # Tropico 3
+  compat_tool: proton_63
+
+"626610": # TT Isle of Man Ride on the Edge
+  compat_tool: Proton-6.1-GE-2
+
+"457890": # TumbleSeed
+  compat_tool: proton_63
+
 "499520": # The Turing Test
   compat_tool: proton_5
   patch_dir: The Turing Test
   patches:
     - exec: echo "459610a64e715fda06fc3caaa1bcb266 installer.vdf" | md5sum --status -c && sed -i 1,26d installer.vdf
 
+"406290": # Twilight Struggle 
+ compat_tool: proton_63
+ 
 "357190": # Ultimate Marvel vs. Capcom 3
   compat_tool: proton_411
 
 "45760": # Ultra Street Fighter IV
   compat_tool: proton_63
 
+"406970": # The Uncertain: Last Quiet Day
+  compat_tool: proton_63
+
 "837470": # Untitled Goose Game
   compat_tool: proton_513
 
+"294860": # Valkyria Chronicles
+  compat_tool: proton_63
+  compat_config: noesync
+  
 "790820": # Valkyria Chronicles 4
   compat_tool: proton_513
 
@@ -1394,8 +1491,32 @@
 "1063310": # Vane
   compat_tool: proton_513
 
+"258520": # The Vanishing of Ethan Carter
+  compat_tool: proton_411
+
+"400430": # The Vanishing of Ethan Carter Redux
+  compat_tool: proton_63
+
+"108500": # Vessel
+  compat_tool: proton_63
+
+"246900": # Viscera Cleanup Detail
+  compat_tool: proton_63
+
+"255520": # Viscera Cleanup Detail: Shadow Warrior
+  compat_tool: proton_63
+
+"265210": # Viscera Cleanup Detail: Santas Rampage
+  compat_tool: proton_63
+
 "857980": # Void Bastards
   compat_tool: proton_411
+
+"259660": # Void Destroyer
+  compat_tool: proton_63
+
+"207610": # The Walking Dead
+  compat_tool: proton_63
 
 "530320": # Wandersong
   compat_tool: proton_63
@@ -1404,8 +1525,20 @@
   compat_tool: proton_411
   launch_options: --skip-intro
 
-"774241": # Warhammer: Chaosbane
-  compat_tool: proton_513
+"4570": # Warhammer 40,000: Dawn of War - Game of the Year Edition
+  compat_tool: proton_63
+
+"9450": # Warhammer 40,000: Dawn of War - Soulstorm
+  compat_tool: proton_63
+
+"4580": # Warhammer 40,000: Dawn of War - Dark Crusade
+  compat_tool: proton_63
+
+"1022310": # Warhammer Underworlds: Online
+  compat_tool: proton_63
+
+"774241": # Warhammer: Chaosbane  
+  compat_tool: proton_63
 
 "865360": # We Were Here Together
   compat_tool: proton_411
@@ -1415,6 +1548,9 @@
 
 "431940": # Wildfire
   compat_tool: proton_513
+
+"950850": # The Window Box
+  compat_tool: proton_63
 
 "292030": # The Witcher 3: Wild Hunt
   compat_tool: proton_63
@@ -1443,16 +1579,52 @@
 "354830": # Wolfenstein: The Old Blood German Edition
   compat_tool: proton_513
 
+"444200": # World of Tanks Blitz
+  compat_tool: proton_63
+  
+"70640": # Worms
+  compat_tool: proton_63
+
+"217200": # Worms Armageddon
+  compat_tool: proton_63
+
+"70620": # Worms Crazy Golf
+  compat_tool: proton_63
+
+"70660": # Worms Pinball
+  compat_tool: proton_63
+
+"22600": # Worms Reloaded (use proton for Multiplayer with Windows)
+  compat_tool: proton_63
+  
+"200170": # Worms Revolution
+  compat_tool: proton_63
+
+"70600": # Worms Ultimate Mayhem
+  compat_tool: proton_63
+
 "228380": # Wreckfest
   compat_tool: proton_513
 
 "1142100": # WWE 2K BATTLEGROUNDS
   compat_tool: proton_513
 
-"834530": # Yakuza Kiwami
+"7770": # X-COM: Enforcer
   compat_tool: proton_63
 
+"7730": # X-COM: Interceptor  
+  compat_tool: proton_63
+
+"7760": # X-COM: UFO Defense
+  compat_tool: boxtron
+
 "882100": # XCOM: Chimera Squad
+  compat_tool: proton_63
+
+"1088710": # Yakuza 3 Remastered
+  compat_tool: proton_63
+
+"834530": # Yakuza Kiwami
   compat_tool: proton_63
 
 "927380": # Yakuza Kiwami 2
