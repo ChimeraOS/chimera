@@ -1442,11 +1442,11 @@
 "690640": # Trine 4: The Nightmare Prince
   compat_tool: proton_513
 
-"393190": # TSIOQUE
- compat_tool: proton_63
-
 "23490": # Tropico 3
   compat_tool: proton_63
+
+"393190": # TSIOQUE
+ compat_tool: proton_63
 
 "626610": # TT Isle of Man Ride on the Edge
   compat_tool: Proton-6.1-GE-2
