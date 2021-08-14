@@ -114,8 +114,8 @@ button {
     border-radius: 5px;
 }
 
-.right {
-    text-align: right;
+.left {
+    text-align: left;
 }
 
 .delete {
@@ -161,6 +161,7 @@ table[class=settings] th {
 .header {
     background-color: #10131c;
     width: 100%;
+    min-height: 64px;
     color: white;
     padding: 16px;
     margin-bottom: 10px;
@@ -182,7 +183,7 @@ table[class=settings] th {
 #mainmenuicon {
     display: block;
     position: absolute;
-    right: 15px;
+    left: 15px;
     top: 5px;
     font-size: 40px;
 }
@@ -193,6 +194,65 @@ table[class=settings] th {
     right: 70px;
     top: 5px;
     font-size: 36px;
+}
+
+.action {
+    display: flex;
+    background-color:#333333;
+    margin : 1px;
+    font-size: 24px;
+    justify-content : center;
+    padding : 20px 0;
+}
+
+.action i {
+    padding-right : 8px;
+}
+
+.action:hover {
+    background-color: #555555;
+}
+
+.volume {
+    border-left : 1px solid white;
+    border-right : 1px solid white;
+    padding : 20px 0;
+    margin : -20px 0;
+    flex-grow: 1;
+    background-color:#333333;
+}
+
+.volume i {
+    position: relative;
+    top: 4px;
+}
+
+.volume:hover {
+    background-color: #555555;
+
+}
+
+.volume-up {
+    padding : 20px 0;
+    margin : -20px 0;
+    flex-grow: 1;
+    background-color:#333333;
+
+}
+
+.volume-up:hover {
+    background-color: #555555;
+}
+
+.volume-down {
+    padding : 20px 0;
+    margin : -20px 0;
+    flex-grow: 1;
+    background-color:#333333;
+}
+
+.volume-down:hover {
+    background-color: #555555;
 }
 
 .game-name-suggestion {

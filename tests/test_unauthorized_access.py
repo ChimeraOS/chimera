@@ -40,14 +40,14 @@ def test_root(unauthorized_app):
 
 def test_platform_page(unauthorized_app):
     for platform in PLATFORMS:
-        resp = unauthorized_app.get(f'/platforms/{platform}')
+        resp = unauthorized_app.get(f'/library/{platform}')
         assert(resp.status_code == 302)
         assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_platform_authenticate(unauthorized_app):
     for platform in PLATFORM_HANDLERS:
-        resp = unauthorized_app.post(f'/platforms/{platform}/authenticate')
+        resp = unauthorized_app.post(f'/library/{platform}/authenticate')
         assert(resp.status_code == 302)
         assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -61,14 +61,14 @@ def test_platform_banners(unauthorized_app):
 
 def test_platform_new(unauthorized_app):
     for platform in PLATFORMS:
-        resp = unauthorized_app.get('/platforms/{platform}/new')
+        resp = unauthorized_app.get('/library/{platform}/new')
         assert(resp.status_code == 302)
         assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_platform_edit(unauthorized_app):
     for platform in PLATFORMS:
-        resp = unauthorized_app.get('/platforms/{platform}/edit/giberish')
+        resp = unauthorized_app.get('/library/{platform}/edit/giberish')
         assert(resp.status_code == 302)
         assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -150,43 +150,43 @@ def test_platform_progress(unauthorized_app):
 
 
 def test_settings(unauthorized_app):
-    resp = unauthorized_app.get('/settings')
+    resp = unauthorized_app.get('/system')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_settings_update(unauthorized_app):
-    resp = unauthorized_app.post('/settings/update')
+    resp = unauthorized_app.post('/system/update')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_mangohud_reset(unauthorized_app):
-    resp = unauthorized_app.post('/settings/reset_mangohud')
+    resp = unauthorized_app.post('/system/reset_mangohud')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_steam_restart(unauthorized_app):
-    resp = unauthorized_app.get('/steam/restart')
+    resp = unauthorized_app.get('/actions/steam/restart')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_steam_compositor(unauthorized_app):
-    resp = unauthorized_app.get('/steam/compositor')
+    resp = unauthorized_app.get('/actions/steam/compositor')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_steam_overlay(unauthorized_app):
-    resp = unauthorized_app.get('/steam/overlay')
+    resp = unauthorized_app.get('/actions/steam/overlay')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_mangohud(unauthorized_app):
-    resp = unauthorized_app.get('/mangohud')
+    resp = unauthorized_app.get('/actions/mangohud')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -276,13 +276,13 @@ def test_mangohud_edit_config(unauthorized_app):
 
 
 def test_retroarch_load_state(unauthorized_app):
-    resp = unauthorized_app.get('/retroarch/load_state')
+    resp = unauthorized_app.get('/actions/retroarch/load_state')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_retroarch_save_state(unauthorized_app):
-    resp = unauthorized_app.get('/retroarch/save_state')
+    resp = unauthorized_app.get('/actions/retroarch/save_state')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -300,37 +300,37 @@ def test_virtual_keyboard_string(unauthorized_app):
 
 
 def test_reboot_system(unauthorized_app):
-    resp = unauthorized_app.get('/reboot')
+    resp = unauthorized_app.get('/actions/reboot')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_poweroff(unauthorized_app):
-    resp = unauthorized_app.get('/poweroff')
+    resp = unauthorized_app.get('/actions/poweroff')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_suspend(unauthorized_app):
-    resp = unauthorized_app.get('/suspend')
+    resp = unauthorized_app.get('/actions/suspend')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_toggle_mute(unauthorized_app):
-    resp = unauthorized_app.get('/audio/toggle_mute')
+    resp = unauthorized_app.get('/actions/audio/toggle_mute')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_volume_up(unauthorized_app):
-    resp = unauthorized_app.get('/audio/volume_up')
+    resp = unauthorized_app.get('/actions/audio/volume_up')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_volume_down(unauthorized_app):
-    resp = unauthorized_app.get('/audio/volume_down')
+    resp = unauthorized_app.get('/actions/audio/volume_down')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 

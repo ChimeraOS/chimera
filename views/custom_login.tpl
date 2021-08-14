@@ -6,7 +6,7 @@
 <p class="platform-login-description">Please <a target="_blank" href="https://login.gog.com/auth?client_id=46899977096215655%26layout=client2%22%26redirect_uri=https%3A%2F%2Fembed.gog.com%2Fon_login_success%3Forigin%3Dclient%26response_type=code">login to GOG</a>. A blank page will appear with a code in the address bar after "code=". Paste the code from the address bar into the input box below.</p>
 % end
 
-<form action="/platforms/{{platform}}/authenticate" method="post" enctype="multipart/form-data">
+<form action="/library/{{platform}}/authenticate" method="post" enctype="multipart/form-data">
 % if platform == 'epic-store':
 	<div class="label">SID</div>
 % elif platform == 'gog':

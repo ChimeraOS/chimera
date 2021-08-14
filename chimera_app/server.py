@@ -59,7 +59,7 @@ PLATFORM_HANDLERS = {
 def authenticate_platform(selected_platform):
     if selected_platform in PLATFORM_HANDLERS:
         if not PLATFORM_HANDLERS[selected_platform].is_authenticated():
-            redirect(f'/platforms/{selected_platform}')
+            redirect(f'/library/{selected_platform}')
             return False
     return True
 
@@ -67,10 +67,21 @@ def authenticate_platform(selected_platform):
 @route('/')
 @authenticate
 def root():
-    return template('platforms.tpl', platforms=PLATFORMS, audio=get_audio())
+    redirect('/library')
+
+@route('/actions')
+@authenticate
+def actions():
+    return template('actions.tpl', audio=get_audio())
 
 
-@route('/platforms/<platform>')
+@route('/library')
+@authenticate
+def platforms():
+    return template('platforms.tpl', platforms=PLATFORMS)
+
+
+@route('/library/<platform>')
 @authenticate
 def platform_page(platform):
     if platform in PLATFORM_HANDLERS:
@@ -112,7 +123,7 @@ def platform_page(platform):
                     platformName=PLATFORMS[platform])
 
 
-@route('/platforms/<platform>/authenticate', method='POST')
+@route('/library/<platform>/authenticate', method='POST')
 @authenticate
 def platform_authenticate(platform):
     if platform not in PLATFORM_HANDLERS:
@@ -120,7 +131,7 @@ def platform_authenticate(platform):
 
     password = request.forms.get('password')
     PLATFORM_HANDLERS[platform].authenticate(password)
-    redirect('/platforms/{platform}'.format(platform=platform))
+    redirect(f'/library/{platform}')
 
 
 @route('/banners/<platform>/<filename>')
@@ -130,7 +141,7 @@ def banners(platform, filename):
     return static_file(filename, root='{base}'.format(base=base))
 
 
-@route('/platforms/<platform>/new')
+@route('/library/<platform>/new')
 @authenticate
 def new(platform):
     if platform in PLATFORM_HANDLERS:
@@ -155,7 +166,7 @@ def new(platform):
                     )
 
 
-@route('/platforms/<platform>/edit/<name>')
+@route('/library/<platform>/edit/<name>')
 @authenticate
 def edit(platform, name):
     if platform in PLATFORM_HANDLERS:
@@ -212,7 +223,7 @@ def shortcut_create():
     content = request.forms.get('content')
 
     if not name or name.strip() == '':
-        redirect(f'/platforms/{platform}/new')
+        redirect(f'/library/{platform}/new')
         return
 
     name = name.strip()
@@ -263,7 +274,7 @@ def shortcut_create():
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
 
-    redirect('/platforms/{platform}'.format(platform=platform))
+    redirect(f'/library/{platform}')
 
 
 @route('/shortcuts/edit', method='POST')
@@ -314,7 +325,7 @@ def shortcut_update():
 
     shortcuts.save()
 
-    redirect('/platforms/{platform}'.format(platform=platform))
+    redirect(f'/library/{platform}')
 
 
 @route('/shortcuts/delete', method='POST')
@@ -330,7 +341,7 @@ def shortcut_delete():
     delete_file(CONTENT_DIR, platform, name)
     delete_file(BANNER_DIR, platform, name)
 
-    redirect('/platforms/{platform}'.format(platform=platform))
+    redirect(f'/library/{platform}')
 
 
 @route('/shortcuts/file-upload', method='POST')
@@ -412,7 +423,7 @@ def platform_install(platform, content_id):
         except Exception as e:
             print(e)
 
-    redirect(f'/platforms/{platform}/edit/{content_id}')
+    redirect(f'/library/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/uninstall/<content_id>')
@@ -427,7 +438,7 @@ def uninstall(platform, content_id):
     shortcuts.remove_shortcut(content.name, platform)
     shortcuts.save()
 
-    redirect(f'/platforms/{platform}/edit/{content_id}')
+    redirect(f'/library/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/update/<content_id>')
@@ -438,7 +449,7 @@ def content_update(platform, content_id):
         abort(404, 'Content not found')
     PLATFORM_HANDLERS[platform].update_content(content_id)
 
-    redirect(f'/platforms/{platform}/edit/{content_id}')
+    redirect(f'/library/{platform}/edit/{content_id}')
 
 
 @route('/<platform>/progress/<content_id>')
@@ -457,7 +468,7 @@ def install_progress(platform, content_id):
     return json.dumps(values)
 
 
-@route('/settings')
+@route('/system')
 @authenticate
 def settings():
     current_settings = SETTINGS_HANDLER.get_settings()
@@ -470,7 +481,7 @@ def settings():
                     ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
 
 
-@route('/settings/update', method='POST')
+@route('/system/update', method='POST')
 @authenticate
 def settings_update():
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
@@ -513,51 +524,51 @@ def settings_update():
 
     FTP_SERVER.reload()
 
-    redirect('/settings')
+    redirect('/system')
 
 
-@route('/settings/reset_mangohud', method='POST')
+@route('/system/reset_mangohud', method='POST')
 @authenticate
 def mangohud_reset():
     MANGOHUD_HANDLER.reset_config()
     redirect('/')
 
 
-@route('/steam/restart')
+@route('/actions/steam/restart')
 @authenticate
 def steam_restart():
     try:
         subprocess.call(["pkill", "steamos-session"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/steam/compositor')
+@route('/actions/steam/compositor')
 @authenticate
 def steam_compositor():
     try:
         subprocess.call(["bin/toggle-steamos-compositor"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/steam/overlay')
+@route('/actions/steam/overlay')
 @authenticate
 def steam_overlay():
     try:
         subprocess.call(["xdotool", "key", "shift+Tab"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/mangohud')
+@route('/actions/mangohud')
 @authenticate
 def mangohud():
     key = MANGOHUD_HANDLER.get_toggle_hud_key()
     try:
         subprocess.call(["xdotool", "key", key])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
 @route('/streaming')
@@ -721,22 +732,22 @@ def retroarch_cmd(msg):
     sock.sendto(bytes(msg, "utf-8"), ('127.0.0.1', 55355))
 
 
-@route('/retroarch/load_state')
+@route('/actions/retroarch/load_state')
 @authenticate
 def retro_load_state():
     try:
         retroarch_cmd('LOAD_STATE')
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/retroarch/save_state')
+@route('/actions/retroarch/save_state')
 @authenticate
 def retro_save_state():
     try:
         retroarch_cmd('SAVE_STATE')
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
 @route('/virtual_keyboard')
@@ -756,22 +767,31 @@ def virtual_keyboard_string():
         redirect('/virtual_keyboard')
 
 
-@route('/reboot')
+@route('/actions/reboot')
 @authenticate
 def reboot_system():
-    os.system('reboot')
+    try:
+        os.system('reboot')
+    finally:
+        redirect('/actions')
 
 
-@route('/poweroff')
+@route('/actions/poweroff')
 @authenticate
 def poweroff_system():
-    os.system('poweroff')
+    try:
+        os.system('poweroff')
+    finally:
+        redirect('/actions')
 
 
-@route('/suspend')
+@route('/actions/suspend')
 @authenticate
 def suspend_system():
-    os.system('systemctl suspend')
+    try:
+        os.system('systemctl suspend')
+    finally:
+        redirect('/actions')
 
 
 def get_audio():
@@ -809,31 +829,31 @@ def get_audio():
         return None
 
 
-@route('/audio/toggle_mute')
+@route('/actions/audio/toggle_mute')
 @authenticate
 def toggle_mute():
     try:
         subprocess.call(["ponymix", "toggle"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/audio/volume_up')
+@route('/actions/audio/volume_up')
 @authenticate
 def volume_up():
     try:
         subprocess.call(["ponymix", "increase", "10"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
-@route('/audio/volume_down')
+@route('/actions/audio/volume_down')
 @authenticate
 def volume_down():
     try:
         subprocess.call(["ponymix", "decrease", "10"])
     finally:
-        redirect('/')
+        redirect('/actions')
 
 
 @route('/audio/<profile>')

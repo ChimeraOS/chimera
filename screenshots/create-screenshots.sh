@@ -28,7 +28,7 @@ sleep 3
 # Take the screenshots
 cd -
 ${CHROME} --headless --disable-gpu --window-size=1920,1080 --screenshot=platforms.png http://localhost:8844/
-${CHROME} --headless --disable-gpu --window-size=1920,1080 --screenshot=flathub.png http://localhost:8844/platforms/flathub/new
+${CHROME} --headless --disable-gpu --window-size=1920,1080 --screenshot=flathub.png http://localhost:8844/library/flathub/new
 
 # Stop chimera
 kill %1
