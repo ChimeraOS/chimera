@@ -6,13 +6,14 @@
     </a>
 </div>
 
+% from urllib.parse import quote
 % for s in shortcuts:
-<a href="/library/{{platform}}/edit/{{s['name']}}">
+<a href="/library/{{platform}}/edit/{{quote(s['name'])}}">
     <div class="img-container {{s['hidden']}}">
         % if s['banner'] == None :
             <span class="missing-text">{{s['name']}}</span>
         % else :
-            <img class="{{s['hidden']}}" src="{{s['banner']}}" alt="{{s['name']}}" title="{{s['name']}}"/>
+            <img class="{{s['hidden']}}" src="{{quote(s['banner'])}}" alt="{{s['name']}}" title="{{s['name']}}"/>
         % end
     </div>
 </a>
