@@ -120,7 +120,7 @@ a.button {
     border: none;
     color: white;
     padding: 15px;
-    margin: 30px !important;
+    margin: 30px;
     cursor: pointer;
     font-size: 24px;
     border-radius: 5px;
