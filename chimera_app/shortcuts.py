@@ -260,6 +260,7 @@ class ShortcutsFile():
 
     def save(self) -> None:
         """Save this file with current shortcuts data"""
+        utils.ensure_directory_for_file(self.path)
         with open(self.path, 'w') as file:
             yaml.dump(self.get_shortcuts_data(),
                       file,
