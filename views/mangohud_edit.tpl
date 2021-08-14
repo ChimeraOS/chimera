@@ -5,6 +5,10 @@
         <textarea name="new_content" id="new_content" cols="40" rows="10">{{file_content}}</textarea>
     </div>
 
-	<button>Save</button>
-	<button class="delete" formaction="/system/reset_mangohud">Reset</button>
+    <a class="info-link" target="_blank" href="https://github.com/flightlessmango/MangoHud#mangohud_config-and-mangohud_configfile-environment-variables">
+        Available configuration options
+    </a>
+
+    <button>Save</button>
+    <button class="delete" formaction="/system/reset_mangohud">Reset</button>
 </form>
