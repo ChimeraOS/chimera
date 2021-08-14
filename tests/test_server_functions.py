@@ -6,6 +6,7 @@ from tidylib import tidy_document
 from bottle import request
 from chimera_app.server import \
         root, \
+        platforms, \
         platform_page, \
         new, \
         settings, \
@@ -36,9 +37,9 @@ def validate_html(endpoint, document):
         )
 
 
-def test_root():
-    document = root()
-    validate_html("root", document)
+def test_platforms():
+    document = platforms()
+    validate_html("platforms", document)
 
 
 def test_platform():
