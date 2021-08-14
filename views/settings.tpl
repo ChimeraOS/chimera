@@ -1,9 +1,10 @@
 % rebase('base.tpl')
 <form action="/system/update" method="post" enctype="multipart/form-data">
-    <h4>MangoHud</h4>
+    <h4>Performance Overlay</h4>
     <hr>
-    You'll be able to reset the default MangoHud configuration here.
-	<button formaction="/system/reset_mangohud">Reset configuration</button>
+    <a class="button" href="/system/mangohud/edit_config">
+        Configure MangoHud
+    </a>
 
     <h4>Logging in</h4>
     <hr>

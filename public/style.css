@@ -114,6 +114,22 @@ button {
     border-radius: 5px;
 }
 
+a.button {
+    display: block;
+    background-color: #3268a8;
+    border: none;
+    color: white;
+    padding: 15px;
+    margin: 30px !important;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 5px;
+}
+
+h4 {
+    margin-top : 70px;
+}
+
 .left {
     text-align: left;
 }

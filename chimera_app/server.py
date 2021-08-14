@@ -531,7 +531,7 @@ def settings_update():
 @authenticate
 def mangohud_reset():
     MANGOHUD_HANDLER.reset_config()
-    redirect('/')
+    redirect('/system')
 
 
 @route('/actions/steam/restart')
@@ -712,15 +712,15 @@ def record_stop():
     return template('success.tpl')
 
 
-@route('/mangohud/save_config', method='POST')
+@route('/system/mangohud/save_config', method='POST')
 @authenticate
 def mangohud_save_config():
     new_content = request.forms.get('new_content')
     MANGOHUD_HANDLER.save_config(new_content)
-    redirect('/')
+    redirect('/system')
 
 
-@route('/mangohud/edit_config')
+@route('/system/mangohud/edit_config')
 @authenticate
 def mangohud_edit():
     current_content = MANGOHUD_HANDLER.get_current_config()

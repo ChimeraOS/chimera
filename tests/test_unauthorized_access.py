@@ -264,13 +264,13 @@ def test_record_stop(unauthorized_app):
 
 
 def test_mangohud_save_config(unauthorized_app):
-    resp = unauthorized_app.post('/mangohud/save_config')
+    resp = unauthorized_app.post('/system/mangohud/save_config')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
 def test_mangohud_edit_config(unauthorized_app):
-    resp = unauthorized_app.get('/mangohud/edit_config')
+    resp = unauthorized_app.get('/system/mangohud/edit_config')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
