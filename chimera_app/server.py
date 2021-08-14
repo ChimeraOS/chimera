@@ -72,7 +72,7 @@ def root():
 @route('/actions')
 @authenticate
 def actions():
-    return template('actions.tpl', audio=get_audio())
+    return template('actions.tpl', audio=get_audio(), bare=True)
 
 
 @route('/library')

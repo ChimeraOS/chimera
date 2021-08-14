@@ -37,9 +37,13 @@
             <a href="javascript:void(0);" id="mainmenuicon" onclick="toggleMenu('mainmenu')">&#9776;</a>
 		</div>
 	</div>
-	<div class="content">
+	% if get('bare'):
 		{{!base}}
-	</div>
+	% else:
+		<div class="content">
+			{{!base}}
+		</div>
+	% end
 
 	<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 	<!-- https://remixicon.com/ -->

@@ -100,6 +100,12 @@ form {
     text-align: center;
 }
 
+.action-content {
+    width: 100%;
+    text-align: center;
+    margin-top: -9px;
+}
+
 button {
     background-color: #3268a8;
     border: none;
@@ -202,14 +208,6 @@ table[class=settings] th {
     left: 15px;
     top: 5px;
     font-size: 40px;
-}
-
-#audiomenuicon {
-    display: block;
-    position: absolute;
-    right: 70px;
-    top: 5px;
-    font-size: 36px;
 }
 
 .action {
