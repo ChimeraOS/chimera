@@ -339,7 +339,7 @@ def shortcut_delete():
 
     shortcuts = PlatformShortcutsFile(platform)
     shortcuts.load_data()
-    shortcuts.remove_shortcut_by_name(name)
+    shortcuts.remove_shortcut(name, platform)
     shortcuts.save()
 
     delete_file(CONTENT_DIR, platform, name)
