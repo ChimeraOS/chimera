@@ -49,9 +49,9 @@
 "1171660": # The Ambassador: Fractured Timelines
   compat_tool: proton_5
 
-"945360": # Among Us  
+"945360": # Among Us
   compat_tool: proton_63
-  
+
 "390720": # Anarcute
   compat_tool: proton_513
 
@@ -159,7 +159,7 @@
 "249650": # Blackguards
    compat_tool: proton_63
 
-"314830": # Blackguards 2 
+"314830": # Blackguards 2
   compat_tool: proton_63
 
 "927250": # Bladed Fury
@@ -1460,9 +1460,9 @@
   patches:
     - exec: echo "459610a64e715fda06fc3caaa1bcb266 installer.vdf" | md5sum --status -c && sed -i 1,26d installer.vdf
 
-"406290": # Twilight Struggle 
+"406290": # Twilight Struggle
  compat_tool: proton_63
- 
+
 "357190": # Ultimate Marvel vs. Capcom 3
   compat_tool: proton_411
 
@@ -1478,7 +1478,7 @@
 "294860": # Valkyria Chronicles
   compat_tool: proton_63
   compat_config: noesync
-  
+
 "790820": # Valkyria Chronicles 4
   compat_tool: proton_513
 
@@ -1537,7 +1537,7 @@
 "1022310": # Warhammer Underworlds: Online
   compat_tool: proton_63
 
-"774241": # Warhammer: Chaosbane  
+"774241": # Warhammer: Chaosbane
   compat_tool: proton_63
 
 "865360": # We Were Here Together
@@ -1581,7 +1581,7 @@
 
 "444200": # World of Tanks Blitz
   compat_tool: proton_63
-  
+
 "70640": # Worms
   compat_tool: proton_63
 
@@ -1594,9 +1594,9 @@
 "70660": # Worms Pinball
   compat_tool: proton_63
 
-"22600": # Worms Reloaded (use proton for Multiplayer with Windows)
+"22600": # Worms Reloaded; native version doesn't have cross-platform multiplayer
   compat_tool: proton_63
-  
+
 "200170": # Worms Revolution
   compat_tool: proton_63
 
@@ -1612,7 +1612,7 @@
 "7770": # X-COM: Enforcer
   compat_tool: proton_63
 
-"7730": # X-COM: Interceptor  
+"7730": # X-COM: Interceptor
   compat_tool: proton_63
 
 "7760": # X-COM: UFO Defense
