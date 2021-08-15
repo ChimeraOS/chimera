@@ -44,11 +44,18 @@ def setup_argparse():
                           action="store_true",
                           help=('Apply configuration for Steam games')
                           )
+    group_ex.add_argument('-p', '--port',
+                          action="store",
+                          type=int,
+                          nargs=1,
+                          default=[ 8844 ],
+                          help=('Port to use for web server (default: 8844)')
+                          )
 
     return parser.parse_args()
 
 
-def run_server():
+def run_server(port):
     if not os.environ.get("DISPLAY"):
         os.environ["DISPLAY"] = ":0.0"
 
@@ -57,7 +64,7 @@ def run_server():
 
     os.chdir(RESOURCE_DIR)
     FTP_SERVER.run()
-    bottle.run(app=server, host='0.0.0.0', port=8844)
+    bottle.run(app=server, host='0.0.0.0', port=port)
 
 
 def main():
@@ -69,7 +76,7 @@ def main():
                   or args.config
                   or args.tweaks
                   or args.update))):
-        run_server()
+        run_server(args.port[0])
     if args.update:
         update_data(args.force_update)
     if args.compat:
