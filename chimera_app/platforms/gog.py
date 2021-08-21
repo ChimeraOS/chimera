@@ -58,7 +58,6 @@ class GOG(StorePlatform):
         content = []
 
         shortcuts_file = PlatformShortcutsFile('gog')
-        shortcuts_file.load_data()
         installed = shortcuts_file.get_shortcuts_data()
         installed_ids = [game['id'] for game in installed]
 
