@@ -22,6 +22,12 @@ def setup_argparse():
                         action="store_true",
                         help='Force update even if already updated'
                         )
+    parser.add_argument('-p', '--port',
+                        action="store",
+                        type=int,
+                        default=8844,
+                        help=('Port to use for web server (default: 8844)')
+                        )
     group_ex = parser.add_mutually_exclusive_group()
     group_ex.add_argument('-d', '--daemon',
                           action="store_true",
@@ -43,13 +49,6 @@ def setup_argparse():
     group_ex.add_argument('-g', '--config',
                           action="store_true",
                           help=('Apply configuration for Steam games')
-                          )
-    group_ex.add_argument('-p', '--port',
-                          action="store",
-                          type=int,
-                          nargs=1,
-                          default=[ 8844 ],
-                          help=('Port to use for web server (default: 8844)')
                           )
 
     return parser.parse_args()
@@ -76,7 +75,7 @@ def main():
                   or args.config
                   or args.tweaks
                   or args.update))):
-        run_server(args.port[0])
+        run_server(args.port)
     if args.update:
         update_data(args.force_update)
     if args.compat:
