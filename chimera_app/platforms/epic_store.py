@@ -10,6 +10,7 @@ from chimera_app.platforms.store_platform import StorePlatform, dic
 
 class EpicStore(StorePlatform):
     def __init__(self):
+        super().__init__()
         self.METADATA_DIR = os.path.join(context.CONFIG_HOME,
                                          'legendary',
                                          'metadata')
