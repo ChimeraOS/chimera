@@ -62,13 +62,15 @@ class SteamShortcutsFile():
     user_id: str
     shortcuts_data: List[dict]
 
-    def __init__(self, user_id: str):
+    def __init__(self, user_id: str, auto_load: bool = True):
         self.user_id = user_id
         self.path = os.path.join(context.STEAM_DIR,
                                  'userdata',
                                  user_id,
                                  'config/shortcuts.vdf')
         self.shortcuts_data = None
+        if auto_load:
+            self.load_data()
 
     def exists(self) -> bool:
         """Returns True if this file exists. False otherwise"""
@@ -76,8 +78,6 @@ class SteamShortcutsFile():
 
     def get_shortcuts_data(self) -> List[dict]:
         """Returns this file's shortcut data as a list of dictionaries"""
-        if not self.shortcuts_data:
-            self.load_data()
         return self.shortcuts_data
 
     def load_data(self) -> None:
@@ -208,9 +208,11 @@ class ShortcutsFile():
     path: str
     shortcuts_data: List[dict]
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, auto_load: bool = True):
         self.path = path
         self.shortcuts_data = []
+        if auto_load:
+            self.load_data()
 
     def exists(self) -> bool:
         """Returns true if this file exists. False otherwise"""
@@ -272,10 +274,10 @@ class PlatformShortcutsFile(ShortcutsFile):
 
     platform: str
 
-    def __init__(self, platform: str):
+    def __init__(self, platform: str, auto_load: bool = True):
         self.platform = platform
         path = os.path.join(context.SHORTCUT_DIRS, f'chimera.{platform}.yaml')
-        super().__init__(path)
+        super().__init__(path, auto_load)
 
 
 class ShortcutsManager():

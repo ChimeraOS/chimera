@@ -109,7 +109,6 @@ def strip(string):
 def delete_file(base_dir, platform, name):
     if is_direct(platform, os.path.basename(base_dir)):
         shortcuts_file = shortcuts.PlatformShortcutsFile(platform)
-        shortcuts_file.load_data()
         shortcut = shortcuts_file.get_shortcut_match(name, platform)
         if 'dir' in shortcut and 'params' in shortcut:
             file_path = os.path.join(strip(shortcut['dir']),

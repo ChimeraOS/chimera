@@ -99,7 +99,6 @@ def platform_page(platform):
                             platformName=PLATFORMS[platform])
 
     shortcut_file = PlatformShortcutsFile(platform)
-    shortcut_file.load_data()
     shortcuts = sorted(shortcut_file.get_shortcuts_data(),
                        key=lambda s: s['name'])
     data = []
@@ -184,7 +183,6 @@ def edit(platform, name):
             abort(404, 'Content not found')
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
     shortcut = shortcuts.get_shortcut_match(name, platform)
 
     return template('new.tpl',
@@ -230,7 +228,6 @@ def shortcut_create():
     name = name.strip()
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
 
     if shortcuts.get_shortcut_match(name, platform):
         return 'Shortcut already exists'
@@ -291,7 +288,6 @@ def shortcut_update():
     content = request.forms.get('content')
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
     shortcut = shortcuts.get_shortcut_match(name, platform)
 
     banner_path = None
@@ -338,7 +334,6 @@ def shortcut_delete():
     platform = sanitize(request.forms.get('platform'))
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
     shortcuts.remove_shortcut(name, platform)
     shortcuts.save()
 
@@ -413,7 +408,6 @@ def platform_install(platform, content_id):
     PLATFORM_HANDLERS[platform].install_content(content)
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
     shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
@@ -440,7 +434,6 @@ def uninstall(platform, content_id):
     PLATFORM_HANDLERS[platform].uninstall_content(content_id)
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.load_data()
     shortcuts.remove_shortcut(content.name, platform)
     shortcuts.save()
 
