@@ -433,8 +433,10 @@ def uninstall(platform, content_id):
         abort(404, 'Content not found')
     PLATFORM_HANDLERS[platform].uninstall_content(content_id)
 
+    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.remove_shortcut(content.name, platform)
+    shortcuts.remove_shortcut(content.name, shortcut['cmd'])
     shortcuts.save()
 
     redirect(f'/library/{platform}/edit/{content_id}')
