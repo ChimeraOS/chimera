@@ -71,16 +71,19 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
     content_type = os.path.basename(base_dir)
     filename = sanitize(dst_name)
     file_dir = f"{base_dir}/{platform}/.{name}"
+    rel_file_dir = f".{name}"
 
     # mame ROM files have dependencies on each other,
     # so store them all in a single directory
     if is_direct(platform, content_type):
         file_dir = f"{base_dir}/{platform}/.{platform}"
+        rel_file_dir = f".{platform}"
 
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 
     file_path = f"{file_dir}/{filename}"
+    rel_file_path = f"{rel_file_dir}/{filename}"
     if os.path.exists(file_path):
         os.remove(file_path)
 
@@ -90,7 +93,7 @@ def upsert_file(src_path, base_dir, platform, name, dst_name):
     dst = f"{base_dir}/{platform}/{name}{ext}"
 
     delete_file_link(base_dir, platform, name)
-    os.symlink(file_path, dst)
+    os.symlink(rel_file_path, dst)
 
     # mame requires ROM files to have a specific name,
     # so launch original file directly

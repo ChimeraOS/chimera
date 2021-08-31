@@ -19,6 +19,25 @@ then
     exit 0
 fi
 
+function relink {
+    for d in * ; do
+        if [ -d $d ] ; then
+            if ! [ "$(basename $d)" == "epic-store" ] &&
+                ! [ "$(basename $d)" == "gog" ] ; then
+                pushd "$d"
+                for l in * ; do
+                    if [[ -L "${l}" ]] ; then
+                        old_link=$(readlink "${l}")
+                        new_link=${old_link/$PWD\//}
+                        ln -sfv "${new_link}" "${l}"
+                    fi
+                done
+                popd
+            fi
+        fi
+    done
+}
+
 ## MIGRATION MAGIC ##
 
 # Check if there are config files from steam-buddy
@@ -35,6 +54,7 @@ if [ -f $HOME/.local/share/steam-buddy/settings/settings.json ]; then
         mkdir -p $HOME/.config/chimera
     fi
     mv -Tbv $HOME/.local/share/steam-buddy/settings/settings.json $HOME/.config/chimera/settings.json
+    rm -rf $HOME/.local/share/steam-buddy/settings
     echo "Renamig relevant paths inside settings file"
     cd $HOME/.config/chimera
     sed -i 's|/steam-buddy/|/chimera/|g' settings.json
@@ -99,16 +119,26 @@ for u in * ; do
             if [ -d $u/config/grid ] ; then
                 cd $u/config/grid
                 for l in * ; do
-                    if [[ -L $l ]] ; then
-                        old_link=$(readlink ${l})
+                    if [[ -L "${l}" ]] ; then
+                        old_link=$(readlink "${l}")
                         new_link=${old_link/steam-buddy/chimera}
-                        ln -sfv $new_link $l
+                        ln -sfv "${new_link}" "${l}"
                     fi
                 done
             fi
         fi
     fi
 done
+
+# Relink ROM files
+pushd $HOME/.local/share/steam-buddy/content
+relink
+popd
+
+# Relink uploaded banners
+pushd $HOME/.local/share/steam-buddy/banners
+relink
+popd
 
 # Migrate cache
 if [ -d $HOME/.cache/steam-buddy ] ; then
