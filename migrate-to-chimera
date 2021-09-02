@@ -140,6 +140,11 @@ pushd $HOME/.local/share/steam-buddy/banners
 relink
 popd
 
+# Migrate legendary config
+if [ -f $HOME/.config/legendary/installed.json ] ; then
+    sed -i 's|/steam-buddy/|/chimera/|g' $HOME/.config/legendary/installed.json
+fi
+
 # Migrate cache
 if [ -d $HOME/.cache/steam-buddy ] ; then
     # Remove chimera cache if exists
