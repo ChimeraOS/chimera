@@ -12,7 +12,7 @@
 % for app in app_list:
 <div class="img-container">
     <a href="/library/{{ platform }}/edit/{{ app.content_id }}">
-        <img src="{{ quote(app.image_url) }}" alt="{{ app.name }}" title="{{ app.name }}"></img>
+        <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ app.name }}"></img>
     </a>
 </div>
 % end
