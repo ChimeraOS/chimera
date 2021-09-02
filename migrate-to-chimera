@@ -109,27 +109,6 @@ if [ -d $HOME/.local/share/chimera/shortcuts ] ; then
     find . -type f -name "*.yaml" -exec sed -i 's|/steam-buddy/|/chimera/|g' {} \;
 fi
 
-# Go to steam-grid symlinks and relink them
-cd $HOME/.local/share/Steam/userdata
-for u in * ; do
-    if [ -d $u ] ; then
-        if ! [ "$(basename $u)" == "anonymous" ] &&
-            ! [ "$(basename $u)" == "ac" ] ; then
-            echo "Relinking steam grid for user $(basename $u)"
-            if [ -d $u/config/grid ] ; then
-                cd $u/config/grid
-                for l in * ; do
-                    if [[ -L "${l}" ]] ; then
-                        old_link=$(readlink "${l}")
-                        new_link=${old_link/steam-buddy/chimera}
-                        ln -sfv "${new_link}" "${l}"
-                    fi
-                done
-            fi
-        fi
-    fi
-done
-
 # Relink ROM files
 if [ -d $HOME/.local/share/steam-buddy/content ] ; then
     pushd $HOME/.local/share/steam-buddy/content
