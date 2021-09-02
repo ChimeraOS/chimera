@@ -55,7 +55,7 @@ if [ -f $HOME/.local/share/steam-buddy/settings/settings.json ]; then
     fi
     mv -Tbv $HOME/.local/share/steam-buddy/settings/settings.json $HOME/.config/chimera/settings.json
     rm -rf $HOME/.local/share/steam-buddy/settings
-    echo "Renamig relevant paths inside settings file"
+    echo "Renaming relevant paths inside settings file"
     cd $HOME/.config/chimera
     sed -i 's|/steam-buddy/|/chimera/|g' settings.json
 fi
@@ -105,7 +105,7 @@ fi
 # Replace paths inside any yaml file in shortcuts
 if [ -d $HOME/.local/share/chimera/shortcuts ] ; then
     cd $HOME/.local/share/chimera/shortcuts
-    echo "Renamig paths inside yaml files"
+    echo "Renaming paths inside yaml files"
     find . -type f -name "*.yaml" -exec sed -i 's|/steam-buddy/|/chimera/|g' {} \;
 fi
 
@@ -131,14 +131,18 @@ for u in * ; do
 done
 
 # Relink ROM files
-pushd $HOME/.local/share/steam-buddy/content
-relink
-popd
+if [ -d $HOME/.local/share/steam-buddy/content ] ; then
+    pushd $HOME/.local/share/steam-buddy/content
+    relink
+    popd
+fi
 
 # Relink uploaded banners
-pushd $HOME/.local/share/steam-buddy/banners
-relink
-popd
+if [ -d $HOME/.local/share/steam-buddy/banners ] ; then
+    pushd $HOME/.local/share/steam-buddy/banners
+    relink
+    popd
+fi
 
 # Migrate legendary config
 if [ -f $HOME/.config/legendary/installed.json ] ; then
