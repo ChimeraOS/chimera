@@ -9,10 +9,14 @@ if [ $# -gt 1 ] ; then
     echo "  -l | --logout   Logout after migration"
 fi
 
-if ! [ -d $HOME/.config/steam-buddy ] && \
-    ! [ -d $HOME/.local/share/steam-buddy ] && \
-    ! [ -d $HOME/.local/share/steam-shortcuts ] && \
-    ! [ -d $HOME/.cache/steam-buddy ] ;
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+
+if ! [ -d $CONFIG_HOME/steam-buddy ] && \
+    ! [ -d $DATA_HOME/steam-buddy ] && \
+    ! [ -d $DATA_HOME/steam-shortcuts ] && \
+    ! [ -d $CACHE_HOME/steam-buddy ] ;
 then
     # Nothing to migrate, we can exit
     echo "Found nothing to migrate"
@@ -41,22 +45,22 @@ function relink {
 ## MIGRATION MAGIC ##
 
 # Check if there are config files from steam-buddy
-if [ -d $HOME/.config/steam-buddy ] ; then
-    mv -Tbv $HOME/.config/steam-buddy $HOME/.config/chimera
+if [ -d $CONFIG_HOME/steam-buddy ] ; then
+    mv -Tbv $CONFIG_HOME/steam-buddy $CONFIG_HOME/chimera
     echo "Configuration directory has been moved"
 fi
 
 # Go to our directories and replace settings:
-if [ -f $HOME/.local/share/steam-buddy/settings/settings.json ]; then
+if [ -f $DATA_HOME/steam-buddy/settings/settings.json ]; then
     # Migrate settings to new location
     echo "Moving configuration to new location"
-    if ! [ -d $HOME/.config/chimera ] ; then
-        mkdir -p $HOME/.config/chimera
+    if ! [ -d $CONFIG_HOME/chimera ] ; then
+        mkdir -p $CONFIG_HOME/chimera
     fi
-    mv -Tbv $HOME/.local/share/steam-buddy/settings/settings.json $HOME/.config/chimera/settings.json
-    rm -rf $HOME/.local/share/steam-buddy/settings
+    mv -Tbv $DATA_HOME/steam-buddy/settings/settings.json $CONFIG_HOME/chimera/settings.json
+    rm -rf $DATA_HOME/steam-buddy/settings
     echo "Renaming relevant paths inside settings file"
-    cd $HOME/.config/chimera
+    cd $CONFIG_HOME/chimera
     sed -i 's|/steam-buddy/|/chimera/|g' settings.json
 fi
 
@@ -88,12 +92,12 @@ platforms=('32x'
            'sega-cd'
            'snes'
            'tg-16')
-if [ -d $HOME/.local/share/steam-shortcuts ] ; then
-    if ! [ -d $HOME/.local/share/chimera ] ; then
-        mkdir -p $HOME/.local/share/chimera
+if [ -d $DATA_HOME/steam-shortcuts ] ; then
+    if ! [ -d $DATA_HOME/chimera ] ; then
+        mkdir -p $DATA_HOME/chimera
     fi
-    mv -Tbv $HOME/.local/share/steam-shortcuts $HOME/.local/share/chimera/shortcuts
-    cd $HOME/.local/share/chimera/shortcuts
+    mv -Tbv $DATA_HOME/steam-shortcuts $DATA_HOME/chimera/shortcuts
+    cd $DATA_HOME/chimera/shortcuts
     for p in ${platforms[@]} ; do
         if [ -f "steam-buddy.${p}.yaml" ] ; then
             echo "Renaming steam-buddy.${p}.yaml to chimera.${p}.yaml"
@@ -103,43 +107,43 @@ if [ -d $HOME/.local/share/steam-shortcuts ] ; then
 fi
 
 # Replace paths inside any yaml file in shortcuts
-if [ -d $HOME/.local/share/chimera/shortcuts ] ; then
-    cd $HOME/.local/share/chimera/shortcuts
+if [ -d $DATA_HOME/chimera/shortcuts ] ; then
+    cd $DATA_HOME/chimera/shortcuts
     echo "Renaming paths inside yaml files"
     find . -type f -name "*.yaml" -exec sed -i 's|/steam-buddy/|/chimera/|g' {} \;
 fi
 
 # Relink ROM files
-if [ -d $HOME/.local/share/steam-buddy/content ] ; then
-    pushd $HOME/.local/share/steam-buddy/content
+if [ -d $DATA_HOME/steam-buddy/content ] ; then
+    pushd $DATA_HOME/steam-buddy/content
     relink
     popd
 fi
 
 # Relink uploaded banners
-if [ -d $HOME/.local/share/steam-buddy/banners ] ; then
-    pushd $HOME/.local/share/steam-buddy/banners
+if [ -d $DATA_HOME/steam-buddy/banners ] ; then
+    pushd $DATA_HOME/steam-buddy/banners
     relink
     popd
 fi
 
 # Migrate legendary config
-if [ -f $HOME/.config/legendary/installed.json ] ; then
-    sed -i 's|/steam-buddy/|/chimera/|g' $HOME/.config/legendary/installed.json
+if [ -f $CONFIG_HOME/legendary/installed.json ] ; then
+    sed -i 's|/steam-buddy/|/chimera/|g' $CONFIG_HOME/legendary/installed.json
 fi
 
 # Migrate cache
-if [ -d $HOME/.cache/steam-buddy ] ; then
+if [ -d $CACHE_HOME/steam-buddy ] ; then
     # Remove chimera cache if exists
     echo "Moving cache"
-    mv -Tbv $HOME/.cache/steam-buddy $HOME/.cache/chimera
+    mv -Tbv $CACHE_HOME/steam-buddy $CACHE_HOME/chimera
 fi
 
 # Migrate user data directories and files from steam-buddy
-if [ -d $HOME/.local/share/steam-buddy ] ; then
+if [ -d $DATA_HOME/steam-buddy ] ; then
     echo "Moving data directory"
-    mv -bv $HOME/.local/share/steam-buddy/* $HOME/.local/share/chimera/.
-    rm -rv $HOME/.local/share/steam-buddy
+    mv -bv $DATA_HOME/steam-buddy/* $DATA_HOME/chimera/.
+    rm -rv $DATA_HOME/steam-buddy
 fi
 
 # Logout the session since we need to restart everything in ChimeraOS
