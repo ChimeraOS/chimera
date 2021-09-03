@@ -2,7 +2,7 @@
 
 arg=$1
 if [ $# -gt 1 ] ; then
-    echo "This script get at most one argument"
+    echo "This script takes at most one argument"
     echo "Usage:"
     echo "$0 [-l|--logout]"
     echo ""
