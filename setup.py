@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="Chimera",
-    version="0.11.0",
+    version="0.12.0",
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
@@ -24,8 +24,6 @@ setup(
         ('share/chimera/config', glob('config/*.conf')),
         ('share/chimera/bin',    glob('bin/*')),
         ('bin', glob('launchers/*')),
-        ('share/chimera', ['steam-tweaks.yaml']),
-        ('share/chimera', ['steam-compat-tool-stub.tpl']),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),
     ],
