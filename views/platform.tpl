@@ -13,7 +13,7 @@
         % if s['banner'] == None :
             <span class="missing-text">{{s['name']}}</span>
         % else :
-            <img class="{{s['hidden']}}" src="{{s['banner']}}" alt="{{s['name']}}" title="{{s['name']}}"/>
+            <img class="{{s['hidden']}}" src="{{quote(s['banner'])}}" alt="{{s['name']}}" title="{{s['name']}}"/>
         % end
     </div>
 </a>
