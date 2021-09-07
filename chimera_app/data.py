@@ -1,9 +1,10 @@
-"""Data handling for Chiemra app"""
+"""Data handling for Chimera app"""
 import os
 import shutil
 import json
 import zipfile
 import requests
+import chimera_app.utils as utils
 
 
 def update_data(force=False) -> bool:
@@ -34,45 +35,63 @@ class Downloader():
         self.db_path = os.path.expanduser(db_path)
 
     def fetch_latest(self) -> None:
+        """Checks online for available branches and version numbers and
+        stores it into branches.json file
+        """
         api_url = ('https://api.github.com/repos/chimeraos/'
                    'chimera-data/branches')
         resp = requests.get(api_url)
         db_path = os.path.join(self.db_path, "branches.json")
+        utils.ensure_directory_for_file(db_path)
+        branches = json.loads(resp.json())
         with open(db_path, 'w') as db_file:
-            db_file.write(json.dumps(resp.json(), sort_keys=True, indent=4))
+            db_file.write(json.dumps(branches, sort_keys=True, indent=4))
 
     def get_installed(self) -> dict:
+        """Returns a dictionary with installed branch and version number."""
         version_path = os.path.join(self.db_path, "versions.json")
+        if not os.path.exists(version_path):
+            return None
+
         version = {}
-        if os.path.exists(version_path):
-            with open(version_path) as version_file:
-                version = json.load(version_file)
+        with open(version_path) as version_file:
+            version = json.load(version_file)
         return version
 
     def get_installed_version(self) -> str:
+        """Checks installed data package version."""
         versions = self.get_installed()
-        if versions['installed']['name'] == self.channel:
+        ver = None
+        if versions:
             ver = versions['installed']['sha']
-        else:
-            ver = None
         return ver
 
     def get_available_versions(self) -> list:
+        """Checks for available data packages versions."""
         branches_path = os.path.join(self.db_path, "branches.json")
+        self.fetch_latest()
+        if not os.path.exists(branches_path):
+            return None
+
         versions = []
-        if os.path.exists(branches_path):
-            with open(branches_path) as branches_file:
-                branches = json.load(branches_file)
-                for branch in branches:
-                    versions.append({
-                        "name": branch['name'],
-                        "sha": branch['commit']['sha']
-                                    })
+        with open(branches_path) as branches_file:
+            branches = json.load(branches_file)
+        for branch in branches:
+            versions.append({
+                "name": branch['name'],
+                "sha": branch['commit']['sha']
+                            })
         return versions
 
     def check_update(self) -> bool:
         available_versions = self.get_available_versions()
         installed_version = self.get_installed_version()
+        if not available_versions:
+            raise Exception("No available versions upstream")
+
+        if not installed_version:
+            return False
+
         updated = False
         for versions in available_versions:
             if self.channel == versions['name']:
@@ -102,6 +121,7 @@ class Downloader():
     def update(self, force=False) -> bool:
         updated = self.check_update()
         if not updated or force:
+            self.fetch_latest()
             sha = self.get_update_sha()
             self.download_package(sha)
             zip_path = os.path.join(self.db_path, "data.zip")
