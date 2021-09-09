@@ -43,7 +43,7 @@ class Downloader():
         resp = requests.get(api_url)
         db_path = os.path.join(self.db_path, "branches.json")
         utils.ensure_directory_for_file(db_path)
-        branches = json.loads(resp.json())
+        branches = resp.json()
         with open(db_path, 'w') as db_file:
             db_file.write(json.dumps(branches, sort_keys=True, indent=4))
 
