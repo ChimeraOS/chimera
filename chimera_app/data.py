@@ -150,5 +150,6 @@ class Downloader():
                                               sort_keys=True,
                                               indent=4)
                                    )
+            os.remove(zip_path)
             updated = True
         return updated
