@@ -40,9 +40,8 @@ def install_all_compat_tools() -> bool:
     Returns True if sucessful or False if there are no tools to install.
     """
     tools_dir = context.TOOLS_DIR
-    stub_tpl_path = os.path.join(tools_dir, 'tool-stub.tpl')
     if (not os.path.isdir(tools_dir)
-            or (not os.path.isfile(stub_tpl_path))):
+            or (not os.path.isfile(context.TOOLS_TEMPLATE_FILE))):
         print(f'No tools to install from {tools_dir} or missing stub template')
         return False
 
@@ -53,7 +52,7 @@ def install_all_compat_tools() -> bool:
         tool = ExternalCompatTool(tool_name,
                                   ExternalCompatTool.load_stub_info(
                                       tool_name,
-                                      stub_tpl_path)
+                                      context.TOOLS_TEMPLATE_FILE)
                                   )
         if not os.path.exists(tool.get_install_path()):
             tool.install()

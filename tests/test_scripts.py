@@ -42,7 +42,7 @@ def fake_data(fs,
     fs.add_real_file(os.path.join(files_path, 'tool-stub.tpl'),
                      target_path=os.path.expanduser(
                          ('~/.local/share/chimera/data/'
-                          'compat/tools/tool-stub.tpl')
+                          'compat/tool-stub.tpl')
                                                     )
                      )
     fs.add_real_file(os.path.join(files_path, 'test-shortcuts-single.yaml'),
