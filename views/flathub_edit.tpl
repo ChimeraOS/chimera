@@ -40,7 +40,7 @@ Installing.. <div id="progress"></div>
 <h3>Version: {{app.version}}</h3>
 % end
 % end
-<p ><img class="flathub-edit" src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app }}"></img></p>
+<p ><img class="flathub-edit" src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app }}"></p>
 <p>{{app.summary}}<p>
 <p id="description"></p>
 

@@ -27,7 +27,7 @@
 <p>{{app.summary}}</p>
 
 <div class="img-container">
-	<img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}"></img>
+	<img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}">
 </div>
 
 % if not app.operation:
