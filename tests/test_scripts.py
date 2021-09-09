@@ -66,7 +66,9 @@ def fake_data(fs,
 def branches_content():
     files_path = os.path.join(os.path.dirname(__file__), 'files')
     branches_mock = os.path.join(files_path, "branches.json")
-    yield open(branches_mock).read()
+    with open(branches_mock) as branches_file:
+        content = json.load(branches_file)
+    yield content
 
 
 @pytest.fixture
@@ -117,8 +119,7 @@ def test_update_with_empty(branches_mock,
     with open(branches_file) as file:
         branches = json.load(file)
 
-    branches_json = json.loads(branches_content)
-    assert(branches == branches_json)
+    assert(branches == branches_content)
 
 
 def test_config_with_empty(empty_data):

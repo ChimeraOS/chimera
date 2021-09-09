@@ -32,7 +32,9 @@ def updatable_fs(empty_data):
 def branches_content():
     files_path = os.path.join(os.path.dirname(__file__), 'files')
     branches_mock = os.path.join(files_path, "branches.json")
-    yield open(branches_mock).read()
+    with open(branches_mock) as file:
+        content = json.load(file)
+    yield content
 
 
 @pytest.fixture
@@ -73,9 +75,7 @@ def test_fetch_latest(branches_mock,
     with open(branches_file) as file:
         branches = json.load(file)
 
-    branches_json = json.loads(branches_content)
-
-    assert(branches == branches_json)
+    assert(branches == branches_content)
 
 
 def test_download_updated(branches_mock,
