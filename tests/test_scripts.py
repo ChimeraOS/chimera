@@ -1,12 +1,14 @@
 "Integration tests for our scripts"
 
 import os
+import json
 import vdf
 import pytest
 import chimera_app
 import chimera_app.shortcuts as shortcuts
 import chimera_app.steam_config as steam_config
 import chimera_app.compat_tools as compat_tools
+import chimera_app.data as chimera_data
 
 
 @pytest.fixture
@@ -40,7 +42,7 @@ def fake_data(fs,
     fs.add_real_file(os.path.join(files_path, 'tool-stub.tpl'),
                      target_path=os.path.expanduser(
                          ('~/.local/share/chimera/data/'
-                          'compat/tools/tool-stub.tpl')
+                          'compat/tool-stub.tpl')
                                                     )
                      )
     fs.add_real_file(os.path.join(files_path, 'test-shortcuts-single.yaml'),
@@ -58,6 +60,66 @@ def fake_data(fs,
                             '~/.local/share/Steam/userdata/12345678')]
                         )
     yield fs
+
+
+@pytest.fixture
+def branches_content():
+    files_path = os.path.join(os.path.dirname(__file__), 'files')
+    branches_mock = os.path.join(files_path, "branches.json")
+    with open(branches_mock) as branches_file:
+        content = json.load(branches_file)
+    yield content
+
+
+@pytest.fixture
+def zip_content():
+    files_path = os.path.join(os.path.dirname(__file__), 'files')
+    zip_mock = os.path.join(files_path, "test.zip")
+    yield open(zip_mock, 'rb').read()
+
+
+@pytest.fixture
+def branches_mock(requests_mock,
+                  branches_content):
+    api_url = 'https://api.github.com/repos/chimeraos/chimera-data/branches'
+    requests_mock.get(api_url,
+                      json=branches_content)
+    yield requests_mock
+
+
+@pytest.fixture
+def data_mock(requests_mock,
+              zip_content):
+    api_url = ('https://github.com/chimeraos/chimera-data/archive/'
+               '6fd2a1af5ae6cd0acef222908374fe6ba8164083.zip')
+    requests_mock.get(api_url,
+                      content=zip_content)
+    yield requests_mock
+
+
+def test_update_with_empty(branches_mock,
+                           branches_content,
+                           data_mock,
+                           zip_content,
+                           empty_data):
+    version_file = os.path.expanduser(
+        "~/.local/share/chimera/data/versions.json"
+    )
+    branches_file = os.path.expanduser(
+        "~/.local/share/chimera/data/branches.json"
+    )
+    assert(not os.path.exists(version_file))
+    assert(not os.path.exists(branches_file))
+
+    chimera_data.update_data()
+
+    assert(os.path.exists(version_file))
+    assert(os.path.exists(branches_file))
+
+    with open(branches_file) as file:
+        branches = json.load(file)
+
+    assert(branches == branches_content)
 
 
 def test_config_with_empty(empty_data):

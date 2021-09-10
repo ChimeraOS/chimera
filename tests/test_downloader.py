@@ -6,9 +6,8 @@ from chimera_app.data import Downloader
 
 @pytest.fixture
 def empty_data(fs):
-    files_path = os.path.join(os.path.dirname(__file__), 'files')
-    fs.create_dir(os.path.expanduser('~/.local/share/chimera/data'))
-    fs.add_real_file(os.path.join(files_path, 'branches.json'))
+    "Mock an empty home directory as it should be on the first run"
+    fs.create_dir(os.path.expanduser('~'))
     yield fs
 
 
@@ -33,7 +32,9 @@ def updatable_fs(empty_data):
 def branches_content():
     files_path = os.path.join(os.path.dirname(__file__), 'files')
     branches_mock = os.path.join(files_path, "branches.json")
-    yield open(branches_mock).read()
+    with open(branches_mock) as file:
+        content = json.load(file)
+    yield content
 
 
 @pytest.fixture
@@ -73,10 +74,12 @@ def test_fetch_latest(branches_mock,
     assert(os.path.exists(branches_file))
     with open(branches_file) as file:
         branches = json.load(file)
-        assert(branches == branches_content)
+
+    assert(branches == branches_content)
 
 
-def test_download_updated(updatable_fs):
+def test_download_updated(branches_mock,
+                          updatable_fs):
     downloader = Downloader()
     assert(not downloader.check_update())
 

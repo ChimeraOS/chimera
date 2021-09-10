@@ -23,7 +23,7 @@ def fake_data(fs,
     fs.add_real_file(os.path.join(files_path, 'tool-stub.tpl'),
                      target_path=os.path.expanduser(
                          ('~/.local/share/chimera/data/'
-                          'compat/tools/tool-stub.tpl')
+                          'compat/tool-stub.tpl')
                                                     )
                      )
 
@@ -37,7 +37,7 @@ def test_external_compat_tool_install(fake_data):
     chimera_data_tools = os.path.expanduser(
         '~/.local/share/chimera/data/compat/tools'
     )
-    stub_tpl_path = os.path.join(chimera_data_tools, 'tool-stub.tpl')
+    stub_tpl_path = os.path.expanduser('~/.local/share/chimera/data/compat/tool-stub.tpl')
 
     tool = ExternalCompatTool('Proton-6.10-GE-1',
                               ExternalCompatTool.load_stub_info(
