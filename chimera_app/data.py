@@ -1,5 +1,6 @@
 """Data handling for Chimera app"""
 import os
+import time
 import shutil
 import json
 import zipfile
@@ -8,8 +9,15 @@ import chimera_app.utils as utils
 
 
 def update_data(force=False) -> bool:
-    dl = Downloader()
-    return dl.update(force=force)
+    attempts = 0
+    while attempts < 5:
+        try:
+            dl = Downloader()
+            return dl.update(force=force)
+        except:
+            print('failed to update data (attempt {})'.format(attempts + 1))
+            time.sleep(2)
+            attempts += 1
 
 
 class Downloader():
