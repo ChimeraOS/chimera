@@ -13,11 +13,12 @@ patches = {}
 watches = {}
 inotify = INotify()
 watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
-steam_dir = inotify.add_watch(context.STEAM_DIR, watch_flags)
+library_path = os.path.join(context.STEAM_DIR, 'steamapps/common')
+steam_dir = inotify.add_watch(library_path, watch_flags)
 
 
 def apply_patch(game_dir):
-    if not os.path.exists(os.path.join(context.STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(library_path, game_dir)):
         print('apply_patch dir not exists:', game_dir)
         return
 
@@ -28,10 +29,10 @@ def apply_patch(game_dir):
             cmd = spec['exec']
             subprocess.call([cmd],
                             shell=True,
-                            cwd=os.path.join(context.STEAM_DIR, game_dir))
+                            cwd=os.path.join(library_path, game_dir))
         elif 'copy' in spec:
             args = spec['copy']
-            dst = os.path.join(context.STEAM_DIR, game_dir, args['dst'])
+            dst = os.path.join(library_path, game_dir, args['dst'])
             if not os.path.exists(dst) or not filecmp.cmp(args['src'], dst):
                 if os.path.exists(os.path.dirname(dst)):
                     print('command: copy', args['dst'])
@@ -39,12 +40,12 @@ def apply_patch(game_dir):
 
 
 def start_watch(game_dir):
-    if not os.path.exists(os.path.join(context.STEAM_DIR, game_dir)):
+    if not os.path.exists(os.path.join(library_path, game_dir)):
         print('start_watch dir not exists:', game_dir)
         return
 
     print('starting watch:', game_dir)
-    wd = inotify.add_watch(os.path.join(context.STEAM_DIR, game_dir),
+    wd = inotify.add_watch(os.path.join(library_path, game_dir),
                            watch_flags)
     watches[wd] = game_dir
     apply_patch(game_dir)

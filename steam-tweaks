@@ -2,3 +2,6 @@
 
 migrate-to-chimera --logout
 chimera --update --tweaks
+
+# make sure the patch service picks up the latest downloaded data
+systemctl --user restart steam-patch
