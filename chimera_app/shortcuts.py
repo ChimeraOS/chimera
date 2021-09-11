@@ -60,7 +60,8 @@ class SteamShortcutsFile():
 
     path: str
     user_id: str
-    shortcuts_data: List[dict]
+    new_data: dict
+    current_data: dict
 
     def __init__(self, user_id: str, auto_load: bool = True):
         self.user_id = user_id
@@ -68,7 +69,8 @@ class SteamShortcutsFile():
                                  'userdata',
                                  user_id,
                                  'config/shortcuts.vdf')
-        self.shortcuts_data = None
+        self.current_data = None
+        self.new_data = {}
         if auto_load:
             self.load_data()
 
@@ -76,9 +78,15 @@ class SteamShortcutsFile():
         """Returns True if this file exists. False otherwise"""
         return os.path.exists(self.path)
 
-    def get_shortcuts_data(self) -> List[dict]:
+    def get_current_data(self) -> dict:
         """Returns this file's shortcut data as a list of dictionaries"""
-        return self.shortcuts_data
+        return self.current_data
+
+    def get_new_data(self) -> dict:
+        """Returns the new data that will be saved to the file as a list
+        of dictionaries
+        """
+        return self.new_data
 
     def load_data(self) -> None:
         """Reads shortcut data from this file. It returns a dictionary
@@ -86,42 +94,33 @@ class SteamShortcutsFile():
         dictionary.
         """
         if not self.exists():
-            self.shortcuts_data = {}
+            self.current_data = {}
             return
 
         with open(self.path, 'rb') as vdf_file:
             data = vdf.binary_load(vdf_file)
             if 'shortcuts' in data:
-                self.shortcuts_data = data['shortcuts']
+                self.current_data = data['shortcuts']
 
-    def match_app_id(self, app_id: str, create_new: bool = False) -> dict:
-        """Returns the shortcut dictionary of the given app_id.
-        If not found returns None.
-        If create_new = True then ir returns a new empty dictionary created
-        from current shortcuts data.
+    def match_app_id(self, app_id: str) -> dict:
+        """Returns the a copy of the shortcut dictionary of the given app_id.
+        If not found returns a new empty dictionary.
         """
-        if not self.shortcuts_data:
+        if not self.current_data:
             self.load_data()
 
-        data = self.shortcuts_data
-        # Match shortcut dictionary and return it
+        data = self.current_data
+        # Match shortcut dictionary and return a copy of it it
         for short in data:
             if 'appid' in data[short] and data[short]['appid'] == app_id:
-                return data[short]
+                return data[short].copy()
 
-        # No match found
-        if create_new:
-            # create new entry
-            new_entry = str(len(data))
-            data[new_entry] = {}
-            return data[new_entry]
-        else:
-            return None
+        return {}
 
     def save(self) -> None:
         """Save current file with current shortcuts data"""
         out = {}
-        out['shortcuts'] = self.shortcuts_data
+        out['shortcuts'] = self.new_data
         utils.ensure_directory_for_file(self.path)
         with open(self.path, 'wb') as ss_file:
             ss_file.write(vdf.binary_dumps(out))
@@ -138,7 +137,7 @@ class SteamShortcutsFile():
 
         shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
 
-        shortcut = self.match_app_id(shortcut_id, create_new=True)
+        shortcut = self.match_app_id(shortcut_id)
         shortcut['appid'] = shortcut_id
         shortcut['AppName'] = entry['name']
         shortcut['Exe'] = entry['cmd']
@@ -200,6 +199,10 @@ class SteamShortcutsFile():
         for tag in tags:
             shortcut['tags'][str(t)] = tag
             t += 1
+
+        # Append to the current new data
+        new_entry = str(len(self.new_data))
+        self.new_data[new_entry] = shortcut
 
 
 class ShortcutsFile():

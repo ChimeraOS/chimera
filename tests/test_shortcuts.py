@@ -52,7 +52,7 @@ def test_steam_shortcuts_load_empty(empty_data):
 
     steam_short.load_data()
 
-    assert(steam_short.get_shortcuts_data() == {})
+    assert(steam_short.get_current_data() == {})
 
 
 def test_shortcuts_load_data_single(fake_data):
