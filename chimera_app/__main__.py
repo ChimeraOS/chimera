@@ -1,13 +1,8 @@
-import os
-import shutil
 import argparse
-import bottle
 from chimera_app.data import update_data
-from chimera_app.server import server
 from chimera_app.compat_tools import install_all_compat_tools
 from chimera_app.shortcuts import create_all_shortcuts
 from chimera_app.steam_config import apply_all_tweaks
-from chimera_app.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
 
 
 def setup_argparse():
@@ -55,6 +50,12 @@ def setup_argparse():
 
 
 def run_server(port):
+    import os
+    import shutil
+    import bottle
+    from chimera_app.server import server
+    from chimera_app.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
+
     if not os.environ.get("DISPLAY"):
         os.environ["DISPLAY"] = ":0.0"
 
@@ -76,18 +77,46 @@ def main():
                   or args.tweaks
                   or args.update))):
         run_server(args.port)
+
     if args.update:
-        update_data(args.force_update)
+        try:
+            update_data(args.force_update)
+        except:
+            print('Data update failed')
+
     if args.compat:
-        install_all_compat_tools()
+        try:
+            install_all_compat_tools()
+        except:
+            print('Compatibility tools stub generation failed')
+
     if args.shortcuts:
-        create_all_shortcuts()
+        try:
+            create_all_shortcuts()
+        except:
+            print('Shortcuts creation failed')
+
     if args.config:
-        apply_all_tweaks()
+        try:
+            apply_all_tweaks()
+        except:
+            print('Failed to apply tweaks')
+
     if args.tweaks:
-        install_all_compat_tools()
-        create_all_shortcuts()
-        apply_all_tweaks()
+        try:
+            install_all_compat_tools()
+        except:
+            print('Compatibility tools stub generation failed')
+
+        try:
+            create_all_shortcuts()
+        except:
+            print('Shortcuts creation failed')
+
+        try:
+            apply_all_tweaks()
+        except:
+            print('Failed to apply tweaks')
 
 
 if __name__ == '__main__':
