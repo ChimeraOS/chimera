@@ -28,7 +28,7 @@ def create_all_shortcuts():
 
     manager.load_shortcut_entries()
     manager.create_shortcuts()
-    manager.create_banners()
+    manager.create_images()
     manager.register_compat_data()
 
 
@@ -53,6 +53,30 @@ def get_shortcut_id(exe, name):
     existing apps.
     """
     return get_compat_id(exe, name) - 2**32
+
+
+def get_poster_id(exe, name):
+    return str(get_compat_id(exe, name)) + 'p'
+
+
+def get_background_id(exe, name):
+    return str(get_compat_id(exe, name)) + '_hero'
+
+
+def get_logo_id(exe, name):
+    return str(get_compat_id(exe, name)) + '_logo'
+
+
+def get_image_id(type, exe, name):
+    if type == 'banner':
+        return get_banner_id(exe, name)
+    elif type == 'poster':
+        return get_poster_id(exe, name)
+    elif type == 'background':
+        return get_background_id(exe, name)
+    elif type == 'logo':
+        return get_logo_id(exe, name)
+
 
 
 class SteamShortcutsFile():
@@ -338,24 +362,34 @@ class ShortcutsManager():
                 steam_file.add_shortcut(entry)
             steam_file.save()
 
-    def create_banners(self) -> None:
-        """Create all banner files for current entries"""
+
+    def create_image(self, type, entry) -> None:
+        if not type in entry:
+            return
+
+        img_id = get_image_id(type, entry['cmd'], entry['name'])
+        _, ext = os.path.splitext(entry[type])
+        for user_dir in context.STEAM_USER_DIRS:
+            dst_dir = user_dir + '/config/grid/'
+            if not os.path.isdir(dst_dir):
+                os.makedirs(dst_dir)
+            dst = dst_dir + str(img_id) + ext
+            if os.path.islink(dst) or os.path.isfile(dst):
+                os.remove(dst)
+            os.symlink(entry[type], dst)
+
+
+    def create_images(self) -> None:
+        """Create all image files for current entries"""
         if not self.shortcut_entries:
             return
 
-        # Hacky way to do banners, we should consider a refactor into a class
         for entry in self.shortcut_entries:
-            if 'banner' in entry:
-                banner_id = get_banner_id(entry['cmd'], entry['name'])
-                _, ext = os.path.splitext(entry['banner'])
-                for user_dir in context.STEAM_USER_DIRS:
-                    dst_dir = user_dir + '/config/grid/'
-                    if not os.path.isdir(dst_dir):
-                        os.makedirs(dst_dir)
-                    dst = dst_dir + str(banner_id) + ext
-                    if os.path.islink(dst) or os.path.isfile(dst):
-                        os.remove(dst)
-                    os.symlink(entry['banner'], dst)
+            self.create_image('banner', entry)
+            self.create_image('poster', entry)
+            self.create_image('background', entry)
+            self.create_image('logo', entry)
+
 
     def register_compat_data(self) -> None:
         """Register all compatibility tools mapping for current entries"""
