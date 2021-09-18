@@ -5,7 +5,6 @@ import shutil
 import subprocess
 from datetime import datetime
 import psutil
-from PIL import Image, ImageFont, ImageDraw
 import chimera_app.context as context
 import chimera_app.shortcuts as shortcuts
 
@@ -124,31 +123,6 @@ def delete_file(base_dir, platform, name):
             shutil.rmtree(file_dir)
 
     delete_file_link(base_dir, platform, name)
-
-
-def generate_banner(text, path):
-    # The thumbnail size used by Steam is set
-    banner_width = 460
-    banner_height = 215
-    banner = Image.new('RGB', (banner_width, banner_height), color=(0, 0, 0))
-
-    font = ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf",
-                              24)
-
-    text_width, text_height = font.getsize(text)
-
-    # Shorten the text if it doesn't fit on the image
-    while text_width > banner_width:
-        text = text[:-4] + "..."
-        text_width, text_height = font.getsize(text)
-
-    text_x = int(banner_width / 2 - text_width / 2)
-    text_y = int(banner_height / 2 - text_height / 2)
-
-    title = ImageDraw.Draw(banner)
-    title.text((text_x, text_y), text, font=font, fill=(255, 255, 255))
-
-    banner.save(path)
 
 
 def client_running() -> False:

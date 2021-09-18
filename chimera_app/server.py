@@ -36,7 +36,6 @@ from chimera_app.compat_tools import OfficialCompatTool
 from chimera_app.utils import sanitize
 from chimera_app.utils import upsert_file
 from chimera_app.utils import delete_file
-from chimera_app.utils import generate_banner
 from chimera_app.utils import ensure_directory_for_file
 from chimera_app.auth_decorator import authenticate
 from chimera_app.platforms.epic_store import EpicStore
@@ -248,8 +247,6 @@ def shortcut_create():
             download = requests.get(banner_url)
             with open(banner_path, "wb") as banner_file:
                 banner_file.write(download.content)
-        else:
-            generate_banner(name, banner_path)
 
     shortcut = {
         'name': name,
