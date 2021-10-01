@@ -49,6 +49,9 @@
 "1171660": # The Ambassador: Fractured Timelines
   compat_tool: proton_5
 
+"934780": # American Fugitive
+  compat_tool: Proton-6.16-GE-1
+
 "945360": # Among Us
   compat_tool: proton_63
 
@@ -77,6 +80,18 @@
 "507490": # Ashes of the Singularity: Escalation
   compat_tool: proton_513
 
+"1261520": # Asterix & Obelix XXL: Romastered
+  compat_tool: proton_63
+
+"887060": # Asterix & Obelix XXL 2
+  compat_tool: proton_63
+
+"1109690": # Asterix & Obelix XXL 3 - The Crystal Menhir
+  compat_tool: proton_63
+
+"757320": # Atomicrops
+  compat_tool: Proton-6.1-GE-2
+
 "984800": # Automachef
   compat_tool: proton_411
 
@@ -91,6 +106,9 @@
 
 "1035850": # Balancelot
   compat_tool: Proton-5.21-GE-1
+
+"1260130": # Banana Hell
+  compat_tool: proton_63
 
 "214790": # The Basement Collection
   compat_tool: proton_513
@@ -128,6 +146,9 @@
 "460790": # Bayonetta
   compat_tool: proton_5
 
+"792300": # The Beast Inside 
+  compat_tool: Proton-6.18-GE-2
+
 "381320": # Bezier
   compat_tool: proton_513
 
@@ -150,8 +171,14 @@
   compat_config: noesync,nofsync
   launch_options: -nointro
 
+"63700": # BIT.TRIP BEAT
+  compat_tool: Proton-6.16-GE-1
+
 "218060": # BIT.TRIP Presents... Runner2: Future Legend of Rhythm Alien; native version has severe controller issues
   compat_tool: proton_63
+
+"63710": # BIT.TRIP RUNNER
+  compat_tool: Proton-6.16-GE-1
 
 "729660": # Blackout Z: Slaughterhouse Edition
   compat_tool: proton_513
@@ -229,6 +256,9 @@
 
 "808090": # Bury Me, My Love
   compat_tool: proton_63
+
+"399810": # Call of Cthulhu
+  compat_tool: Proton-6.18-GE-2
 
 "598810": # Carcassonne: The Official Board Game
   compat_tool: proton_5
@@ -330,6 +360,9 @@
 "606280": # Darksiders III
   compat_tool: proton_5
 
+"384310": # Dead In Bermuda
+  compat_tool: proton_63
+
 "838380": # DEAD OR ALIVE 6
   compat_tool: proton_411
   launch_options: '%command%'
@@ -426,9 +459,16 @@
 "851850": # DRAGON BALL Z: KAKAROT
   compat_tool: proton_513
 
+"739650": # Drake Hollow
+  compat_tool: Proton-6.9-GE-2
+
 "677880": # Draw Your Game
   compat_tool: proton_513
 
+"312530": Duck Game
+  compat_tool: proton_63
+  launch_options: -linux
+ 
 "38480": # Earthworm Jim
   compat_tool: boxtron
 
@@ -712,6 +752,9 @@
 "370910": # Kathy Rain
   compat_tool: proton_513
 
+"699240": # Keyboard Killers
+  compat_tool: Proton-6.9-GE-2
+
 "261110": # Killer is Dead - Nightmare Edition # Patch according to https://www.pcgamingwiki.com/wiki/Killer_Is_Dead#Issues_fixed
   compat_tool: proton_513
   patch_dir: KillerIsDead
@@ -871,6 +914,9 @@
 "939560": # Monster Trampoline
   compat_tool: proton_63
 
+"1209360": # Monster Truck Championship
+  compat_tool: Proton-6.5-GE-2
+
 "1331910": # Morkredd
   compat_tool: proton_513
 
@@ -899,8 +945,14 @@
 "1248990": # Mýrdalssandur, Iceland
   compat_tool: proton_5
 
+"1069530": # Narita Boy
+  compat_tool: proton_63
+
 "349040": # NARUTO SHIPPUDEN: Ultimate Ninja STORM 4
   compat_tool: proton_411
+
+"1265860": # NASCAR Heat 5
+  compat_tool: Proton-6.16-GE-1
 
 "1089350": # NBA 2K20
   compat_tool: proton_5
@@ -935,6 +987,9 @@
 "680380": # Night Call
   compat_tool: proton_411
 
+"1338420": # A Night In Berlin
+  compat_tool: proton_63
+
 "219950": # NiGHTS Into Dreams
   compat_tool: proton_513
   compat_config: noesync,nofsync
@@ -944,6 +999,9 @@
 
 "275850": # No Man's Sky
   compat_tool: proton_411
+
+"1147550": # Not For Broadcast
+  compat_tool: Proton-6.5-GE-2
 
 "733790": # Not Tonight
   compat_tool: Proton-5.21-GE-1
@@ -990,6 +1048,9 @@
 "441380": # PAC-MAN CHAMPIONSHIP EDITION 2
   compat_tool: proton_513
 
+"389670": # Pacer
+  compat_tool: Proton-6.16-GE-1
+
 "384550": # Painters Guild
   compat_tool: proton_513
 
@@ -1022,6 +1083,9 @@
 
 "1013310": # Peaky Blinders: Mastermind
   compat_tool: proton_513
+
+"1016120": # PGA TOUR 2K21
+  compat_tool: proton_63
 
 "409870": # Phantom Brave PC
   compat_tool: proton_513
@@ -1102,6 +1166,9 @@
 "254700": # Resident Evil 4
   compat_tool: proton_411
 
+"603800": # ReThink
+  compat_tool: Proton-6.8-GE-2
+ 
 "760810": # Retimed
   compat_tool: proton_513
 
@@ -1138,6 +1205,9 @@
 
 "864680": # Rover Mechanic Simulator
   compat_tool: proton_513
+
+"1067540": # RÖki
+  compat_tool: Proton-6.5-GE-2
 
 "516130": # Runner3
   compat_tool: proton_63
@@ -1281,6 +1351,9 @@
 "996580": # Spyro Reignited Trilogy
   compat_tool: proton_63
 
+"1178030": # Star Fetchers 
+  compat_tool: proton_63
+
 "1058020": # STAR WARS Battlefront (Classic, 2004)
   compat_tool: proton_5
 
@@ -1339,10 +1412,16 @@
 "644830": # The Surge 2
   compat_tool: proton_63
 
+"929010": Swag and Sorcery
+  compat_tool: proton_63
+
 "63500": # Swords and Soldiers HD
   compat_tool: proton_513
 
 "619780": # The Swords of Ditto: Mormo's Curse; native version controller mappings are bad
+  compat_tool: proton_63
+
+"46510": # Syberia II
   compat_tool: proton_63
 
 "410700": # System Shock: Classic
@@ -1358,7 +1437,7 @@
   compat_tool: proton_513
 
 "785260": # Team Sonic Racing
-  compat_tool: proton_411
+  compat_tool: proton_63
 
 "800270": # Terraforming Mars
   compat_tool: proton_513
@@ -1543,11 +1622,17 @@
 "865360": # We Were Here Together
   compat_tool: proton_411
 
+"1016790": # West of Dead
+  compat_tool: proton_63
+  
 "526160": # The Wild Eight
   compat_tool: proton_5
 
 "431940": # Wildfire
   compat_tool: proton_513
+
+"640890": # Will Glow the Wisp
+  compat_tool: proton_63
 
 "950850": # The Window Box
   compat_tool: proton_63
