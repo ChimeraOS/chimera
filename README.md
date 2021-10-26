@@ -84,6 +84,7 @@ GOG support currently has a few limitations:
 You can upload ROMs and banner images to Chimera and they will be added to Steam. The emulators are pre-configured and ready to play out of the box with almost any controller.
 
 The following platforms are currently supported:
+- 32X (requires BIOS file)
 - 3DO (requires BIOS file)
 - Arcade
 - Atari 2600
@@ -91,8 +92,8 @@ The following platforms are currently supported:
 - Game Boy
 - Game Boy Advance
 - Game Boy Color
-- Game Gear
 - GameCube
+- Game Gear
 - Genesis/Mega Drive
 - Jaguar
 - Master System
@@ -102,11 +103,10 @@ The following platforms are currently supported:
 - PlayStation (requires BIOS file)
 - PlayStation 2
 - PlayStation Portable
-- Sega 32X (requires BIOS file)
+- Saturn (requires BIOS file)
 - Sega/Mega CD (requires BIOS file)
-- Saturn (BIOS file optional)
 - Super Nintendo
-- TurboGrafx-16
+- TurboGrafx-16/PC Engine
 
 More platforms will be added over time.
 
