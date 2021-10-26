@@ -161,7 +161,10 @@ name: Firefox                   # name of the shortcut as it will appear in Stea
 cmd: firefox                    # the command to execute (required)
 dir: /full/path/to/working/dir  # the directory from which to execute the command
 params: github.com              # any parameters to invoke the command with
-banner: /path/to/image.png      # the grid banner image to use (this will be symlinked into Steam's grid directory)
+banner: /path/to/image.png      # the horizontal banner image to use (460x215)
+poster: /path/to/image.png      # the vertical poster image to use (600x900)
+background: /path/to/image.png  # the background/hero image to use (1920x620)
+logo: /path/to/image.png        # the logo image to use (overlayed on top of background image)
 icon: firefox                   # small icon to show in Steam
 compat_tool: proton_411         # use the given compatibility tool, useful for running Windows executables
 compat_config: noesync          # use the given compatibility tool options
