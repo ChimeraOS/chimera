@@ -16,7 +16,7 @@ class MangoHudConfig:
 
     def __read_toggle_key(self):
         t_key = "Shift_R+F12"  # MangoHud default
-        parser = ConfigParser(allow_no_value=True)
+        parser = ConfigParser(allow_no_value=True, strict=False)
 
         # Check in file for override
         if os.path.exists(self.config_file):
