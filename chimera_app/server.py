@@ -202,8 +202,10 @@ def flathub_images(content_id):
 
 @route('/images/<filename>')
 def images(filename):
-    return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
-
+    if os.path.isfile(os.path.join(RESOURCE_DIR, 'images', filename)):
+        return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
+    else:
+        return static_file(filename, root=os.path.join(BANNER_DIR))
 
 @route('/public/<filename>')
 def public(filename):

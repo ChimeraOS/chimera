@@ -90,3 +90,6 @@ STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
 STREAMING_HANDLER = StreamServer(SETTINGS_HANDLER)
 
 MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
+
+if SETTINGS_HANDLER.get_setting('platforms'):
+    PLATFORMS = SETTINGS_HANDLER.get_setting('platforms')
