@@ -265,25 +265,24 @@ class ShortcutsFile():
         """Add a shortcut to the end of the shortcuts data list"""
         if 'name' not in shortcut or 'cmd' not in shortcut:
             raise Exception(f'Passed shortcut is not valid: {shortcut}')
-        if self.get_shortcut_match(shortcut['name'], shortcut['cmd']):
+        if self.get_shortcut_match(shortcut['name']):
             raise Exception(f"File {self.path} already has a shortcut with "
-                            f"name {shortcut['name']} and "
-                            f"cmd {shortcut['cmd']}")
+                            f"name {shortcut['name']}")
         self.shortcuts_data.append(shortcut)
 
-    def get_shortcut_match(self, name: str, cmd: str) -> dict:
-        """Return a shortcut dictionary that matches 'name' and 'cmd'.
+    def get_shortcut_match(self, name: str) -> dict:
+        """Return a shortcut dictionary that matches 'name'.
         Returns empty if not found.
         """
         for s in self.shortcuts_data:
-            if s['name'] == name and s['cmd'] == cmd:
+            if s['name'] == name:
                 return s
         return {}
 
-    def remove_shortcut(self, name: str, cmd: str) -> None:
+    def remove_shortcut(self, name: str) -> None:
         """Remove a shortcut that has a given 'name'"""
         for shortcut in self.shortcuts_data:
-            if name == shortcut['name'] and cmd == shortcut['cmd']:
+            if name == shortcut['name']:
                 self.shortcuts_data.remove(shortcut)
                 break
 

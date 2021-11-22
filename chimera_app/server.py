@@ -182,7 +182,7 @@ def edit(platform, name):
             abort(404, 'Content not found')
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcut = shortcuts.get_shortcut_match(name, platform)
+    shortcut = shortcuts.get_shortcut_match(name)
 
     return template('new.tpl',
                     isEditing=True,
@@ -230,7 +230,7 @@ def shortcut_create():
 
     shortcuts = PlatformShortcutsFile(platform)
 
-    if shortcuts.get_shortcut_match(name, platform):
+    if shortcuts.get_shortcut_match(name):
         return 'Shortcut already exists'
 
     banner_path = None
@@ -287,7 +287,7 @@ def shortcut_update():
     content = request.forms.get('content')
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcut = shortcuts.get_shortcut_match(name, platform)
+    shortcut = shortcuts.get_shortcut_match(name)
 
     banner_path = None
     if banner:
@@ -306,7 +306,7 @@ def shortcut_update():
             banner_file.write(download.content)
 
     shortcut['name'] = name
-    shortcut['cmd'] = platform
+    shortcut['cmd'] = shortcut['cmd'] or platform
     shortcut['hidden'] = hidden == 'on'
     if banner or banner_url:
         shortcut['banner'] = banner_path
@@ -333,7 +333,7 @@ def shortcut_delete():
     platform = sanitize(request.forms.get('platform'))
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.remove_shortcut(name, platform)
+    shortcuts.remove_shortcut(name)
     shortcuts.save()
 
     delete_file(CONTENT_DIR, platform, name)
@@ -435,7 +435,7 @@ def uninstall(platform, content_id):
     shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcuts.remove_shortcut(content.name, shortcut['cmd'])
+    shortcuts.remove_shortcut(content.name)
     shortcuts.save()
 
     redirect(f'/library/{platform}/edit/{content_id}')
