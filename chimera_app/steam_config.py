@@ -130,6 +130,9 @@ class LocalSteamConfig(SteamConfigFile):
         self.config_data = data
 
     def apply_tweaks(self, tweak_data: dict, priority=0) -> None:
+        if not tweak_data:
+            print('empty tweak data, nothing to do')
+            return
         if not self.config_data:
             self.load_data()
 
@@ -196,6 +199,9 @@ class MainSteamConfig(SteamConfigFile):
         self.config_data = data
 
     def apply_tweaks(self, tweak_data: dict, priority=209) -> None:
+        if not tweak_data:
+            print('empty tweak data, nothing to do')
+            return
         if not self.config_data:
             self.load_data()
         compat = (self.config_data['InstallConfigStore']['Software']['Valve']
