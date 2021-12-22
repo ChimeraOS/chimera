@@ -137,7 +137,6 @@ class LocalSteamConfig(SteamConfigFile):
 
     def apply_tweaks(self, tweak_data: dict, priority=0) -> None:
         if not tweak_data:
-            print('empty tweak data, nothing to do')
             return
         if not self.config_data:
             self.load_data()
@@ -206,7 +205,6 @@ class MainSteamConfig(SteamConfigFile):
 
     def apply_tweaks(self, tweak_data: dict, priority=209) -> None:
         if not tweak_data:
-            print('empty tweak data, nothing to do')
             return
         if not self.config_data:
             self.load_data()
