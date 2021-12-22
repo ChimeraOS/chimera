@@ -50,6 +50,8 @@ class TweaksFile:
 
     def load_data(self) -> None:
         """Load this file's data"""
+        if not self.exists():
+            return
         with open(self.path) as file:
             self.tweaks_data = yaml.load(file, Loader=yaml.FullLoader)
 
