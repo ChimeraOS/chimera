@@ -17,7 +17,7 @@ def apply_all_tweaks():
         print('No tweaks to apply')
         return
 
-    main_config = MainSteamConfig()
+    main_config = MainSteamConfig(auto_load=True)
     if main_file.exists():
         main_config.apply_tweaks(main_file.get_data(), priority=209)
     if local_file.exists():
@@ -40,9 +40,11 @@ class TweaksFile:
     path: str
     tweaks_data: dict
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, auto_load=False):
         self.path = path
         self.tweaks_data = None
+        if auto_load:
+            self.load_data()
 
     def exists(self) -> bool:
         """Returns True if this tweaks file exists"""
@@ -68,9 +70,11 @@ class SteamConfigFile(ABC):
     path: str
     config_data: vdf.VDFDict
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, auto_load=False):
         self.path = path
         self.config_data = None
+        if auto_load:
+            self.load_data()
 
     def exists(self) -> bool:
         """Returns True if the file exists, False otherwise"""
@@ -97,14 +101,14 @@ class LocalSteamConfig(SteamConfigFile):
 
     user_id: str
 
-    def __init__(self, user_id: str):
+    def __init__(self, user_id: str, auto_load=False):
         self.user_id = user_id
         path_to_file = os.path.join(context.STEAM_DIR,
                                     'userdata',
                                     user_id,
                                     'config/localconfig.vdf'
                                     )
-        super().__init__(path_to_file)
+        super().__init__(path_to_file, auto_load)
 
     def load_data(self) -> None:
         if self.exists():
@@ -165,9 +169,9 @@ class LocalSteamConfig(SteamConfigFile):
 class MainSteamConfig(SteamConfigFile):
     """Handle main Steam config file"""
 
-    def __init__(self):
+    def __init__(self, auto_load=False):
         path_to_file = os.path.join(context.STEAM_DIR, 'config/config.vdf')
-        super().__init__(path_to_file)
+        super().__init__(path_to_file, auto_load)
 
     def load_data(self) -> None:
         if self.exists():
