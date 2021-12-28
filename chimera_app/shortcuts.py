@@ -78,7 +78,6 @@ def get_image_id(type, exe, name):
         return get_logo_id(exe, name)
 
 
-
 class SteamShortcutsFile():
     """Class to manage Steam shortcuts files for users"""
 
@@ -361,7 +360,6 @@ class ShortcutsManager():
                 steam_file.add_shortcut(entry)
             steam_file.save()
 
-
     def create_image(self, type, entry) -> None:
         if not type in entry:
             return
@@ -377,7 +375,6 @@ class ShortcutsManager():
                 os.remove(dst)
             os.symlink(entry[type], dst)
 
-
     def create_images(self) -> None:
         """Create all image files for current entries"""
         if not self.shortcut_entries:
@@ -388,7 +385,6 @@ class ShortcutsManager():
             self.create_image('poster', entry)
             self.create_image('background', entry)
             self.create_image('logo', entry)
-
 
     def register_compat_data(self) -> None:
         """Register all compatibility tools mapping for current entries"""
@@ -403,6 +399,6 @@ class ShortcutsManager():
                     (compat_data[compat_id]
                                 ['compat_config']) = entry['compat_config']
 
-        config_file = steam_config.MainSteamConfig()
+        config_file = steam_config.MainSteamConfig(auto_load=True)
         config_file.apply_tweaks(compat_data, priority=209)
         config_file.save()
