@@ -10,7 +10,7 @@ import chimera_app.utils as utils
 
 def update_data(force=False) -> bool:
     attempts = 0
-    while attempts < 5:
+    while attempts < 10:
         try:
             dl = Downloader()
             return dl.update(force=force)
