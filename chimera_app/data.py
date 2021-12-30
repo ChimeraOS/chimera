@@ -5,6 +5,7 @@ import shutil
 import json
 import zipfile
 import requests
+import subprocess
 import chimera_app.utils as utils
 
 
@@ -18,6 +19,10 @@ def update_data(force=False) -> bool:
             print('failed to update data (attempt {})'.format(attempts + 1))
             time.sleep(2)
             attempts += 1
+
+    # allow the steam patch and chimera services to pick up the newly downloaded files
+    subprocess.call(["systemctl", "--user", "restart", "steam-patch"])
+    subprocess.call(["systemctl", "--user", "restart", "chimera"])
 
 
 class Downloader():
