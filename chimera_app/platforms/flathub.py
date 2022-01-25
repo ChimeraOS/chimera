@@ -16,18 +16,10 @@ def listdir(path):
         return []
 
 
-local = os.path.join(os.getenv('XDG_DATA_HOME',
-                               os.path.expanduser('~/.local/share')),
-                     'chimera/banners/flathub')
-files = (listdir('images/flathub')
-         + listdir(local)
-         + listdir('/usr/share/chimera/images/flathub/'))
-whitelist = [os.path.splitext(f)[0] for f in files]
-
-
 class Flathub(StorePlatform):
     def __init__(self):
         super().__init__()
+        self.platform_code = 'flathub'
 
         try:
             flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
@@ -54,21 +46,23 @@ class Flathub(StorePlatform):
                 print(("Error: Failed to add the {name} repo "
                       "with url {url} flatpak").format(name=name, url=url))
 
-    def __get_application_list(self):
+    def _get_all_content(self):
         applications = []
         api_response = requests.get(self.__api_url)
         if api_response.status_code == requests.codes.ok:
             installed_list = self.__get_installed_list()
             for entry in api_response.json():
                 flatpak_id = entry['flatpakAppId']
-                if flatpak_id not in whitelist:
-                    continue
                 name = entry['name']
                 description = entry['summary']
-                image_url = self.get_image_url(flatpak_id)
                 available_version = entry['currentReleaseVersion']
                 installed = False
                 version = ""
+                db = self._get_db_entry('flathub', flatpak_id)
+
+                image_url = self._get_image_url('flathub', flatpak_id)
+                if not image_url:
+                    image_url = 'https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/' + flatpak_id + '.png'
 
                 for app in installed_list:
                     if app['flatpak_id'].strip() == flatpak_id:
@@ -82,7 +76,11 @@ class Flathub(StorePlatform):
                                          "available_version": available_version,
                                          "image_url": image_url,
                                          "installed": installed,
-                                         "operation": None}))
+                                         "operation": None,
+                                         "status": db.status,
+                                         "status_icon": db.status_icon,
+                                         "notes": db.notes
+                                        }))
 
         return applications
 
@@ -118,27 +116,21 @@ class Flathub(StorePlatform):
         path = self.get_image_file_base_dir(content_id)
         return os.path.join(path, content_id + '.png')
 
-    def get_image_url(self, content_id):
-        return '/images/flathub/' + content_id
-
     def get_shortcut(self, content):
+        if content.image_url.startswith('http'):
+            banner = self.get_banner_path(content)
+        else:
+            banner = self.get_image_file_path(content.content_id)
+
         return {
             'name': content.name,
             'hidden': False,
-            'banner': self.get_image_file_path(content.content_id),
+            'banner': banner,
             'params': content.content_id,
             'cmd': "flatpak run",
             'dir': "~",
             'tags': ["Flathub"]
         }
-
-    def get_installed_content(self) -> list:
-        apps = self.__get_application_list()
-        return [app for app in apps if app.installed]
-
-    def get_available_content(self) -> list:
-        apps = self.__get_application_list()
-        return [app for app in apps if not app.installed]
 
     def _install(self, content) -> subprocess:
         return subprocess.Popen([FLATPAK_WRAPPER,

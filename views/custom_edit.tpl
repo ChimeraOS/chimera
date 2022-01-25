@@ -1,6 +1,7 @@
 % rebase('base.tpl')
 
 <h2>{{app.name}}</h2>
+
 % if app.operation:
 	<script type="text/JavaScript">
 		async function reloadWhenDone() {
@@ -24,11 +25,28 @@
 % elif app.installed_version:
 	<h3>Version: {{app.installed_version}}</h3>
 % end
-<p>{{app.summary}}</p>
+
+% if app.get('status'):
+	<div class="status-badge" onclick="window.open('/status-info')">
+		{{ app.get('status_icon') }} {{ app.get('status').capitalize() }}
+	</div>
+% end
+
+<div class="left-content">
+	% if app.get('notes'):
+		<ul class="notes">
+			% for note in app.notes:
+				<li>{{ note }}</li>
+			% end
+		</ul>
+	% end
+</div>
 
 <div class="img-container">
 	<img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}">
 </div>
+
+<p>{{app.summary}}</p>
 
 % if not app.operation:
 	% if app.installed:

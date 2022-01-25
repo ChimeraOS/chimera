@@ -5,12 +5,15 @@ import shutil
 import chimera_app.context as context
 from chimera_app.utils import ensure_directory
 from chimera_app.config import CONTENT_DIR
-from chimera_app.config import BANNER_DIR
 from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, dic
 
 
 class GOG(StorePlatform):
+    def __init__(self):
+        super().__init__()
+        self.platform_code = 'gog'
+
     def is_authenticated(self):
         num_lines = 0
         path = os.path.join(context.CONFIG_HOME, "wyvern", "wyvern.toml")
@@ -26,35 +29,20 @@ class GOG(StorePlatform):
         subprocess.check_output(["wyvern", "login", "--code", password])
 
     def get_shortcut(self, content):
-        ext = '.png'
-        base_path = os.path.join(BANNER_DIR, 'gog/')
-        ensure_directory(base_path)
-
-        img_path = base_path + content.content_id + ext
-        subprocess.check_output(["curl", content.image_url, "-o", img_path])
-
+        banner = self.get_banner_path(content)
         game_dir = os.path.join(CONTENT_DIR, 'gog', content.content_id)
 
         return {
             'name': content.name,
             'hidden': False,
-            'banner': img_path,
+            'banner': banner,
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
             'compat_tool': None if content.native else 'proton_63',
             'id': content.content_id
         }
-
-    def get_installed_content(self) -> list:
-        games = self.__get_all_content()
-        return [game for game in games if game.installed]
-
-    def get_available_content(self) -> list:
-        games = self.__get_all_content()
-        return [game for game in games if not game.installed]
-
-    def __get_all_content(self) -> list:
+    def _get_all_content(self) -> list:
         content = []
 
         shortcuts_file = PlatformShortcutsFile('gog')
@@ -71,8 +59,12 @@ class GOG(StorePlatform):
                 continue
 
             cid = str(info.id)
+            img = self._get_image_url('gog', cid)
+            if not img:
+                img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
 
-            img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
+            db = self._get_db_entry('gog', cid)
+
             content.append(dic({"content_id": cid,
                                 "summary": "",
                                 "name": info.title,
@@ -81,7 +73,11 @@ class GOG(StorePlatform):
                                 "available_version": None,
                                 "image_url": img,
                                 "installed": cid in installed_ids,
-                                'operation': None}))
+                                'operation': None,
+                                "status": db.status,
+                                "status_icon": db.status_icon,
+                                "notes": db.notes
+                            }))
 
         return content
 

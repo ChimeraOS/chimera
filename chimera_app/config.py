@@ -1,4 +1,5 @@
 import os
+import yaml
 from chimera_app.settings import Settings
 import chimera_app.context as context
 from chimera_app.ftp.server import Server as FTPServer
@@ -19,6 +20,7 @@ if not os.path.isfile(AUTHENTICATOR_PATH):
 
 SHORTCUT_DIR = context.SHORTCUT_DIRS
 BANNER_DIR = context.DATA_HOME + '/chimera/banners'
+DATA_DIR = context.DATA_HOME + '/chimera/data'
 CONTENT_DIR = context.DATA_HOME + '/chimera/content'
 RECORDINGS_DIR = context.DATA_HOME + '/chimera/recordings'
 SETTINGS_DIR = context.CONFIG_HOME + '/chimera'
@@ -93,3 +95,21 @@ MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
 
 if SETTINGS_HANDLER.get_setting('platforms'):
     PLATFORMS = SETTINGS_HANDLER.get_setting('platforms')
+
+
+GAMEDB = {
+    'gog' : {},
+    'epic-store' : {},
+    'flathub' : {}
+}
+
+try:
+    with open(os.path.join(DATA_DIR, 'gamedb.yaml')) as yaml_file:
+        game_list = yaml.load(yaml_file, Loader=yaml.FullLoader)
+
+        for game in game_list:
+            if 'id' in game:
+                game['id'] = str(game['id'])
+                GAMEDB[game['platform']][game['id']] = game
+except:
+    print('WARNING: Failed to load game database')

@@ -88,6 +88,7 @@ def platform_page(platform):
             return template(
                 'custom',
                 app_list=PLATFORM_HANDLERS[platform].get_installed_content(),
+                showAll=False,
                 isInstalledOverview=True,
                 platform=platform,
                 platformName=PLATFORMS[platform]
@@ -148,7 +149,8 @@ def new(platform):
 
         return template(
             'custom',
-            app_list=PLATFORM_HANDLERS[platform].get_available_content(),
+            app_list=PLATFORM_HANDLERS[platform].get_available_content(request.query.showAll),
+            showAll=request.query.showAll,
             isInstalledOverview=False,
             isNew=True,
             platform=platform,
@@ -411,6 +413,8 @@ def platform_install(platform, content_id):
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
 
+    PLATFORM_HANDLERS[platform].download_banner(content)
+
     if ('compat_tool' in shortcut
             and shortcut['compat_tool'] in OFFICIAL_COMPAT_TOOLS):
         name = shortcut['compat_tool']
@@ -466,6 +470,12 @@ def install_progress(platform, content_id):
     }
 
     return json.dumps(values)
+
+
+@route('/status-info')
+@authenticate
+def status_info():
+    return template('status_info.tpl')
 
 
 @route('/system')
