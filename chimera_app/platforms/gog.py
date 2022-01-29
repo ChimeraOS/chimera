@@ -32,16 +32,27 @@ class GOG(StorePlatform):
         banner = self.get_banner_path(content)
         game_dir = os.path.join(CONTENT_DIR, 'gog', content.content_id)
 
-        return {
+        shortcut = {
+            'id': content.content_id,
             'name': content.name,
             'hidden': False,
             'banner': banner,
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
-            'compat_tool': None if content.native else 'proton_63',
-            'id': content.content_id
         }
+
+        if not content.native:
+            shortcut['compat_tool'] = content.compat_tool or 'proton_63'
+
+            if content.compat_config:
+                shortcut['compat_config'] = content.compat_config
+
+        if content.launch_options:
+            shortcut['params'] = content.launch_options
+
+        return shortcut
+
     def _get_all_content(self) -> list:
         content = []
 
@@ -76,7 +87,10 @@ class GOG(StorePlatform):
                                 'operation': None,
                                 "status": db.status,
                                 "status_icon": db.status_icon,
-                                "notes": db.notes
+                                "notes": db.notes,
+                                "compat_tool": db.compat_tool,
+                                "compat_config": db.compat_config,
+                                "launch_options": db.launch_options
                             }))
 
         return content

@@ -79,7 +79,8 @@ class Flathub(StorePlatform):
                                          "operation": None,
                                          "status": db.status,
                                          "status_icon": db.status_icon,
-                                         "notes": db.notes
+                                         "notes": db.notes,
+                                         "launch_options": db.launch_options
                                         }))
 
         return applications
@@ -122,15 +123,19 @@ class Flathub(StorePlatform):
         else:
             banner = self.get_image_file_path(content.content_id)
 
-        return {
+        shortcut = {
             'name': content.name,
             'hidden': False,
             'banner': banner,
-            'params': content.content_id,
-            'cmd': "flatpak run",
+            'cmd': "flatpak run " + content.content_id,
             'dir': "~",
             'tags': ["Flathub"]
         }
+
+        if content.launch_options:
+            shortcut['params'] = content.launch_options
+
+        return shortcut
 
     def _install(self, content) -> subprocess:
         return subprocess.Popen([FLATPAK_WRAPPER,

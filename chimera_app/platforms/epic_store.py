@@ -25,14 +25,22 @@ class EpicStore(StorePlatform):
     def get_shortcut(self, content):
         banner = self.get_banner_path(content)
 
-        return {
+        shortcut = {
             'name': content.name,
             'hidden': False,
             'banner': banner,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'tags': ["Epic Games Store"],
-            'compat_tool': 'proton_63'
+            'compat_tool': content.compat_tool or 'proton_63'
         }
+
+        if content.compat_config:
+            shortcut['compat_config'] = content.compat_config
+
+        if content.launch_options:
+            shortcut['params'] = content.launch_options
+
+        return shortcut
 
     def __get_installed_content(self) -> list:
         content = {}
@@ -83,7 +91,10 @@ class EpicStore(StorePlatform):
                                 "operation": None,
                                 "status": db.status,
                                 "status_icon": db.status_icon,
-                                "notes": db.notes
+                                "notes": db.notes,
+                                "compat_tool": db.compat_tool,
+                                "compat_config": db.compat_config,
+                                "launch_options": db.launch_options
                             }))
 
         return content

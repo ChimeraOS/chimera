@@ -100,8 +100,9 @@ class StorePlatform:
         if 'status' not in game:
             game['status'] = 'unknown'
 
-        if 'notes' not in game:
-            game['notes'] = None
+        for key in [ 'notes', 'compat_tool', 'compat_config', 'launch_options' ]:
+            if key not in game:
+                game[key] = None
 
         game['status_icon'] = self.__get_status_icon(game['status'])
 
