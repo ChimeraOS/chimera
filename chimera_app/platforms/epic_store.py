@@ -30,6 +30,7 @@ class EpicStore(StorePlatform):
             'hidden': False,
             'banner': banner,
             'cmd': '$(epic-store ' + content.content_id + ')',
+            'dir': self.__get_folder_path(content.content_id),
             'tags': ["Epic Games Store"],
             'compat_tool': content.compat_tool or 'proton_7'
         }
@@ -98,6 +99,14 @@ class EpicStore(StorePlatform):
                             }))
 
         return content
+
+    def __get_folder_path(self, content_id):
+        with open(os.path.join(self.METADATA_DIR, content_id+'.json')) as f:
+            metadata = json.load(f)
+
+        folder_name = metadata['metadata']['customAttributes']['FolderName']['value']
+        return os.path.join(CONTENT_DIR, 'epic-store', folder_name)
+
 
     def __get_image_url(self, content_id):
         url = self._get_image_url('epic-store', content_id)
