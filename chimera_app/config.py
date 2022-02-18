@@ -100,7 +100,8 @@ if SETTINGS_HANDLER.get_setting('platforms'):
 GAMEDB = {
     'gog' : {},
     'epic-store' : {},
-    'flathub' : {}
+    'flathub' : {},
+    'steam' : {},
 }
 
 try:
