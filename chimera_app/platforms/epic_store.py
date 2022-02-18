@@ -31,7 +31,7 @@ class EpicStore(StorePlatform):
             'banner': banner,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'tags': ["Epic Games Store"],
-            'compat_tool': content.compat_tool or 'proton_63'
+            'compat_tool': content.compat_tool or 'proton_7'
         }
 
         if content.compat_config:

@@ -43,7 +43,7 @@ class GOG(StorePlatform):
         }
 
         if not content.native:
-            shortcut['compat_tool'] = content.compat_tool or 'proton_63'
+            shortcut['compat_tool'] = content.compat_tool or 'proton_7'
 
             if content.compat_config:
                 shortcut['compat_config'] = content.compat_config
