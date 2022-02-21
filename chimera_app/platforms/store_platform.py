@@ -134,9 +134,18 @@ class StorePlatform:
         img_path = self.get_banner_path(content)
         subprocess.check_output(["curl", content.image_url, "-o", img_path])
 
+    def __get_ext(self, url):
+        url_noquery = url.split('?')[0]
+        ext = os.path.splitext(url_noquery)[1]
+
+        if not ext:
+            ext = '.jpg'
+
+        return ext
+
     def get_banner_path(self, content):
         base_path = os.path.join(BANNER_DIR, self.platform_code)
-        ext = os.path.splitext(content.image_url)[1]
+        ext = self.__get_ext(content.image_url)
 
         return os.path.join(base_path, content.content_id + ext)
 

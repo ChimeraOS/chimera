@@ -100,10 +100,13 @@ class EpicStore(StorePlatform):
 
         return content
 
-    def __get_folder_path(self, content_id):
+    def __load_metadata(self, content_id):
         with open(os.path.join(self.METADATA_DIR, content_id+'.json')) as f:
-            metadata = json.load(f)
+            return json.load(f)
 
+
+    def __get_folder_path(self, content_id):
+        metadata = self.__load_metadata(content_id)
         folder_name = metadata['metadata']['customAttributes']['FolderName']['value']
         return os.path.join(CONTENT_DIR, 'epic-store', folder_name)
 
@@ -114,9 +117,7 @@ class EpicStore(StorePlatform):
         if url:
             return url
 
-        with open(os.path.join(self.METADATA_DIR, content_id+'.json')) as f:
-            metadata = json.load(f)
-
+        metadata = self.__load_metadata(content_id)
         for img in metadata['metadata']['keyImages']:
             if img['type'] == 'DieselGameBox':
                 break
