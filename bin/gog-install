@@ -9,5 +9,5 @@ mkdir -p $install_dir
 
 wyvern down --id $game_id --force-windows
 
-setup=`ls -1 *.exe | head -1`
+setup=`ls -1 *.exe | grep -v "^patch_" | head -1`
 innoextract $setup -d $install_dir
