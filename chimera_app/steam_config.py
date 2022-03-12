@@ -192,11 +192,18 @@ class MainSteamConfig(SteamConfigFile):
             stale_entries = []
 
             for game in steam['CompatToolMapping']:
-                if ('name' in steam['CompatToolMapping'][game] and
-                        'config' in steam['CompatToolMapping'][game]):
-                    if (steam['CompatToolMapping'][game]['name'] == '' and
-                            steam['CompatToolMapping'][game]['config'] == ''):
+                # remove entries that were disabled in the Steam UI by the user
+                if 'name' in steam['CompatToolMapping'][game] \
+                    and 'config' in steam['CompatToolMapping'][game] \
+                    and steam['CompatToolMapping'][game]['name'] == '' \
+                    and steam['CompatToolMapping'][game]['config'] == '':
                         stale_entries.append(game)
+
+                # remove all entries added by Chimera (they will be re-added if still configured)
+                elif 'Priority' in steam['CompatToolMapping'][game] \
+                    and (steam['CompatToolMapping'][game]['Priority'] == '209' \
+                         or steam['CompatToolMapping'][game]['Priority'] == '229'):
+                    stale_entries.append(game)
 
             for entry in stale_entries:
                 del steam['CompatToolMapping'][entry]
