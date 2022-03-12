@@ -219,13 +219,17 @@ class MainSteamConfig(SteamConfigFile):
                                   ['Steam']['CompatToolMapping'])
 
         for key in tweak_data:
+            key_priority = priority
+            if 'priority' in tweak_data[key]:
+                key_priority = tweak_data[key]['priority']
+
             if (key not in compat or
                     'Priority' not in compat[key] or
-                    int(compat[key]['Priority']) <= priority):
+                    int(compat[key]['Priority']) <= key_priority):
                 if 'compat_tool' in tweak_data[key]:
                     entry = {}
                     entry['name'] = tweak_data[key]['compat_tool']
                     if 'compat_config' in tweak_data[key]:
                         entry['config'] = tweak_data[key]['compat_config']
-                    entry['Priority'] = priority
+                    entry['Priority'] = key_priority
                     compat[key] = entry
