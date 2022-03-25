@@ -32,7 +32,7 @@ def create_all_shortcuts():
     manager.register_compat_data()
 
 
-def get_banner_id(exe, name):
+def get_bpmbanner_id(exe, name):
     """Returns a full 64 bit crc to match banner file names"""
     crc_input = ''.join([exe, name])
     high_32 = crc32(crc_input.encode('utf-8')) | 0x80000000
@@ -55,6 +55,10 @@ def get_shortcut_id(exe, name):
     return get_compat_id(exe, name) - 2**32
 
 
+def get_banner_id(exe, name):
+    return str(get_compat_id(exe, name))
+
+
 def get_poster_id(exe, name):
     return str(get_compat_id(exe, name)) + 'p'
 
@@ -68,6 +72,8 @@ def get_logo_id(exe, name):
 
 
 def get_image_id(type, exe, name):
+    if type == 'bpmbanner':
+        return get_bpmbanner_id(exe, name)
     if type == 'banner':
         return get_banner_id(exe, name)
     elif type == 'poster':
@@ -149,7 +155,7 @@ class SteamShortcutsFile():
             ss_file.write(vdf.binary_dumps(out))
 
     def add_shortcut(self, entry: dict):
-        """Creates a new shortcut with given dictionary. Will try tom match
+        """Creates a new shortcut with given dictionary. Will try to match
         with an existing shortcut in this file. If no existing shortcut can
         be found, then create a new entry.
         """
@@ -360,12 +366,16 @@ class ShortcutsManager():
                 steam_file.add_shortcut(entry)
             steam_file.save()
 
-    def create_image(self, type, entry) -> None:
-        if not type in entry:
+    def create_image(self, entry, img_type_src, img_type_dst = None) -> None:
+        if img_type_src not in entry:
             return
 
-        img_id = get_image_id(type, entry['cmd'], entry['name'])
-        _, ext = os.path.splitext(entry[type])
+        if not img_type_dst:
+            img_type_dst = img_type_src
+
+        img_path = entry[img_type_src]
+        img_id = get_image_id(img_type_dst, entry['cmd'], entry['name'])
+        _, ext = os.path.splitext(img_path)
         for user_dir in context.STEAM_USER_DIRS:
             dst_dir = user_dir + '/config/grid/'
             if not os.path.isdir(dst_dir):
@@ -373,7 +383,7 @@ class ShortcutsManager():
             dst = dst_dir + str(img_id) + ext
             if os.path.islink(dst) or os.path.isfile(dst):
                 os.remove(dst)
-            os.symlink(entry[type], dst)
+            os.symlink(img_path, dst)
 
     def create_images(self) -> None:
         """Create all image files for current entries"""
@@ -381,10 +391,11 @@ class ShortcutsManager():
             return
 
         for entry in self.shortcut_entries:
-            self.create_image('banner', entry)
-            self.create_image('poster', entry)
-            self.create_image('background', entry)
-            self.create_image('logo', entry)
+            self.create_image(entry, 'banner', 'bpmbanner')
+            self.create_image(entry, 'banner')
+            self.create_image(entry, 'poster')
+            self.create_image(entry, 'background')
+            self.create_image(entry, 'logo')
 
     def register_compat_data(self) -> None:
         """Register all compatibility tools mapping for current entries"""
