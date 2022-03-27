@@ -110,7 +110,7 @@ def platform_page(platform):
                   else '')
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
-            banner = f'/banners/{platform}/{filename}'
+            banner = f'/images/banner/{platform}/{filename}'
         data.append({'hidden': hidden,
                      'filename': filename,
                      'banner': banner,
@@ -133,10 +133,10 @@ def platform_authenticate(platform):
     redirect(f'/library/{platform}')
 
 
-@route('/banners/<platform>/<filename>')
+@route('/images/banner/<platform>/<filename>')
 @authenticate
 def banners(platform, filename):
-    base = f'{BANNER_DIR}/{platform}'
+    base = f'{BANNER_DIR}/banner/{platform}'
     return static_file(filename, root='{base}'.format(base=base))
 
 
@@ -207,7 +207,7 @@ def images(filename):
     if os.path.isfile(os.path.join(RESOURCE_DIR, 'images', filename)):
         return static_file(filename, root=os.path.join(RESOURCE_DIR, 'images'))
     else:
-        return static_file(filename, root=os.path.join(BANNER_DIR))
+        return static_file(filename, root=os.path.join(BANNER_DIR, 'banner'))
 
 @route('/public/<filename>')
 def public(filename):
@@ -240,12 +240,12 @@ def shortcut_create():
         (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
         banner_path = upsert_file(banner_src_path,
-                                  BANNER_DIR,
+                                  BANNER_DIR + '/banner',
                                   platform,
                                   name,
                                   banner_dst_name)
     else:
-        banner_path = os.path.join(BANNER_DIR, platform, f"{name}.png")
+        banner_path = os.path.join(BANNER_DIR, 'banner', platform, f"{name}.png")
         ensure_directory_for_file(banner_path)
         if banner_url:
             download = requests.get(banner_url)
@@ -296,12 +296,12 @@ def shortcut_update():
         (banner_src_path, banner_dst_name) = tmpfiles[banner]
         del tmpfiles[banner]
         banner_path = upsert_file(banner_src_path,
-                                  BANNER_DIR,
+                                  BANNER_DIR + '/banner',
                                   platform,
                                   name,
                                   banner_dst_name)
     elif banner_url:
-        banner_path = os.path.join(BANNER_DIR, platform, f"{name}.png")
+        banner_path = os.path.join(BANNER_DIR, 'banner',  platform, f"{name}.png")
         ensure_directory_for_file(banner_path)
         download = requests.get(banner_url)
         with open(banner_path, "wb") as banner_file:
@@ -339,7 +339,7 @@ def shortcut_delete():
     shortcuts.save()
 
     delete_file(CONTENT_DIR, platform, name)
-    delete_file(BANNER_DIR, platform, name)
+    delete_file(BANNER_DIR + '/banner', platform, name)
 
     redirect(f'/library/{platform}')
 
@@ -413,7 +413,7 @@ def platform_install(platform, content_id):
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
 
-    PLATFORM_HANDLERS[platform].download_banner(content)
+    PLATFORM_HANDLERS[platform].download_images(content)
 
     if ('compat_tool' in shortcut
             and shortcut['compat_tool'] in OFFICIAL_COMPAT_TOOLS):

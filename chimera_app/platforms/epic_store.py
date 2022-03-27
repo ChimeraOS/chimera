@@ -23,17 +23,19 @@ class EpicStore(StorePlatform):
         subprocess.check_output(["legendary", "auth", "--sid", password])
 
     def get_shortcut(self, content):
-        banner = self.get_banner_path(content)
-
         shortcut = {
             'name': content.name,
             'hidden': False,
-            'banner': banner,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'dir': self.__get_folder_path(content.content_id),
             'tags': ["Epic Games Store"],
             'compat_tool': content.compat_tool or 'proton_7'
         }
+
+        for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+            img_path = self.get_image_path(content, img_type)
+            if img_path:
+                shortcut[img_type] = img_path
 
         if content.compat_config:
             shortcut['compat_config'] = content.compat_config
@@ -71,7 +73,11 @@ class EpicStore(StorePlatform):
 
             db = self._get_db_entry('epic-store', epic_id)
 
-            image_url = self.__get_image_url(epic_id)
+            banner = self.__get_image_url(epic_id, 'banner')
+            poster = self.__get_image_url(epic_id, 'poster')
+            background = self.__get_image_url(epic_id, 'background')
+            logo = self.__get_image_url(epic_id, 'logo')
+            icon = self.__get_image_url(epic_id, 'icon')
 
             is_installed = epic_id in installed
             available_version = data[2]
@@ -87,7 +93,12 @@ class EpicStore(StorePlatform):
                                 "name": data[1],
                                 "installed_version": installed_version,
                                 "available_version": available_version,
-                                "image_url": image_url,
+                                "image_url": banner,
+                                "banner": banner,
+                                "poster": poster,
+                                "background": background,
+                                "logo": logo,
+                                "icon": icon,
                                 "installed": is_installed,
                                 "operation": None,
                                 "status": db.status,
@@ -111,18 +122,32 @@ class EpicStore(StorePlatform):
         return os.path.join(CONTENT_DIR, 'epic-store', folder_name)
 
 
-    def __get_image_url(self, content_id):
-        url = self._get_image_url('epic-store', content_id)
+    def __get_image_url(self, content_id, img_type='banner'):
+        url = self._get_image_url('epic-store', content_id, img_type)
 
         if url:
             return url
 
+        img_key = None
+        match img_type:
+            case 'banner':
+                img_key = 'DieselGameBox'
+            case 'logo':
+                img_key = 'DieselGameBoxLogo'
+            case 'poster':
+                img_key = 'DieselGameBoxTall'
+
+        if not img_key:
+            return None
+
         metadata = self.__load_metadata(content_id)
         for img in metadata['metadata']['keyImages']:
-            if img['type'] == 'DieselGameBox':
+            if img['type'] == img_key:
+                url = img['url']
                 break
 
-        url = img['url'] + '?h=215&resize=1'
+        if url and img_key == 'DieselGameBox':
+            url += '?h=215&resize=1'
 
         return url
 

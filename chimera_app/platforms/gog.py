@@ -29,18 +29,21 @@ class GOG(StorePlatform):
         subprocess.check_output(["wyvern", "login", "--code", password])
 
     def get_shortcut(self, content):
-        banner = self.get_banner_path(content)
         game_dir = os.path.join(CONTENT_DIR, 'gog', content.content_id)
 
         shortcut = {
             'id': content.content_id,
             'name': content.name,
             'hidden': False,
-            'banner': banner,
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
             'tags': ["GOG"],
         }
+
+        for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+            img_path = self.get_image_path(content, img_type)
+            if img_path:
+                shortcut[img_type] = img_path
 
         if not content.native:
             shortcut['compat_tool'] = content.compat_tool or 'proton_7'
@@ -70,9 +73,21 @@ class GOG(StorePlatform):
                 continue
 
             cid = str(info.id)
-            img = self._get_image_url('gog', cid)
-            if not img:
-                img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
+
+            banner = self._get_image_url('gog', cid, 'banner')
+            poster = self._get_image_url('gog', cid, 'poster')
+            background = self._get_image_url('gog', cid, 'background')
+            logo = self._get_image_url('gog', cid, 'logo')
+            icon = self._get_image_url('gog', cid, 'icon')
+
+            default_img = 'https:{img}_product_tile_256_2x.png'.format(img=info.image)
+
+            if not banner:
+                banner = default_img
+
+            if not poster:
+                poster = default_img
+
 
             db = self._get_db_entry('gog', cid)
 
@@ -82,7 +97,12 @@ class GOG(StorePlatform):
                                 "native": info.worksOn['Linux'],
                                 "installed_version": None,
                                 "available_version": None,
-                                "image_url": img,
+                                "image_url": banner,
+                                "banner": banner,
+                                "poster": poster,
+                                "background": background,
+                                "logo": logo,
+                                "icon": icon,
                                 "installed": cid in installed_ids,
                                 'operation': None,
                                 "status": db.status,

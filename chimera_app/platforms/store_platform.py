@@ -108,7 +108,7 @@ class StorePlatform:
 
         return dic(game)
 
-    def _get_image_url(self, platform, content_id):
+    def _get_image_url(self, platform, content_id, img_type='banner'):
         game = None
         cid = str(content_id)
         img = None
@@ -116,23 +116,36 @@ class StorePlatform:
         if cid in GAMEDB[platform]:
             game = GAMEDB[platform][cid]
 
-        if game and 'banner' in game:
+        if not game:
+            return None
+
+        if img_type in game:
+            img = game[img_type]
+        elif 'banner' in game and game['banner'].startswith('steam:'):
             img = game['banner']
-            if img.startswith('steam:'):
-                steam_id = img.split(':')[1]
-                img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/header.jpg'
+
+        if img and img.startswith('steam:'):
+            steam_id = img.split(':')[1]
+            match img_type:
+                case 'banner':
+                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/header.jpg'
+                case 'poster':
+                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/library_600x900_2x.jpg'
+                case 'background':
+                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/library_hero.jpg'
+                case 'logo':
+                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/logo.png'
+                case 'icon':
+                    img = None
 
         return img
 
-    def download_banner(self, content):
-        if not content.image_url or not content.image_url.startswith('http'):
-            return
-
-        base_path = os.path.join(BANNER_DIR, self.platform_code)
-        ensure_directory(base_path)
-
-        img_path = self.get_banner_path(content)
-        subprocess.check_output(["curl", content.image_url, "-o", img_path])
+    def download_images(self, content):
+        for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+            img_url = getattr(content, img_type)
+            if img_url and img_url.startswith('http'):
+                img_path = self.get_image_path(content, img_type)
+                subprocess.check_output(["curl", img_url, "-o", img_path])
 
     def __get_ext(self, url):
         url_noquery = url.split('?')[0]
@@ -143,9 +156,14 @@ class StorePlatform:
 
         return ext
 
-    def get_banner_path(self, content):
-        base_path = os.path.join(BANNER_DIR, self.platform_code)
-        ext = self.__get_ext(content.image_url)
+    def get_image_path(self, content, img_type='banner'):
+        img_url = getattr(content, img_type)
+        if not img_url:
+            return None
+
+        ext = self.__get_ext(img_url)
+        base_path = os.path.join(BANNER_DIR, img_type, self.platform_code)
+        ensure_directory(base_path)
 
         return os.path.join(base_path, content.content_id + ext)
 

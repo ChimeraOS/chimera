@@ -10,6 +10,7 @@ setup(
         'console_scripts': ['chimera = chimera_app.__main__:main']
                   },
     scripts=['migrate-to-chimera',
+             'migrate-to-multi-image-types',
              'steam-tweaks',
              'steam-patch',
              ],

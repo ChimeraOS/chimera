@@ -1,6 +1,7 @@
 #! /bin/bash
 
 migrate-to-chimera --logout
+migrate-to-multi-image-types
 chimera --update --tweaks
 
 # make sure the patch service picks up the latest downloaded data

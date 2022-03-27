@@ -1,0 +1,28 @@
+#!/bin/bash
+
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+
+if ! [ -d $DATA_HOME/chimera/banners ] ;
+then
+    # Nothing to migrate, we can exit
+    echo "Found nothing to migrate"
+    exit 0
+fi
+
+if [ -e $DATA_HOME/chimera/images ] ;
+then
+    echo "$DATA_HOME/chimera/images already exists; aborting migration"
+    exit 1
+fi
+
+mkdir $DATA_HOME/chimera/images;
+mv $DATA_HOME/chimera/banners $DATA_HOME/chimera/images/banner;
+
+# Replace paths inside any yaml file in shortcuts
+if [ -d $DATA_HOME/chimera/shortcuts ] ; then
+    cd $DATA_HOME/chimera/shortcuts
+    echo "Renaming paths inside yaml files"
+    find . -type f -name "*.yaml" -exec sed -i 's|/chimera/banners/|/chimera/images/banner/|g' {} \;
+fi
+
+echo "Migration finished."

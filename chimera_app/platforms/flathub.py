@@ -60,9 +60,19 @@ class Flathub(StorePlatform):
                 version = ""
                 db = self._get_db_entry('flathub', flatpak_id)
 
-                image_url = self._get_image_url('flathub', flatpak_id)
-                if not image_url:
-                    image_url = 'https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/' + flatpak_id + '.png'
+                banner = self._get_image_url('flathub', flatpak_id, 'banner')
+                poster = self._get_image_url('flathub', flatpak_id, 'poster')
+                background = self._get_image_url('flathub', flatpak_id, 'background')
+                logo = self._get_image_url('flathub', flatpak_id, 'logo')
+                icon = self._get_image_url('flathub', flatpak_id, 'icon')
+
+                default_img = 'https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/' + flatpak_id + '.png'
+
+                if not banner:
+                    banner = default_img
+
+                if not poster:
+                    poster = default_img
 
                 for app in installed_list:
                     if app['flatpak_id'].strip() == flatpak_id:
@@ -74,7 +84,12 @@ class Flathub(StorePlatform):
                                          "name": name,
                                          "installed_version": version,
                                          "available_version": available_version,
-                                         "image_url": image_url,
+                                         "image_url": banner,
+                                         "banner": banner,
+                                         "poster": poster,
+                                         "background": background,
+                                         "logo": logo,
+                                         "icon": icon,
                                          "installed": installed,
                                          "operation": None,
                                          "status": db.status,
@@ -108,7 +123,7 @@ class Flathub(StorePlatform):
     def get_image_file_base_dir(self, content_id):
         filename = content_id + '.png'
         path = os.path.join(RESOURCE_DIR, 'images/flathub')
-        local = os.path.join(BANNER_DIR, 'flathub')
+        local = os.path.join(BANNER_DIR, 'banner', 'flathub')
         if os.path.isfile(os.path.join(local, filename)):
             path = local
         return path
@@ -118,19 +133,26 @@ class Flathub(StorePlatform):
         return os.path.join(path, content_id + '.png')
 
     def get_shortcut(self, content):
-        if content.image_url.startswith('http'):
-            banner = self.get_banner_path(content)
-        else:
-            banner = self.get_image_file_path(content.content_id)
-
         shortcut = {
             'name': content.name,
             'hidden': False,
-            'banner': banner,
             'cmd': "flatpak run " + content.content_id,
             'dir': "~",
             'tags': ["Flathub"]
         }
+
+        for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+            img_url = getattr(content, img_type)
+            if not img_url:
+                continue
+
+            if img_url.startswith('http'):
+                img_path = self.get_image_path(content, img_type)
+            else:
+                img_path = self.get_image_file_path(content.content_id)
+
+            if img_path:
+                shortcut[img_type] = img_path
 
         if content.launch_options:
             shortcut['params'] = content.launch_options
