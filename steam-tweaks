@@ -3,6 +3,7 @@
 migrate-to-chimera --logout
 migrate-to-multi-image-types
 chimera --update --tweaks
+chimera --images & # do not wait for image downloads
 
 # make sure the patch service picks up the latest downloaded data
 systemctl --user restart steam-patch

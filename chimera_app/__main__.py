@@ -3,6 +3,7 @@ from chimera_app.data import update_data
 from chimera_app.compat_tools import install_all_compat_tools
 from chimera_app.shortcuts import create_all_shortcuts
 from chimera_app.steam_config import apply_all_tweaks
+from chimera_app.steam_images import apply_custom_steam_images
 
 
 def setup_argparse():
@@ -45,6 +46,10 @@ def setup_argparse():
                           action="store_true",
                           help=('Apply configuration for Steam games')
                           )
+    group_ex.add_argument('-i', '--images',
+                          action="store_true",
+                          help=('Apply custom artwork for Steam games')
+                          )
 
     return parser.parse_args()
 
@@ -73,6 +78,7 @@ def main():
             not ((args.daemon
                   or args.compat
                   or args.shortcuts
+                  or args.images
                   or args.config
                   or args.tweaks
                   or args.update))):
@@ -95,6 +101,12 @@ def main():
             create_all_shortcuts()
         except:
             print('Shortcuts creation failed')
+
+    if args.images:
+        try:
+            apply_custom_steam_images()
+        except:
+            print('Applying custom Steam images failed')
 
     if args.config:
         try:
