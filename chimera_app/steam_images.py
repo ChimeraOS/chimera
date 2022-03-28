@@ -5,8 +5,7 @@ import subprocess
 import chimera_app.context as context
 from chimera_app.file_utils import ensure_directory
 
-from chimera_app.config import BANNER_DIR
-from chimera_app.config import GAMEDB
+from chimera_app.config import BANNER_DIR, GAMEDB
 
 def get_ext(url):
     url_noquery = url.split('?')[0]

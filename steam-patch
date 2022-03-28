@@ -7,6 +7,8 @@ import filecmp
 import subprocess
 from inotify_simple import INotify, flags
 import chimera_app.context as context
+from chimera_app.config import GAMEDB
+from chimera_app.file_utils import ensure_directory
 
 
 patches = {}
@@ -14,6 +16,7 @@ watches = {}
 inotify = INotify()
 watch_flags = flags.CREATE | flags.MODIFY | flags.DELETE
 library_path = os.path.join(context.STEAM_DIR, 'steamapps/common')
+ensure_directory(library_path)
 steam_dir = inotify.add_watch(library_path, watch_flags)
 
 
@@ -51,14 +54,9 @@ def start_watch(game_dir):
     apply_patch(game_dir)
 
 
-def load_data(data_path):
-    if not os.path.exists(data_path):
-        return
-
-    print('load_data:', data_path)
-    data = yaml.load(open(data_path), Loader=yaml.FullLoader)
+def load_patch_data(data):
     for gameid in data:
-        if 'patch_dir' in data[gameid]:
+        if 'patch_dir' in data[gameid] and 'patches' in data[gameid]:
             game_dir = data[gameid]['patch_dir']
             patches[game_dir] = data[gameid]['patches']
             start_watch(game_dir)
@@ -70,9 +68,13 @@ def main():
     if not os.path.isdir(context.PATCH_DIR):
         print(f'Patches directory does not exist ({context.PATCH_DIR})')
         return
+
+    if not GAMEDB or 'steam' not in GAMEDB:
+        print('Game database data not available')
+        return
+
     os.chdir(context.PATCH_DIR)
-    load_data(context.MAIN_TWEAKS_FILE)
-    load_data(context.LOCAL_TWEAKS_FILE)
+    load_patch_data(GAMEDB['steam'])
 
     while True:
         for event in inotify.read():

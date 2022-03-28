@@ -6,31 +6,24 @@ from abc import abstractmethod
 import vdf
 import yaml
 import chimera_app.context as context
+from chimera_app.config import GAMEDB
 from chimera_app.file_utils import ensure_directory_for_file
 
 
 def apply_all_tweaks():
-    """Apply all tweaks if tweaks files exits"""
-    main_file = TweaksFile(context.MAIN_TWEAKS_FILE)
-    local_file = TweaksFile(context.LOCAL_TWEAKS_FILE)
-    if (not main_file.exists() and not local_file.exists()):
+    """Apply all tweaks if tweaks files exist"""
+    if not GAMEDB or 'steam' not in GAMEDB:
         print('No tweaks to apply')
         return
 
     main_config = MainSteamConfig(auto_load=True)
-    if main_file.exists():
-        main_config.apply_tweaks(main_file.get_data(), priority=209)
-    if local_file.exists():
-        main_config.apply_tweaks(local_file.get_data(), priority=229)
+    main_config.apply_tweaks(GAMEDB['steam'], priority=209)
     main_config.save()
 
     for user_dir in context.STEAM_USER_DIRS:
         user_id = os.path.basename(user_dir)
         user_config = LocalSteamConfig(user_id)
-        if main_file.exists():
-            user_config.apply_tweaks(main_file.get_data())
-        if local_file.exists():
-            user_config.apply_tweaks(local_file.get_data())
+        user_config.apply_tweaks(GAMEDB['steam'])
         user_config.save()
 
 
