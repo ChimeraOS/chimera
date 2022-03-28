@@ -1,6 +1,6 @@
 import os
 from configparser import ConfigParser
-from chimera_app.utils import ensure_directory_for_file
+from chimera_app.file_utils import ensure_directory_for_file
 
 
 class MangoHudConfig:

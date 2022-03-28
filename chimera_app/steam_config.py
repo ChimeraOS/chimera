@@ -6,7 +6,7 @@ from abc import abstractmethod
 import vdf
 import yaml
 import chimera_app.context as context
-import chimera_app.utils as utils
+from chimera_app.file_utils import ensure_directory_for_file
 
 
 def apply_all_tweaks():
@@ -91,7 +91,7 @@ class SteamConfigFile(ABC):
     def save(self) -> None:
         """Save the file"""
         conf = vdf.dumps(self.config_data, pretty=True)
-        utils.ensure_directory_for_file(self.path)
+        ensure_directory_for_file(self.path)
         with open(self.path, 'w') as file:
             file.write(conf)
 

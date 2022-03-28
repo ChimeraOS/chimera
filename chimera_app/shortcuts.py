@@ -9,6 +9,7 @@ import yaml
 import chimera_app.context as context
 import chimera_app.utils as utils
 import chimera_app.steam_config as steam_config
+from chimera_app.file_utils import ensure_directory_for_file
 
 
 def create_all_shortcuts():
@@ -150,7 +151,7 @@ class SteamShortcutsFile():
         """Save current file with current shortcuts data"""
         out = {}
         out['shortcuts'] = self.new_data
-        utils.ensure_directory_for_file(self.path)
+        ensure_directory_for_file(self.path)
         with open(self.path, 'wb') as ss_file:
             ss_file.write(vdf.binary_dumps(out))
 
@@ -293,7 +294,7 @@ class ShortcutsFile():
 
     def save(self) -> None:
         """Save this file with current shortcuts data"""
-        utils.ensure_directory_for_file(self.path)
+        ensure_directory_for_file(self.path)
         with open(self.path, 'w') as file:
             yaml.dump(self.get_shortcuts_data(),
                       file,

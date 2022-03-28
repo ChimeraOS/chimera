@@ -3,7 +3,7 @@
 import os
 import subprocess
 import chimera_app.context as context
-import chimera_app.utils as utils
+from chimera_app.file_utils import ensure_directory
 
 from chimera_app.config import BANNER_DIR
 from chimera_app.config import GAMEDB
@@ -24,7 +24,7 @@ def get_image_path(steamid, entry, img_type):
 
     ext = get_ext(img_url)
     base_path = os.path.join(BANNER_DIR, img_type, 'steam')
-    utils.ensure_directory(base_path)
+    ensure_directory(base_path)
 
     return os.path.join(base_path, steamid + ext)
 

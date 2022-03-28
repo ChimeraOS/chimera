@@ -3,7 +3,7 @@ from time import strftime
 from os.path import expanduser
 from subprocess import Popen
 from subprocess import TimeoutExpired
-from chimera_app.utils import ensure_directory
+from chimera_app.file_utils import ensure_directory
 
 
 class StreamServer:

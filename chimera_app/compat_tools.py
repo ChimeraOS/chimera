@@ -5,7 +5,7 @@ import shutil
 from abc import ABC
 from abc import abstractmethod
 import chimera_app.context as context
-from chimera_app.utils import ensure_directory
+from chimera_app.file_utils import ensure_directory
 from chimera_app.utils import replace_all
 from chimera_app.utils import client_running
 from chimera_app.utils import install_by_id

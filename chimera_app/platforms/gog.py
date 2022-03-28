@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 import chimera_app.context as context
-from chimera_app.utils import ensure_directory
+from chimera_app.file_utils import ensure_directory
 from chimera_app.config import CONTENT_DIR
 from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, dic

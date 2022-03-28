@@ -2,7 +2,7 @@ import os
 import subprocess
 import threading
 from io import BytesIO
-from chimera_app.utils import ensure_directory
+from chimera_app.file_utils import ensure_directory
 from chimera_app.config import GAMEDB
 from chimera_app.config import BANNER_DIR
 
