@@ -22,6 +22,7 @@ setup(
         ('share/chimera/config', glob('config/*.cfg')),
         ('share/chimera/config', glob('config/*.conf')),
         ('share/chimera/bin',    glob('bin/*')),
+        ('share/chimera/migrations', glob('migrations/*')),
         ('bin', glob('launchers/*')),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),

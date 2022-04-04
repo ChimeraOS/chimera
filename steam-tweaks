@@ -1,7 +1,7 @@
 #! /bin/bash
 
-/usr/share/chimera/bin/migrations/01-chimera-dir --logout
-/usr/share/chimera/bin/migrations/02-multi-image-types
+/usr/share/chimera/migrations/01-chimera-dir --logout
+/usr/share/chimera/migrations/02-multi-image-types
 chimera --update --tweaks
 chimera --images & # do not wait for image downloads
 
