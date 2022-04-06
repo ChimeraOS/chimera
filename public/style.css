@@ -1,16 +1,16 @@
 a:link {
   text-decoration: none;
-  color: white;
+  color: #ffda94;
 }
 
 a:visited {
   text-decoration: none;
-  color: white;
+  color: #ffda94;
 }
 
 a:hover {
     text-decoration: none;
-    color: #bbbbbb;
+    color: #d74c22;
 }
 
 a:active {
@@ -20,6 +20,14 @@ a:active {
 p.placeholder {
     color: #666666;
     font-size: 22px;
+}
+
+h2 {
+    color: #d74c22;
+}
+
+h3 {
+    color: #ffda94;
 }
 
 #progress {
@@ -58,12 +66,19 @@ p.placeholder {
     padding: 0px;
     height: 116px;
     width: 248px;
-    box-shadow: 0px 2px 8px 3px rgba(0, 0, 0, 0.8);
     background-color: #333333;
 }
 
+.img-container:hover {
+    outline: 4px solid #ffda94;
+}
+
+.img-container.noborder:hover {
+    outline: none;
+}
+
 .img-container.selected {
-    box-shadow: 0px 0px 6px 4px rgba(0, 117, 255, 1.0);
+    outline: 4px solid #ffda94;
 }
 
 img {
@@ -86,7 +101,8 @@ body {
     font-size: 24px;
     font-family: arial;
     margin: 0px;
-    background-color: #f0f1f2;
+    background-color: #230512;
+    color: white;
 }
 
 form {
@@ -116,9 +132,8 @@ form {
 }
 
 button {
-    background-color: #3268a8;
-    border: none;
-    color: white;
+    background-color: #961937;
+    color: #ffda94;
     padding-top: 20px;
     padding-bottom: 20px;
     margin-top: 100px;
@@ -127,22 +142,41 @@ button {
     font-size: 24px;
     width: 100%;
     border-radius: 5px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #ffda94;
+}
+
+button:hover {
+    background-color: #5d1c27;
+    border-color: #d74c22;
+    color: #d74c22
 }
 
 a.button {
     display: block;
-    background-color: #3268a8;
+    background-color: #961937;
     border: none;
-    color: white;
+    color: #ffda94;
     padding: 15px;
     margin: 30px;
     cursor: pointer;
     font-size: 24px;
     border-radius: 5px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #ffda94;
+}
+
+a.button:hover {
+    background-color: #5d1c27;
+    border-color: #d74c22;
+    color: #d74c22
 }
 
 h4 {
     margin-top : 70px;
+    color: #ffda94;
 }
 
 .left {
@@ -151,7 +185,7 @@ h4 {
 
 .delete {
     margin-top: 30px;
-    background-color: #ff3333;
+    background-color: #961937;/* #F72A2A;*/
 }
 
 .info-link {
@@ -191,12 +225,12 @@ table[class=settings] th {
 
 .label {
     padding: 40px 0px 10px 0px;
-    color: #4d4e4f;
+    color: #d74c22;
     font-weight: 600;
 }
 
 .header {
-    background-color: #10131c;
+    background-color: #961937;
     width: 100%;
     min-height: 64px;
     color: white;

@@ -42,7 +42,7 @@
 	% end
 </div>
 
-<div class="img-container">
+<div class="img-container noborder">
 	<img src="{{app.image_url}}" alt="{{ app.name }}" title="{{ app.name }}">
 </div>
 
