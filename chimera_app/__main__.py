@@ -121,14 +121,14 @@ def main():
             print('Compatibility tools stub generation failed')
 
         try:
-            create_all_shortcuts()
-        except:
-            print('Shortcuts creation failed')
-
-        try:
             apply_all_tweaks()
         except:
             print('Failed to apply tweaks')
+
+        try:
+            create_all_shortcuts()
+        except:
+            print('Shortcuts creation failed')
 
 
 if __name__ == '__main__':
