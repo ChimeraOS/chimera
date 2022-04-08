@@ -349,7 +349,7 @@ table[class=settings] th {
 
 .tab {
     width: 33.3%;
-    background: #548aca;
+    background: #961937;
     display: inline-block;
     text-align: center;
     color: white;
@@ -364,7 +364,7 @@ table[class=settings] th {
 }
 
 .tab.selected {
-    background: #3268a8;
+    background: #d74c22;
 }
 
 .tab.left {
