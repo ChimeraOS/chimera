@@ -566,6 +566,15 @@ def steam_compositor():
         redirect('/actions')
 
 
+@route('/emulators/yuzu')
+@authenticate
+def steam_compositor():
+    try:
+        subprocess.Popen(["/usr/bin/yuzu"])
+    finally:
+        redirect('/emulators')        
+        
+        
 @route('/actions/steam/overlay')
 @authenticate
 def steam_overlay():
