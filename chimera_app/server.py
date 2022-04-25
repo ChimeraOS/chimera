@@ -73,6 +73,10 @@ def root():
 def actions():
     return template('actions.tpl', audio=get_audio(), bare=True)
 
+@route('/emulators')
+@authenticate
+def actions():
+    return template('emulators.tpl', bare=True)
 
 @route('/library')
 @authenticate
