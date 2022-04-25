@@ -53,7 +53,8 @@ PLATFORMS = {
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
     "snes":        "Super Nintendo",
-    "tg-16":       "TurboGrafx-16"
+    "tg-16":       "TurboGrafx-16",
+    "switch":      "Switch"
 }
 
 SETTINGS_DEFAULT = {
