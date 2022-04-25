@@ -91,7 +91,8 @@ platforms=('32x'
            'saturn'
            'sega-cd'
            'snes'
-           'tg-16')
+           'tg-16'
+           'switch')
 if [ -d $DATA_HOME/steam-shortcuts ] ; then
     if ! [ -d $DATA_HOME/chimera ] ; then
         mkdir -p $DATA_HOME/chimera
