@@ -568,7 +568,7 @@ def steam_compositor():
 
 @route('/emulators/yuzu')
 @authenticate
-def steam_compositor():
+def emulators_yuzu():
     try:
         subprocess.Popen(["/usr/bin/yuzu"])
     finally:
