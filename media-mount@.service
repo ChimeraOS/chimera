@@ -1,0 +1,11 @@
+# From https://serverfault.com/a/767079
+# Modified from SteamOS 3 sdcard-mount@.service
+
+[Unit]
+Description=Mount removable media on %i
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/usr/lib/media-support/mount-media.sh add %i
+ExecStop=/usr/lib/media-support/mount-media.sh remove %i
