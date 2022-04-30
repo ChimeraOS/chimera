@@ -14,6 +14,7 @@ setup(
              ],
 
     data_files=[
+        ('lib/media-support', glob('media-support/*')),
         ('share/chimera/images', glob('images/*.png')),
         ('share/chimera/images/flathub', glob('images/flathub/*.png')),
         ('share/chimera/views', glob('views/*.tpl')),
