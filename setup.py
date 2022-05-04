@@ -40,6 +40,7 @@ setup(
         'bcrypt',
         'vdf',
         'inotify_simple',
+        'pyudev',
     ],
 
     # metadata to display on PyPI

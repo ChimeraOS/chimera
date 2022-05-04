@@ -5,6 +5,12 @@
     <a class="button" href="/system/mangohud/edit_config">
         Configure MangoHud
     </a>
+    
+    <h4>Storage</h4>
+    <hr>
+    <a class="button" href="/system/storage">
+        Configure Storage
+    </a>
 
     <h4>Logging in</h4>
     <hr>

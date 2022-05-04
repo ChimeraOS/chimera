@@ -29,6 +29,7 @@ from chimera_app.config import BANNER_DIR
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
+from chimera_app.config import STORAGE_HANDLER
 from chimera_app.config import STREAMING_HANDLER
 from chimera_app.config import MANGOHUD_HANDLER
 from chimera_app.compat_tools import OFFICIAL_COMPAT_TOOLS
@@ -803,6 +804,15 @@ def suspend_system():
     finally:
         redirect('/actions')
 
+@route('/system/storage')
+@authenticate
+def storage_display():
+    disks = STORAGE_HANDLER.get_disks()
+    print(disks)
+    for disk in disks:
+        log = STORAGE_HANDLER.format_disk(disk["name"])
+        print(log)
+    return template('storage.tpl')
 
 def get_audio():
     if not shutil.which('ponymix'):
