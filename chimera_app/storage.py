@@ -23,15 +23,18 @@ class StorageConfig:
                     break
                 partitions = self.get_partitions(name)
                 is_sys_dev=False
-
                 # Make sure we don't list the system drive.
-                for part in psutil.disk_partitions() 
-                    # part.device is full path, partitions is truncated partition name.
-                    strip_path = part.device.replace("/dev/", "") 
-                    if part.mountpoint in ["/", "/boot", "/boot/efi", "/boot/grub"] and strip_path in partitions:
-                        is_sys_dev=True
-                        break
-                
+                for part in psutil.disk_partitions():
+                    for part_dict in partitions:
+                        # part.device is full path, partitions is truncated partition name.
+                        strip_path = part.device.replace("/dev/", "") 
+                        if strip_path in part_dict["name"]:
+                            if part.mountpoint in ["/", "/boot", "/boot/efi", "/boot/grub"]:
+                                is_sys_dev=True
+                                break
+                            else:
+                                part_dict["mount_point"] = part.mountpoint
+                        
                 # Append the disk to the list.
                 if not is_sys_dev:
                     disks.append(
@@ -50,8 +53,10 @@ class StorageConfig:
             if device.device_type == "partition":
                 property_dict = dict(device.items())
                 name = property_dict.get('DEVNAME', "Unknown").split('/')[-1]
+                uuid = property_dict.get('ID_FS_UUID',"Unkown")
+                fstype = property_dict.get('ID_FS_TYPE',"Unkown")
                 if disk in name:
-                    partitions.append(name)
+                    partitions.append({"name": name, "mount_point": "", "uuid": uuid, "fstype": fstype})
         return partitions
 
     def format_disk(self, disk):
