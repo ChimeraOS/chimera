@@ -11,6 +11,7 @@ class StorageConfig:
     def __init__(self):
         pass 
 
+
     # Modified from https://www.programcreek.com/python/example/98337/pyudev.Context
     def get_disks(self):
         disks = []
@@ -34,7 +35,7 @@ class StorageConfig:
                                 break
                             else:
                                 part_dict["mount_point"] = part.mountpoint
-                        
+
                 # Append the disk to the list.
                 if not is_sys_dev:
                     disks.append(
@@ -43,8 +44,8 @@ class StorageConfig:
                         'model':	property_dict.get('ID_MODEL', "Unknown"),
                         'partitions': partitions
 			        })
-            
         return disks 
+
 
     def get_partitions(self, disk):
         partitions = []
@@ -59,5 +60,10 @@ class StorageConfig:
                     partitions.append({"name": name, "mount_point": "", "uuid": uuid, "fstype": fstype})
         return partitions
 
+
     def format_disk(self, disk):
         return run(['/usr/lib/media-support/format-media.sh', disk], capture_output=True, text=True, input="y")
+        # Streamable output version, needs websocket connection and JS to stream to page.
+        #process = Popen(['/usr/lib/media-support/format-media.sh', disk], stdout=PIPE, stdin=PIPE, shell=True)
+        #process.communicate(b'y')
+        #return process

@@ -44,7 +44,9 @@ from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
 from chimera_app.shortcuts import PlatformShortcutsFile
 
+
 server = SessionMiddleware(app(), SESSION_OPTIONS)
+
 
 tmpfiles = {}
 
@@ -804,18 +806,25 @@ def suspend_system():
     finally:
         redirect('/actions')
 
+
 @route('/system/storage',method='GET')
 @authenticate
 def storage_display():
     disks = STORAGE_HANDLER.get_disks()
     return template('storage.tpl', disks=disks)
 
+
 @route('/system/storage/format', method='POST')
 @authenticate
 def storage_format():
     disk = request.POST.get("disk")
-    log = STORAGE_HANDLER.format_disk(disk)
+    proc = STORAGE_HANDLER.format_disk(disk)
+    if proc.returncode == 0:
+        log = proc.stdout
+    else:
+        log = proc.stderr
     return template('format_status.tpl', log=log)
+
 
 def get_audio():
     if not shutil.which('ponymix'):
