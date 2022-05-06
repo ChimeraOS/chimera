@@ -62,7 +62,7 @@ class StorageConfig:
 
 
     def format_disk(self, disk):
-        return run(['/usr/lib/media-support/format-media.sh', disk], capture_output=True, text=True, input="y")
+        return run(['sudo', '/usr/lib/media-support/format-media.sh', disk], capture_output=True, text=True, input="y")
         # Streamable output version, needs websocket connection and JS to stream to page.
         #process = Popen(['/usr/lib/media-support/format-media.sh', disk], stdout=PIPE, stdin=PIPE, shell=True)
         #process.communicate(b'y')
