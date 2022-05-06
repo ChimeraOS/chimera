@@ -3,7 +3,7 @@ import psutil
 import pyudev
 import re
 
-from subprocess import Popen, PIPE, run
+from subprocess import run
 
 class StorageConfig:
 
@@ -42,7 +42,7 @@ class StorageConfig:
                     {
                         'name':     name,	    	
                         'model':	property_dict.get('ID_MODEL', "Unknown"),
-                        'partitions': partitions
+                        'partitions': tuple(partitions)
 			        })
         return disks 
 
@@ -63,7 +63,3 @@ class StorageConfig:
 
     def format_disk(self, disk):
         return run(['sudo', '/usr/lib/media-support/format-media.sh', disk], capture_output=True, text=True, input="y")
-        # Streamable output version, needs websocket connection and JS to stream to page.
-        #process = Popen(['/usr/lib/media-support/format-media.sh', disk], stdout=PIPE, stdin=PIPE, shell=True)
-        #process.communicate(b'y')
-        #return process

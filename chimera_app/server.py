@@ -811,6 +811,10 @@ def suspend_system():
 @authenticate
 def storage_display():
     disks = STORAGE_HANDLER.get_disks()
+    for disk in disks:
+        print(disk["partitions"])
+        for partition in disk["partitions"]:
+            print(partition)
     return template('storage.tpl', disks=disks)
 
 
