@@ -1,0 +1,56 @@
+#!/bin/bash
+
+echo "migration start: $0"
+
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CHIMERA=$DATA_HOME/chimera
+
+if [ -d $CHIMERA/content/gc ]; then
+	echo "renaming content/gc"
+	mv $CHIMERA/content/gc $CHIMERA/content/ngc
+fi
+
+if [ -d $CHIMERA/saves/gc ]; then
+	echo "renaming saves/gc"
+	mv $CHIMERA/saves/gc $CHIMERA/saves/ngc
+fi
+
+if [ -d $CHIMERA/images/background/gc ]; then
+	echo "renaming images/background/gc"
+	mv $CHIMERA/images/background/gc $CHIMERA/images/background/ngc
+fi
+
+if [ -d $CHIMERA/images/banner/gc ]; then
+	echo "renaming images/banner/gc"
+	mv $CHIMERA/images/banner/gc $CHIMERA/images/banner/ngc
+fi
+
+if [ -d $CHIMERA/images/icon/gc ]; then
+	echo "renaming images/icon/gc"
+	mv $CHIMERA/images/icon/gc $CHIMERA/images/icon/ngc
+fi
+
+if [ -d $CHIMERA/images/logo/gc ]; then
+	echo "renaming images/logo/gc"
+	mv $CHIMERA/images/logo/gc $CHIMERA/images/logo/ngc
+fi
+
+if [ -d $CHIMERA/images/poster/gc ]; then
+	echo "renaming images/poster/gc"
+	mv $CHIMERA/images/poster/gc $CHIMERA/images/poster/ngc
+fi
+
+if [ -f $CHIMERA/shortcuts/chimera.gc.yaml ]; then
+	echo "renaming shortcuts/chimera.gc.yaml"
+	mv $CHIMERA/shortcuts/chimera.gc.yaml $CHIMERA/shortcuts/chimera.ngc.yaml
+fi
+
+# Replace paths inside any yaml file in shortcuts
+if [ -d $CHIMERA/shortcuts ] && cat $CHIMERA/shortcuts/* | grep "cmd: gc$" > /dev/null; then
+    pushd $CHIMERA/shortcuts > /dev/null
+    echo "renaming commands inside shortcut files"
+    find . -type f -name "*.yaml" -exec sed -i 's|cmd: gc$|cmd: ngc|' {} \;
+    popd > /dev/null
+fi
+
+echo "migration finish: $0"

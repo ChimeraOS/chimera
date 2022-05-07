@@ -38,7 +38,7 @@ PLATFORMS = {
     "gb":          "Game Boy",
     "gba":         "Game Boy Advance",
     "gbc":         "Game Boy Color",
-    "gc":          "GameCube",
+    "ngc":         "GameCube",
     "gog":         "GOG",
     "sgg":         "Game Gear",
     "genesis":     "Genesis",

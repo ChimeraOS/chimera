@@ -1,6 +1,0 @@
-#! /bin/bash
-
-rm -f ~/.local/share/chimera/content/gc/dolphin-emu/Sys
-mkdir -p ~/.local/share/chimera/content/gc/dolphin-emu
-ln -s /usr/share/dolphin-emu/sys ~/.local/share/chimera/content/gc/dolphin-emu/Sys
-/usr/share/chimera/bin/launcher gc dolphin "$@"
