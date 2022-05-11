@@ -45,12 +45,24 @@ if [ -f $CHIMERA/shortcuts/chimera.gc.yaml ]; then
 	mv $CHIMERA/shortcuts/chimera.gc.yaml $CHIMERA/shortcuts/chimera.ngc.yaml
 fi
 
-# Replace paths inside any yaml file in shortcuts
-if [ -d $CHIMERA/shortcuts ] && cat $CHIMERA/shortcuts/* | grep "cmd: gc$" > /dev/null; then
-    pushd $CHIMERA/shortcuts > /dev/null
-    echo "renaming commands inside shortcut files"
-    find . -type f -name "*.yaml" -exec sed -i 's|cmd: gc$|cmd: ngc|' {} \;
-    popd > /dev/null
+pushd $CHIMERA/shortcuts > /dev/null
+
+if grep "cmd: gc$" chimera.ngc.yaml > /dev/null; then
+    echo "renaming shortcut commands"
+    sed -i 's|cmd: gc$|cmd: ngc|' chimera.ngc.yaml;
 fi
+
+# Replace paths inside any yaml file in shortcuts
+if grep "/gc\"" chimera.ngc.yaml > /dev/null; then
+    echo "renaming shortcut execution directories"
+    sed -i 's|/gc"|/ngc"|' chimera.ngc.yaml;
+fi
+
+if grep "/gc/" chimera.ngc.yaml > /dev/null; then
+    echo "renaming shortcut image paths"
+    sed -i 's|/gc/|/ngc/|' chimera.ngc.yaml;
+fi
+
+popd > /dev/null
 
 echo "migration finish: $0"
