@@ -52,7 +52,6 @@ if grep "cmd: gc$" chimera.ngc.yaml > /dev/null; then
     sed -i 's|cmd: gc$|cmd: ngc|' chimera.ngc.yaml;
 fi
 
-# Replace paths inside any yaml file in shortcuts
 if grep "/gc\"" chimera.ngc.yaml > /dev/null; then
     echo "renaming shortcut execution directories"
     sed -i 's|/gc"|/ngc"|' chimera.ngc.yaml;
