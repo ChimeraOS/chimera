@@ -6,6 +6,7 @@ from chimera_app.ftp.server import Server as FTPServer
 from chimera_app.authenticator import Authenticator, generate_password
 from chimera_app.ssh_keys import SSHKeys
 from chimera_app.steamgrid.steamgrid import Steamgrid
+from chimera_app.storage import StorageConfig
 from chimera_app.streaming import StreamServer
 from chimera_app.mangohud_config import MangoHudConfig
 
@@ -93,6 +94,8 @@ STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
 STREAMING_HANDLER = StreamServer(SETTINGS_HANDLER)
 
 MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
+
+STORAGE_HANDLER = StorageConfig()
 
 if SETTINGS_HANDLER.get_setting('platforms'):
     PLATFORMS = SETTINGS_HANDLER.get_setting('platforms')

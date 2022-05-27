@@ -9,14 +9,14 @@ import bcrypt
 import requests
 import shutil
 import unicodedata
+from bottle import abort
 from bottle import app
+from bottle import redirect
+from bottle import request
+from bottle import response
 from bottle import route
 from bottle import template
 from bottle import static_file
-from bottle import redirect
-from bottle import abort
-from bottle import request
-from bottle import response
 from beaker.middleware import SessionMiddleware
 from chimera_app.config import PLATFORMS
 from chimera_app.config import SSH_KEY_HANDLER
@@ -29,6 +29,7 @@ from chimera_app.config import BANNER_DIR
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
+from chimera_app.config import STORAGE_HANDLER
 from chimera_app.config import STREAMING_HANDLER
 from chimera_app.config import MANGOHUD_HANDLER
 from chimera_app.compat_tools import OFFICIAL_COMPAT_TOOLS
@@ -43,7 +44,9 @@ from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
 from chimera_app.shortcuts import PlatformShortcutsFile
 
+
 server = SessionMiddleware(app(), SESSION_OPTIONS)
+
 
 tmpfiles = {}
 
@@ -815,6 +818,27 @@ def suspend_system():
         os.system('systemctl suspend')
     finally:
         redirect('/actions')
+
+
+@route('/system/storage',method='GET')
+@authenticate
+def storage_display():
+    disks = STORAGE_HANDLER.get_disks()
+    for disk in disks:
+        for partition in disk["partitions"]:
+    return template('storage.tpl', disks=disks)
+
+
+@route('/system/storage/format', method='POST')
+@authenticate
+def storage_format():
+    disk = request.POST.get("disk")
+    proc = STORAGE_HANDLER.format_disk(disk)
+    if proc.returncode == 0:
+        log = proc.stdout
+    else:
+        log = proc.stderr
+    return template('format_status.tpl', log=log)
 
 
 def get_audio():
