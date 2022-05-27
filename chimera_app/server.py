@@ -73,6 +73,10 @@ def root():
 def actions():
     return template('actions.tpl', audio=get_audio(), bare=True)
 
+@route('/emulators')
+@authenticate
+def actions():
+    return template('emulators.tpl', bare=True)
 
 @route('/library')
 @authenticate
@@ -562,6 +566,15 @@ def steam_compositor():
         redirect('/actions')
 
 
+@route('/emulators/yuzu')
+@authenticate
+def emulators_yuzu():
+    try:
+        subprocess.Popen(["/usr/bin/yuzu"])
+    finally:
+        redirect('/emulators')        
+        
+        
 @route('/actions/steam/overlay')
 @authenticate
 def steam_overlay():
