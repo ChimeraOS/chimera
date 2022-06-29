@@ -7,6 +7,7 @@ from chimera_app.file_utils import ensure_directory
 from chimera_app.config import CONTENT_DIR
 from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.steam_config import status_to_collection_name
 
 
 class GOG(StorePlatform):
@@ -37,7 +38,7 @@ class GOG(StorePlatform):
             'hidden': False,
             'cmd': '$(gog-launcher {id})'.format(id=content.content_id),
             'dir': game_dir,
-            'tags': ["GOG"],
+            'tags': list(filter(None, [ "GOG", status_to_collection_name(content.status) ])),
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:

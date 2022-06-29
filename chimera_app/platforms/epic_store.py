@@ -4,6 +4,7 @@ import os
 import chimera_app.context as context
 from chimera_app.config import CONTENT_DIR
 from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.steam_config import status_to_collection_name
 
 
 class EpicStore(StorePlatform):
@@ -28,7 +29,7 @@ class EpicStore(StorePlatform):
             'hidden': False,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'dir': self.__get_folder_path(content.content_id),
-            'tags': ["Epic Games Store"],
+            'tags': list(filter(None, [ "Epic Games Store", status_to_collection_name(content.status) ])),
             'compat_tool': content.compat_tool or 'proton_7'
         }
 

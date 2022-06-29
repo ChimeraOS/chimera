@@ -8,6 +8,33 @@ import yaml
 import chimera_app.context as context
 from chimera_app.config import GAMEDB
 from chimera_app.file_utils import ensure_directory_for_file
+from chimera_app.steam_collections import SteamCollections
+
+
+def status_to_collection_name(status):
+    if not status:
+        return None
+    elif status == 'verified':
+        return 'ChimeraOS Verified'
+    elif status == 'playable':
+        return 'ChimeraOS Playable'
+    elif status == 'unsupported':
+        return 'ChimeraOS Unsupported'
+
+    return None
+
+def apply_status_collections(db, user_id):
+    col = SteamCollections(user_id)
+    col.open()
+    for game_id in db:
+        col.remove(status_to_collection_name('verified'), [ int(game_id) ] )
+        col.remove(status_to_collection_name('playable'), [ int(game_id) ] )
+        col.remove(status_to_collection_name('unsupported'), [ int(game_id) ] )
+        if 'status' in db[game_id]:
+            col_name = status_to_collection_name(db[game_id]['status'])
+            if col_name:
+                col.add(col_name, [ int(game_id) ])
+    col.save()
 
 
 def apply_all_tweaks():
@@ -25,6 +52,7 @@ def apply_all_tweaks():
         user_config = LocalSteamConfig(user_id)
         user_config.apply_tweaks(GAMEDB['steam'])
         user_config.save()
+        apply_status_collections(GAMEDB['steam'], user_id)
 
 
 class TweaksFile:

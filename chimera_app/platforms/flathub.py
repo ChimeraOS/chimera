@@ -4,6 +4,7 @@ import requests
 from typing import List, Dict
 from chimera_app.platforms.store_platform import StorePlatform, dic
 from chimera_app.config import RESOURCE_DIR, BANNER_DIR
+from chimera_app.steam_config import status_to_collection_name
 
 
 FLATPAK_WRAPPER = "bin/flatpak-wrapper"
@@ -138,7 +139,7 @@ class Flathub(StorePlatform):
             'hidden': False,
             'cmd': "flatpak run " + content.content_id,
             'dir': "~",
-            'tags': ["Flathub"]
+            'tags': list(filter(None, [ "Flathub", status_to_collection_name(content.status) ])),
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:

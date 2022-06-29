@@ -9,7 +9,11 @@ import yaml
 import chimera_app.context as context
 import chimera_app.utils as utils
 import chimera_app.steam_config as steam_config
+from chimera_app.steam_collections import SteamCollections
 from chimera_app.file_utils import ensure_directory_for_file
+
+
+STATUS_TAGS = [ 'ChimeraOS Verified', 'ChimeraOS Playable', 'ChimeraOS Unsupported' ]
 
 
 def create_all_shortcuts():
@@ -89,6 +93,7 @@ class SteamShortcutsFile():
     """Class to manage Steam shortcuts files for users"""
 
     path: str
+    tags: dict
     user_id: str
     new_data: dict
     current_data: dict
@@ -101,6 +106,7 @@ class SteamShortcutsFile():
                                  'config/shortcuts.vdf')
         self.current_data = None
         self.new_data = {}
+        self.tags = {}
         if auto_load:
             self.load_data()
 
@@ -155,6 +161,24 @@ class SteamShortcutsFile():
         with open(self.path, 'wb') as ss_file:
             ss_file.write(vdf.binary_dumps(out))
 
+        col = SteamCollections(self.user_id)
+        col.open()
+
+        # clear all status tags for all games we are about to add - prevents games from having multiple statuses after status changes
+        for xtag in STATUS_TAGS:
+            for ytag in STATUS_TAGS:
+                if ytag in self.tags:
+                    col.remove(xtag, self.tags[ytag])
+
+        for tag in self.tags:
+            col.add(tag, self.tags[tag])
+        col.save()
+
+    def tag(self, tag, appid):
+        if tag not in self.tags:
+            self.tags[tag] = []
+        self.tags[tag].append(appid)
+
     def add_shortcut(self, entry: dict):
         """Creates a new shortcut with given dictionary. Will try to match
         with an existing shortcut in this file. If no existing shortcut can
@@ -195,7 +219,8 @@ class SteamShortcutsFile():
         if 'tags' not in entry:
             entry['tags'] = []
 
-        shortcut_tags = list(shortcut['tags'].values())
+        # preserve all tags except the status tags (to allow changes to status to be reflected)
+        shortcut_tags = list(set(shortcut['tags'].values()) - set(STATUS_TAGS))
 
         TIME_WARP_TAG = 'Time Warp'
         TIME_WARP_DATE = None
@@ -227,6 +252,7 @@ class SteamShortcutsFile():
         t = 0
         shortcut['tags'] = {}
         for tag in tags:
+            self.tag(tag, get_compat_id(entry['cmd'], entry['name']))
             shortcut['tags'][str(t)] = tag
             t += 1
 
