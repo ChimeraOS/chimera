@@ -15,9 +15,9 @@ RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
     RESOURCE_DIR = "/usr/share/chimera"
 
-AUTHENTICATOR_PATH = os.path.abspath('bin/chimera-authenticator')
-if not os.path.isfile(AUTHENTICATOR_PATH):
-    AUTHENTICATOR_PATH = "/usr/share/chimera/bin/chimera-authenticator"
+BIN_PATH = os.path.abspath('bin')
+if not os.path.isdir(BIN_PATH):
+    BIN_PATH = "/usr/share/chimera/bin"
 
 SHORTCUT_DIR = context.SHORTCUT_DIRS
 BANNER_DIR = context.DATA_HOME + '/chimera/images'
@@ -83,7 +83,7 @@ SESSION_OPTIONS = {
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
 
-AUTHENTICATOR = Authenticator(AUTHENTICATOR_PATH, password_length=8)
+AUTHENTICATOR = Authenticator(BIN_PATH, password_length=8)
 
 FTP_SERVER = FTPServer(SETTINGS_HANDLER)
 
