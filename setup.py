@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="Chimera",
-    version="0.14.7",
+    version="0.14.8",
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
@@ -41,6 +41,7 @@ setup(
         'vdf',
         'inotify_simple',
         'pyudev',
+        'leveldb',
     ],
 
     # metadata to display on PyPI
