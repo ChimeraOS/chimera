@@ -50,7 +50,7 @@
 
 % if not app.operation:
 	% if app.installed:
-		% if app.installed_version != app.available_version:
+		% if app.available_version != None and app.installed_version != app.available_version:
 			<form action="/{{platform}}/update/{{app.content_id}}">
 				<button class="add">Update to version {{app.available_version}}</button>
 			</form>
