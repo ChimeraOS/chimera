@@ -11,17 +11,24 @@ from chimera_app.file_utils import ensure_directory_for_file
 
 
 def update_data(force=False) -> bool:
-    attempts = 0
-    while attempts < 10:
+    attempts = 1
+    while attempts <= 10:
         try:
             dl = Downloader()
             return dl.update(force=force)
-        except:
-            print('failed to update data (attempt {})'.format(attempts + 1))
+        except requests.Timeout:
+            print(f'Failed to update data due to timeout (attempt {attempts})')
             time.sleep(2)
             attempts += 1
+        except requests.ConnectionError:
+            print('Connection error, stop trying to update')
+            break
+        except (Exception, Error):
+            print('Unexpected Exception, stop trying to update')
+            break
 
-    # allow the steam patch and chimera services to pick up the newly downloaded files
+    # allow the steam patch and chimera services to pick up the newly
+    # downloaded files
     subprocess.call(["systemctl", "--user", "restart", "steam-patch"])
     subprocess.call(["systemctl", "--user", "restart", "chimera"])
 
