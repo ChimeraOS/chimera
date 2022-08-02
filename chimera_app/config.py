@@ -54,7 +54,6 @@ PLATFORMS = {
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
     "snes":        "Super Nintendo",
-    "switch":      "Switch",
     "tg-16":       "TurboGrafx-16"
 }
 
