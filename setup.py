@@ -9,7 +9,7 @@ setup(
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
                   },
-    scripts=['steam-tweaks',
+    scripts=[
              'steam-patch',
              ],
 
