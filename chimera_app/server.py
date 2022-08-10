@@ -575,9 +575,9 @@ def emulators_yuzu():
     try:
         subprocess.Popen(["/usr/bin/yuzu"])
     finally:
-        redirect('/emulators')        
-        
-        
+        redirect('/emulators')
+
+
 @route('/actions/steam/overlay')
 @authenticate
 def steam_overlay():
@@ -600,10 +600,8 @@ def mangohud():
 @route('/streaming')
 @authenticate
 def streaming_control():
-    is_streaming = STREAMING_HANDLER.is_streaming()
     is_recording = STREAMING_HANDLER.is_recording()
     return template('streaming_control.tpl',
-                    streaming=is_streaming,
                     recording=is_recording)
 
 
@@ -708,20 +706,6 @@ def streaming_remove_acodec(acodec_id):
         current_acodec = ''
     SETTINGS_HANDLER.set_setting("ffmpeg_acodec", current_acodec)
     redirect('/streaming/config')
-
-
-@route('/streaming/net/start')
-@authenticate
-def streaming_net_start():
-    STREAMING_HANDLER.stream_to_lan()
-    return template('success.tpl')
-
-
-@route('/streaming/net/stop')
-@authenticate
-def streaming_stop():
-    STREAMING_HANDLER.stop_stream()
-    return template('success.tpl')
 
 
 @route('/record/start')
