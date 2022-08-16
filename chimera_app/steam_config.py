@@ -205,7 +205,16 @@ class MainSteamConfig(SteamConfigFile):
                                            }
                                           }
 
-        steam = data['InstallConfigStore']['Software']['Valve']['Steam']
+        store = data['InstallConfigStore']
+        steam = store['Software']['Valve']['Steam']
+
+        # fix bluetooth in BPM by enabling bluetooth by default
+        if 'System' not in store:
+            store['System'] = {'Bluetooth' : {'enabled' : '1'}}
+        elif 'Bluetooth' not in store['System']:
+            store['System']['Bluetooth'] = {'enabled' : '1'}
+        elif 'enabled' not in store['System']['Bluetooth']:
+            store['System']['Bluetooth']['enabled'] = '1'
 
         if 'CompatToolMapping' not in steam:
             steam['CompatToolMapping'] = {}
