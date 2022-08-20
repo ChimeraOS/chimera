@@ -27,8 +27,6 @@ large_font = pygame.font.SysFont('dejavusans', font_size*2, bold=True)
 # Setup joystick
 pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-for joystick in joysticks:
-    joystick.init()
 
 # Create text to display on screen
 password_text = large_font.render(password, True, Color.TEXT)
