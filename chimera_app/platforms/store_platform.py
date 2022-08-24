@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 import threading
 from io import BytesIO
@@ -53,26 +54,32 @@ class StorePlatform:
 
         return app
 
+    def create_task(self, content_id, opName):
+        if content_id in self.tasks:
+            return False
+        self.tasks[content_id] = dic({'progress': -1, 'operation': opName})
+        return True
+
     def uninstall_content(self, content_id):
-        thread = threading.Thread(target=self._update_progress,
-                                  args=(self._uninstall(content_id),
-                                        content_id,
-                                        'Uninstalling'))
-        thread.start()
+        if self.create_task(content_id, 'Uninstalling'):
+            thread = threading.Thread(target=self._update_progress,
+                                      args=(self._uninstall(content_id),
+                                            content_id))
+            thread.start()
 
     def install_content(self, content):
-        thread = threading.Thread(target=self._update_progress,
-                                  args=(self._install(content),
-                                        content.content_id,
-                                        'Installing'))
-        thread.start()
+        if self.create_task(content.content_id, 'Installing'):
+            thread = threading.Thread(target=self._update_progress,
+                                      args=(self._install(content),
+                                            content.content_id))
+            thread.start()
 
     def update_content(self, content_id):
-        thread = threading.Thread(target=self._update_progress,
-                                  args=(self._update(content_id),
-                                        content_id,
-                                        'Updating'))
-        thread.start()
+        if self.create_task(content_id, 'Updating'):
+            thread = threading.Thread(target=self._update_progress,
+                                      args=(self._update(content_id),
+                                            content_id))
+            thread.start()
 
     def get_shortcut(self, content):
         pass
@@ -167,11 +174,12 @@ class StorePlatform:
 
         return os.path.join(base_path, content.content_id + ext)
 
-    def _update_progress(self, sp: subprocess, content_id, opName):
-        if content_id in self.tasks or sp is None:
+    def _update_progress(self, sp: subprocess, content_id):
+        if sp is None:
             return
-        task = dic({'progress': -1, 'operation': opName})
-        self.tasks[content_id] = task
+
+        time.sleep(1)
+
         buf = BytesIO()
         while sp.poll() is None:
             out = sp.stdout.read(1)
@@ -181,6 +189,6 @@ class StorePlatform:
                     if isinstance(value, bytes):
                         value = value.decode("utf-8")
                     if "%" in value:
-                        task.progress = int(value.replace("%", "").split('.')[0])
+                        self.tasks[content_id].progress = int(value.replace("%", "").split('.')[0])
                 buf.truncate(0)
         del self.tasks[content_id]

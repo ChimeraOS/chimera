@@ -6,8 +6,13 @@
 	<script type="text/JavaScript">
 		async function reloadWhenDone() {
 			url = "/{{ platform }}/progress/" + "{{app.content_id}}";
-			response = await fetch(url);
-			result = await response.json();
+			let result;
+			try {
+				response = await fetch(url);
+				result = await response.json();
+			} catch(e) {
+				result = {};
+			}
 			if (!result.operation) {
 				location.reload(true);
 			} else {
