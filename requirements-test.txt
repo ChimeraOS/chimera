@@ -10,6 +10,8 @@ WebTest
 bcrypt
 Pillow
 vdf
+pyudev
+leveldb
 pytest
 pytidylib
 requests-mock
