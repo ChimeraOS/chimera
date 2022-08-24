@@ -91,7 +91,7 @@ def test_static_get_banner_id():
     name = "SuperTuxKart"
 
     # banner id: 10898728827895152640
-    assert(shortcuts.get_banner_id(exe, name) == 10898728827895152640)
+    assert(shortcuts.get_banner_id(exe, name) == '2537558048')
 
 
 def test_static_get_compat_id():
