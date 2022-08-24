@@ -1,7 +1,7 @@
 import os
 from webtest import TestApp
 from chimera_app.server import server
-from chimera_app.config import PLATFORMS, AUTHENTICATOR_PATH
+from chimera_app.config import PLATFORMS, BIN_PATH
 
 
 # Prevent pytest from trying to collect webtest's TestApp as tests:
@@ -10,8 +10,8 @@ TestApp.__test__ = False
 
 def test_runs(monkeypatch):
     def mock_launch(self):
-        if not os.path.isfile(AUTHENTICATOR_PATH):
-            raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
+        if not os.path.isdir(BIN_PATH):
+            raise FileNotFoundError(f"No authenticators at path {BIN_PATH}")
 
     from chimera_app.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)
