@@ -15,7 +15,7 @@ from chimera_app.server import \
         mangohud_edit, \
         streaming_config, \
         virtual_keyboard
-from chimera_app.config import PLATFORMS, AUTHENTICATOR_PATH
+from chimera_app.config import PLATFORMS, BIN_PATH
 
 
 def validate_html(endpoint, document):
@@ -88,8 +88,8 @@ def test_logout():
 
 def test_login(monkeypatch):
     def mock_launch(self):
-        if not os.path.isfile(AUTHENTICATOR_PATH):
-            raise FileNotFoundError("Authenticator not found at path {}".format(AUTHENTICATOR_PATH))
+        if not os.path.isdir(BIN_PATH):
+            raise FileNotFoundError(f"No authenticators at path {BIN_PATH}")
 
     from chimera_app.authenticator import Authenticator
     monkeypatch.setattr(Authenticator, 'launch', mock_launch)

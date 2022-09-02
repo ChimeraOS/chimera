@@ -5,7 +5,7 @@ from webtest import TestApp
 from chimera_app.server import server
 from chimera_app.server import PLATFORM_HANDLERS
 from chimera_app.config import PLATFORMS
-from chimera_app.config import AUTHENTICATOR_PATH
+from chimera_app.config import BIN_PATH
 
 
 # Prevent pytest from trying to collect webtest's TestApp as tests:
@@ -15,9 +15,9 @@ TestApp.__test__ = False
 @pytest.fixture
 def unauthorized_app(monkeypatch):
     def mock_launch(self):
-        if not os.path.isfile(AUTHENTICATOR_PATH):
+        if not os.path.isdir(BIN_PATH):
             raise FileNotFoundError(
-                f'Authenticator not found at path {AUTHENTICATOR_PATH}'
+                f'Authenticator not found at path {BIN_PATH}'
             )
 
     from chimera_app.authenticator import Authenticator
@@ -48,13 +48,6 @@ def test_platform_page(unauthorized_app):
 def test_platform_authenticate(unauthorized_app):
     for platform in PLATFORM_HANDLERS:
         resp = unauthorized_app.post(f'/library/{platform}/authenticate')
-        assert(resp.status_code == 302)
-        assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_platform_banners(unauthorized_app):
-    for platform in PLATFORMS:
-        resp = unauthorized_app.get('/banners/{platform}/giberish')
         assert(resp.status_code == 302)
         assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -235,18 +228,6 @@ def test_streaming_add_acodec(unauthorized_app):
 
 def test_streaming_remove_acodec(unauthorized_app):
     resp = unauthorized_app.post('/streaming/remove_acodec/123456')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_net_start(unauthorized_app):
-    resp = unauthorized_app.get('/streaming/net/start')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_net_stop(unauthorized_app):
-    resp = unauthorized_app.get('/streaming/net/stop')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 

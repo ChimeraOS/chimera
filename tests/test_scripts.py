@@ -6,7 +6,6 @@ import vdf
 import pytest
 import chimera_app
 import chimera_app.shortcuts as shortcuts
-import chimera_app.steam_config as steam_config
 import chimera_app.compat_tools as compat_tools
 import chimera_app.data as chimera_data
 
@@ -108,30 +107,18 @@ def test_update_with_empty(branches_mock,
     branches_file = os.path.expanduser(
         "~/.local/share/chimera/data/branches.json"
     )
-    assert(not os.path.exists(version_file))
-    assert(not os.path.exists(branches_file))
+    assert (not os.path.exists(version_file))
+    assert (not os.path.exists(branches_file))
 
     chimera_data.update_data()
 
-    assert(os.path.exists(version_file))
-    assert(os.path.exists(branches_file))
+    assert (os.path.exists(version_file))
+    assert (os.path.exists(branches_file))
 
     with open(branches_file) as file:
         branches = json.load(file)
 
-    assert(branches == branches_content)
-
-
-def test_config_with_empty(empty_data):
-    config_file = os.path.expanduser(
-        '~/.local/share/Steam/config/config.vdf')
-    user_config_file = os.path.expanduser(
-        '~/.local/share/Steam/userdata/12345678/config/localconfig.vdf')
-
-    steam_config.apply_all_tweaks()
-
-    assert(not os.path.exists(config_file))
-    assert(not os.path.exists(user_config_file))
+    assert (branches == branches_content)
 
 
 def test_compat_with_empty(empty_data):
@@ -141,8 +128,8 @@ def test_compat_with_empty(empty_data):
 
     compat_tools.install_all_compat_tools()
 
-    assert(not os.path.exists(compat_tools_dir))
-    assert(not os.path.exists(proton_ge_dir))
+    assert (not os.path.exists(compat_tools_dir))
+    assert (not os.path.exists(proton_ge_dir))
 
 
 def test_shortcuts_with_empty(empty_data):
@@ -151,39 +138,7 @@ def test_shortcuts_with_empty(empty_data):
 
     shortcuts.create_all_shortcuts()
 
-    assert(not os.path.exists(shortcuts_file))
-
-
-def test_config_with_data(fake_data):
-    "Test effects of tweaks with downloaded files"
-
-    config_file = os.path.expanduser(
-        '~/.local/share/Steam/config/config.vdf')
-    user_config_file = os.path.expanduser(
-        '~/.local/share/Steam/userdata/12345678/config/localconfig.vdf')
-
-    steam_config.apply_all_tweaks()
-
-    assert(os.path.exists(config_file))
-    conf_vdf = vdf.load(open(config_file))
-    compat = (conf_vdf['InstallConfigStore']['Software']['Valve']['Steam']
-              ['CompatToolMapping'])
-    assert(compat['221380']['name'] == 'proton_411')
-    assert(compat['409710']['name'] == 'proton_513')
-    assert(compat['409710']['config'] == 'noesync,nofsync')
-
-    assert(os.path.exists(user_config_file))
-    conf_vdf = vdf.load(open(user_config_file))
-    launch_options = (conf_vdf['UserLocalConfigStore']['Software']['Valve']
-                      ['Steam']['Apps'])
-    assert(launch_options['285820']['LaunchOptions'] ==
-           'LD_LIBRARY_PATH= %command%')
-    assert(launch_options['331870']['LaunchOptions'] ==
-           '%command% -screen-fullscreen 0')
-    assert(launch_options['409710']['LaunchOptions'] == '-nointro')
-
-    steam_input = conf_vdf['UserLocalConfigStore']['Apps']
-    assert(steam_input['285820']['UseSteamControllerConfig'] == '2')
+    assert (not os.path.exists(shortcuts_file))
 
 
 def test_compat_with_data(fake_data):
@@ -194,11 +149,11 @@ def test_compat_with_data(fake_data):
 
     compat_tools.install_all_compat_tools()
 
-    assert(os.path.exists(proton_ge_dir))
-    assert(os.path.exists(os.path.join(proton_ge_dir, 'proton')))
-    assert(os.path.exists(os.path.join(proton_ge_dir, 'toolmanifest.vdf')))
-    assert(os.path.exists(os.path.join(proton_ge_dir,
-                                       'compatibilitytool.vdf')))
+    assert (os.path.exists(proton_ge_dir))
+    assert (os.path.exists(os.path.join(proton_ge_dir, 'proton')))
+    assert (os.path.exists(os.path.join(proton_ge_dir, 'toolmanifest.vdf')))
+    assert (os.path.exists(os.path.join(proton_ge_dir,
+                                        'compatibilitytool.vdf')))
 
 
 def test_shortcuts_with_data(fake_data):
@@ -207,8 +162,8 @@ def test_shortcuts_with_data(fake_data):
 
     shortcuts.create_all_shortcuts()
 
-    assert(os.path.exists(shortcuts_file))
+    assert (os.path.exists(shortcuts_file))
     sh_data = vdf.binary_load(open(shortcuts_file, 'rb'))
-    assert(sh_data['shortcuts']['0']['AppName'] == 'Firefox')
-    assert(sh_data['shortcuts']['1']['AppName'] == 'SuperTux Native')
-    assert(sh_data['shortcuts']['2']['AppName'] == 'SuperTux')
+    assert (sh_data['shortcuts']['0']['AppName'] == 'Firefox')
+    assert (sh_data['shortcuts']['1']['AppName'] == 'SuperTux Native')
+    assert (sh_data['shortcuts']['2']['AppName'] == 'SuperTux')
