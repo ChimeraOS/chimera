@@ -15,7 +15,7 @@ TestApp.__test__ = False
 @pytest.fixture
 def unauthorized_app(monkeypatch):
     def mock_launch(self):
-        if not os.path.isfile(BIN_PATH):
+        if not os.path.isdir(BIN_PATH):
             raise FileNotFoundError(
                 f'Authenticator not found at path {BIN_PATH}'
             )
