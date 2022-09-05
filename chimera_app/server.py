@@ -136,6 +136,12 @@ def platform_authenticate(platform):
         return
 
     password = request.forms.get('password')
+    if not password:
+        redirect(f'/library/{platform}')
+
+    password = password.replace('authorizationCode', '')
+    password = password.replace('code', '')
+    password = ''.join(c for c in password if c.isalnum())
     PLATFORM_HANDLERS[platform].authenticate(password)
     redirect(f'/library/{platform}')
 

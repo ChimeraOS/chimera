@@ -21,7 +21,7 @@ class EpicStore(StorePlatform):
                                            "user.json"))
 
     def authenticate(self, password):
-        subprocess.check_output(["legendary", "auth", "--sid", password])
+        subprocess.check_output(["legendary", "auth", "--code", password])
 
     def get_shortcut(self, content):
         shortcut = {
