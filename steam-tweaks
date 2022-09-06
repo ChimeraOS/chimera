@@ -3,7 +3,7 @@
 /usr/share/chimera/migrations/01-chimera-dir --logout
 /usr/share/chimera/migrations/02-multi-image-types
 /usr/share/chimera/migrations/03-gc-to-ngc
-chimera --update --tweaks
+chimera --update --tweaks --splash
 chimera --images & # do not wait for image downloads
 
 # make sure the patch service picks up the latest downloaded data
