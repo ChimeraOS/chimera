@@ -22,18 +22,22 @@ class SteamCollections():
         if self.collections:
             return
 
-        dbdir = context.DATA_HOME + '/Steam/config/htmlcache/Local Storage/leveldb'
-        if not os.path.isdir(dbdir):
+        try:
+            dbdir = context.DATA_HOME + '/Steam/config/htmlcache/Local Storage/leveldb'
+            if not os.path.isdir(dbdir):
+                self.collections = None
+                return
+
+            self.db = leveldb.LevelDB(dbdir)
+
+            value = self.db.Get(self.url)
+            dvalue = value.decode('utf-8')
+
+            self.bom = dvalue[0]
+            self.collections = self.__decode(dvalue)
+        except Exception as e:
+            print('failed to load steam collections:', e)
             self.collections = None
-            return
-
-        self.db = leveldb.LevelDB(dbdir)
-
-        value = self.db.Get(self.url)
-        dvalue = value.decode('utf-8')
-
-        self.bom = dvalue[0]
-        self.collections = self.__decode(dvalue)
 
 
     def __decode(self, data):
