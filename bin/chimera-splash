@@ -19,7 +19,7 @@ background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
 
 background = pygame.image.load(background_image_path)
 
-info_text = font.render("Searching for updated game data", True, Color.TEXT)
+info_text = font.render("Downloading game configuration updates", True, Color.TEXT)
 info_text_rect = pygame.Rect(
     int(screen.get_width() / 2 - info_text.get_width() / 2),
     font_size,
