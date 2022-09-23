@@ -40,9 +40,9 @@ PLATFORMS = {
     "gba":         "Game Boy Advance",
     "gbc":         "Game Boy Color",
     "ngc":         "GameCube",
-    "gog":         "GOG",
     "sgg":         "Game Gear",
     "genesis":     "Genesis",
+    "gog":         "GOG",
     "jaguar":      "Jaguar",
     "sms":         "Master System",
     "neo-geo":     "Neo Geo",
@@ -54,7 +54,8 @@ PLATFORMS = {
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
     "snes":        "Super Nintendo",
-    "tg-16":       "TurboGrafx-16"
+    "tg-16":       "TurboGrafx-16",
+    "wii":         "Wii"
 }
 
 SETTINGS_DEFAULT = {

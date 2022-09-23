@@ -43,6 +43,12 @@ if [ -e ${CORE_CONFIG} ]; then
 	cp ${CORE_CONFIG} ${CONFIG_HOME}/retroarch/retroarch-core-options.cfg
 fi
 
+if [ "${RETRO_CORE}" == "dolphin" ]; then
+	mkdir -p ${CONFIG_HOME}/retroarch/config/remaps/dolphin-emu
+	rm -f ${CONFIG_HOME}/retroarch/config/remaps/dolphin-emu/dolphin-emu.rmp
+	ln -s ${CORE_CONFIG} ${CONFIG_HOME}/retroarch/config/remaps/dolphin-emu/dolphin-emu.rmp
+fi
+
 retroarch \
 --appendconfig "${RETRO_CONFIG}|${CORE_CONFIG}" \
 --libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
