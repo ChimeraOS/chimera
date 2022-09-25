@@ -224,14 +224,28 @@ def public(filename):
     return static_file(filename, root='public')
 
 
+def get_ext(url):
+    url_noquery = url.split('?')[0]
+    ext = os.path.splitext(url_noquery)[1]
+
+    if not ext:
+        ext = '.png'
+
+    return ext
+
 @route('/shortcuts/new', method='POST')
 @authenticate
 def shortcut_create():
+    image_urls = {}
+    image_paths = {}
     name = sanitize(request.forms.get('name'))
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
-    banner_url = request.forms.get('banner-url')
-    banner = request.forms.get('banner')
+    image_urls['banner'] = request.forms.get('image-url-banner')
+    image_urls['poster'] = request.forms.get('image-url-poster')
+    image_urls['background'] = request.forms.get('image-url-background')
+    image_urls['logo'] = request.forms.get('image-url-logo')
+    image_urls['icon'] = request.forms.get('image-url-icon')
     content = request.forms.get('content')
 
     if not name or name.strip() == '':
@@ -245,30 +259,25 @@ def shortcut_create():
     if shortcuts.get_shortcut_match(name):
         return 'Shortcut already exists'
 
-    banner_path = None
-    if banner:
-        (banner_src_path, banner_dst_name) = tmpfiles[banner]
-        del tmpfiles[banner]
-        banner_path = upsert_file(banner_src_path,
-                                  BANNER_DIR + '/banner',
-                                  platform,
-                                  name,
-                                  banner_dst_name)
-    else:
-        banner_path = os.path.join(BANNER_DIR, 'banner', platform, f"{name}.png")
-        ensure_directory_for_file(banner_path)
-        if banner_url:
-            download = requests.get(banner_url)
-            with open(banner_path, "wb") as banner_file:
-                banner_file.write(download.content)
+    for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+        if not image_urls[img_type]:
+            continue
+        ext = get_ext(image_urls[img_type])
+        image_paths[img_type] = os.path.join(BANNER_DIR, img_type, platform, f"{name}{ext}")
+        ensure_directory_for_file(image_paths[img_type])
+        download = requests.get(image_urls[img_type])
+        with open(image_paths[img_type], "wb") as image_file:
+            image_file.write(download.content)
 
     shortcut = {
         'name': name,
         'cmd': platform,
         'hidden': hidden == 'on',
-        'banner': banner_path,
         'tags': [PLATFORMS[platform]]
     }
+
+    for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+        shortcut[img_type] = image_paths[img_type]
 
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
@@ -290,38 +299,38 @@ def shortcut_create():
 @route('/shortcuts/edit', method='POST')
 @authenticate
 def shortcut_update():
-    # do not allow editing name
-    name = sanitize(request.forms.get('original_name'))
+    image_urls = {}
+    image_paths = {}
+    name = sanitize(request.forms.get('original_name')) # do not allow editing name
     platform = sanitize(request.forms.get('platform'))
     hidden = sanitize(request.forms.get('hidden'))
-    banner_url = request.forms.get('banner-url')
-    banner = request.forms.get('banner')
+    image_urls['banner'] = request.forms.get('image-url-banner')
+    image_urls['poster'] = request.forms.get('image-url-poster')
+    image_urls['background'] = request.forms.get('image-url-background')
+    image_urls['logo'] = request.forms.get('image-url-logo')
+    image_urls['icon'] = request.forms.get('image-url-icon')
     content = request.forms.get('content')
 
     shortcuts = PlatformShortcutsFile(platform)
     shortcut = shortcuts.get_shortcut_match(name)
 
-    banner_path = None
-    if banner:
-        (banner_src_path, banner_dst_name) = tmpfiles[banner]
-        del tmpfiles[banner]
-        banner_path = upsert_file(banner_src_path,
-                                  BANNER_DIR + '/banner',
-                                  platform,
-                                  name,
-                                  banner_dst_name)
-    elif banner_url:
-        banner_path = os.path.join(BANNER_DIR, 'banner',  platform, f"{name}.png")
-        ensure_directory_for_file(banner_path)
-        download = requests.get(banner_url)
-        with open(banner_path, "wb") as banner_file:
-            banner_file.write(download.content)
+    for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+        if not image_urls[img_type]:
+            continue
+        ext = get_ext(image_urls[img_type])
+        image_paths[img_type] = os.path.join(BANNER_DIR, img_type, platform, f"{name}{ext}")
+        ensure_directory_for_file(image_paths[img_type])
+        download = requests.get(image_urls[img_type])
+        with open(image_paths[img_type], "wb") as image_file:
+            image_file.write(download.content)
 
     shortcut['name'] = name
     shortcut['cmd'] = shortcut['cmd'] or platform
     shortcut['hidden'] = hidden == 'on'
-    if banner or banner_url:
-        shortcut['banner'] = banner_path
+
+    for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+        shortcut[img_type] = image_paths[img_type]
+
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
         del tmpfiles[content]
@@ -948,4 +957,4 @@ def steamgrid_search(search_string):
 
 @route('/steamgrid/images/<game_id>')
 def steamgrid_get_images(game_id):
-    return STEAMGRID_HANDLER.get_images(game_id)
+    return STEAMGRID_HANDLER.get_images(game_id, request.query.type)

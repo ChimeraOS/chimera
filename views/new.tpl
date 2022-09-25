@@ -1,12 +1,146 @@
 % rebase('base.tpl')
+
+<script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
+
+<script>
+
+const IMAGE_TYPES = ['banner', 'poster', 'background', 'logo', 'icon'];
+
+function capitalize(word) {
+	return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+async function fetchimgs(url) {
+	const response = await fetch(url);
+	const json = await response.json();
+	return json.data;
+}
+
+function images() {
+	return {
+		isEditing: '{{isEditing}}' === 'True',
+		gameName: '{{name}}',
+		gameID: null,
+		gameOptions: [],
+		showSuggestions: true,
+		async updateGameOptions() {
+			if (!this.gameName) {
+				this.gameOptions = [];
+				return;
+			}
+			url = "/steamgrid/search/" + this.gameName;
+			response = await fetch(url);
+			games = await response.json();
+			if (!games.success || !this.showSuggestions) {
+				this.showSuggestions = true;
+				this.gameOptions = [];
+				return;
+			}
+
+			if (!this.isEditing) {
+				this.gameOptions = games.data;
+				return;
+			}
+
+			if (games.data && games.data.length > 0) {
+				this.setGameName(games.data[0].name, games.data[0].id);
+			}
+		},
+		images: {
+			banner: [{}],
+			poster: [{}],
+			background: [{}],
+			logo: [{}],
+			icon: [{}],
+		},
+
+		selected: {
+			banner: 0,
+			poster: 0,
+			background: 0,
+			logo: 0,
+			icon: 0,
+		},
+
+		imageURLs: {
+			banner: 0,
+			poster: 0,
+			background: 0,
+			logo: 0,
+			icon: 0,
+		},
+
+		setGameName(name, id) {
+			this.showSuggestions = false;
+			this.gameName = name;
+			this.gameID = id;
+			this.gameOptions = [];
+			this.selected = {
+				banner: 0,
+				poster: 0,
+				background: 0,
+				logo: 0,
+				icon: 0,
+			};
+
+			this.images = {
+				banner: [{}],
+				poster: [{}],
+				background: [{}],
+				logo: [{}],
+				icon: [{}],
+			};
+
+			this.imageURLs = {
+				banner: 0,
+				poster: 0,
+				background: 0,
+				logo: 0,
+				icon: 0,
+			};
+
+			this.loadImages();
+		},
+
+		next(type) {
+			this.selected[type] += 1;
+			if (this.selected[type] >= this.images[type].length) {
+				this.selected[type] = 0;
+			}
+
+			this.imageURLs[type] = this.images[type][this.selected[type]].url;
+		},
+
+		prev(type) {
+			this.selected[type] -= 1;
+			if (this.selected[type] < 0) {
+				this.selected[type] = this.images[type].length - 1;
+			}
+			this.imageURLs[type] = this.images[type][this.selected[type]].url;
+		},
+
+		async loadImages() {
+			for (type of IMAGE_TYPES) {
+				this.images[type] = await fetchimgs(`/steamgrid/images/${this.gameID}?type=${type}`);
+				this.imageURLs[type] = this.images[type][this.selected[type]].url;
+			}
+		},
+	};
+}
+</script>
+
+
+<div x-data="images()">
 <form autocomplete="off" action="/shortcuts/{{ 'edit' if isEditing else 'new' }}" method="post" enctype="multipart/form-data">
 	<input type="hidden" value="{{name}}" name="original_name">
 	<input type="hidden" value="{{platform}}" name="platform">
 
 	<div class="label">Name</div>
 	<div class="steamgridapi">
-	    <input id="gamename" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
-	    <div id="game-options"></div>
+		<input id="gamename" x-effect="updateGameOptions()" x-model.debounce.500ms="gameName" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
+		<template x-for="game in gameOptions" x-show="showSuggestions">
+			<div class="game-name-suggestion" @click="setGameName(game.name, game.id)" x-text="game.name"></div>
+		</template>
 	</div>
 
 	<div class="label">Hidden</div>
@@ -15,32 +149,17 @@
 	<div class="label">Content</div>
 	<input type="file" class="filepond" name="content" />
 
-	<div class="label">Banner</div>
-	<div class="tabs">
-		<div id="banner_upload_tab" class="tab left" onclick="show('banner_upload')">
-			Upload
-		</div><div id="banner_url_tab" class="tab" onclick="show('banner_url')">
-			URL
-		</div><div id="banner_steamgriddb_tab" class="tab right" onclick="show('banner_steamgriddb')">
-			SteamGridDB
+	<template x-for="type in IMAGE_TYPES">
+		<div>
+			<div class="label" x-text="capitalize(type)"></div>
+			<div style="margin-top: 10px; margin-bottom: 30px;">
+				<span style="font-size: 40px; cursor: pointer;" @click="prev(type)">⬅️ </span>
+				<img style="all: initial; max-width: 60%; vertical-align:middle" :src="images[type][selected[type]].thumb">
+				<input x-model="imageURLs[type]" type="hidden" :id="`image-url-${type}`" :name="`image-url-${type}`" />
+				<span style="font-size: 40px; cursor: pointer;" @click="next(type)">➡️ </span>
+			</div>
 		</div>
-	</div>
-
-	<div id="banner_upload_content">
-		<input type="file" class="filepond" name="banner" />
-	</div>
-
-	<div id="banner_url_content">
-		<input id="banner-url" name="banner-url" />
-	</div>
-
-	<div id="banner_steamgriddb_content">
-		<div id="game-images">
-			% if not isEditing:
-				<p class="placeholder">No banner images found. Enter a valid game name.</p>
-			% end
-		</div>
-	</div>
+	</template>
 
 	% if isEditing :
 		<button>Update</button>
@@ -48,6 +167,7 @@
 		<button>Add</button>
 	% end
 </form>
+</div>
 
 <script>
 FilePond.parse(document.body);
@@ -66,126 +186,3 @@ FilePond.setOptions({
 	<button class="delete">Delete</button>
 </form>
 % end
-
-<script>
-    let games = [];
-    function setImage(url, selectedID) {
-        let field = document.getElementById("banner-url");
-        field.value = url;
-        const gameImages = document.getElementsByClassName("img-container");
-		for (const img of gameImages) {
-			if (img.id === selectedID) {
-				img.classList.add("selected");
-			} else {
-				img.classList.remove("selected");
-			}
-		}
-    }
-
-	const banner_upload_content = document.getElementById("banner_upload_content");
-	const banner_url_content = document.getElementById("banner_url_content");
-	const banner_steamgriddb_content = document.getElementById("banner_steamgriddb_content");
-	const banner_content_elements = [ banner_upload_content, banner_url_content, banner_steamgriddb_content ];
-
-	const banner_upload_tab = document.getElementById("banner_upload_tab");
-	const banner_url_tab = document.getElementById("banner_url_tab");
-	const banner_steamgriddb_tab = document.getElementById("banner_steamgriddb_tab");
-
-	const banner_tab_elements = [ banner_upload_tab, banner_url_tab, banner_steamgriddb_tab ];
-
-	function show(id) {
-		for (element of banner_content_elements) {
-			element.style.display = "none";
-		}
-
-		for (element of banner_tab_elements) {
-			element.classList.remove("selected");
-		}
-
-		var target_tab = document.getElementById(id+'_tab');
-		var target_content = document.getElementById(id+'_content');
-		target_content.style.display = "block";
-		target_tab.classList.add("selected");
-	}
-
-	show('banner_upload');
-
-    async function setGameName(gameName, gameId) {
-        let field = await document.getElementById("gamename");
-        let gameOptions = await document.getElementById("game-options");
-        let gameImages = await document.getElementById("game-images");
-        field.value = gameName;
-        gameOptions.innerHTML = '';
-        gameImages.innerHTML = '';
-
-        url = "/steamgrid/images/" + gameId;
-        response = await fetch(url);
-        images = await response.json();
-        imagesElement = await document.getElementById("game-images");
-        images.data.forEach(function (image, i) {
-			container = document.createElement("div");
-			container.setAttribute("class", "img-container");
-            entry = document.createElement("IMG");
-			container.setAttribute("id", `img-${i}`);
-            entry.setAttribute("class", "game-image-suggestion");
-            entry.setAttribute("src", image.thumb);
-            entry.setAttribute("onclick", `setImage('${image.url}', 'img-${i}')`);
-			container.appendChild(entry);
-            imagesElement.appendChild(container);
-        });
-    }
-
-
-	let timer;
-	let lastSearch = '';
-	const nameInput = document.getElementById('gamename');
-	nameInput.addEventListener('keyup', () => {
-	    clearTimeout(timer);
-	    if (nameInput.value && nameInput.value !== lastSearch) {
-	        timer = setTimeout(completeGameName, 700);
-	    }
-	});
-
-	async function completeGameName() {
-		lastSearch = nameInput.value;
-        url = "/steamgrid/search/" + lastSearch;
-        response = await fetch(url);
-        games = await response.json();
-        if (!games.success) {
-            return;
-        }
-        gameOptions = await document.getElementById("game-options");
-        gameOptions.innerHTML = '';
-        games.data.forEach(function (game) {
-            entry = document.createElement("DIV");
-            entry.setAttribute("class", "game-name-suggestion");
-            entry.setAttribute("onclick", "setGameName(\"" + game.name + "\", " + game.id +")");
-            entry.innerHTML = game.name;
-            gameOptions.appendChild(entry);
-        });
-	}
-
-    async function suggestImagesOnEdit() {
-        let field = document.getElementById("gamename")
-        if (field.value) {
-            url = "/steamgrid/search/" + field.value;
-            response = await fetch(url);
-            games = await response.json();
-
-            if (!games.success) {
-            return;
-            }
-
-            games.data.forEach(function (game) {
-                if (game.name == field.value) {
-                    setGameName(game.name, game.id);
-                }
-            });
-        }
-    }
-    // When clicking somewhere, close the suggestions
-    document.addEventListener("click", function (e) {
-        document.getElementById("game-options").innerHTML = '';
-    });
-    suggestImagesOnEdit();
-</script>

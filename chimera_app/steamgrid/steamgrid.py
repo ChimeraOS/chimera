@@ -12,8 +12,20 @@ class Steamgrid:
         response = self.__request(url)
         return response.text
 
-    def get_images(self, game_id):
-        url = "https://www.steamgriddb.com/api/v2/grids/game/{}?dimensions=460x215,920x430".format(game_id)
+    def get_images(self, game_id, imgtype=None):
+        if imgtype == 'banner':
+            url = "https://www.steamgriddb.com/api/v2/grids/game/{}?dimensions=460x215,920x430".format(game_id)
+        elif imgtype == 'poster':
+            url = "https://www.steamgriddb.com/api/v2/grids/game/{}?dimensions=600x900".format(game_id)
+        elif imgtype == 'background':
+            url = "https://www.steamgriddb.com/api/v2/heroes/game/{}".format(game_id)
+        elif imgtype == 'logo':
+            url = "https://www.steamgriddb.com/api/v2/logos/game/{}".format(game_id)
+        elif imgtype == 'icon':
+            url = "https://www.steamgriddb.com/api/v2/icons/game/{}".format(game_id)
+        else:
+            return
+
         response = self.__request(url)
         return response.text
 
