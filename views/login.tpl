@@ -2,7 +2,7 @@
 % if keep_password:
 <h3>Please enter your password to continue</h3>
 % else:
-<h3>Please enter the password shown on your TV to continue</h3>
+<h3>Please enter the password shown on your display to continue</h3>
 % end
 % if failed:
     Given password was incorrect!

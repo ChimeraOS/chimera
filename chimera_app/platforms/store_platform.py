@@ -87,8 +87,7 @@ class StorePlatform:
     def __get_status_icon(self, status):
         if not status:
             return None
-
-        if status == 'verified':
+        elif status == 'verified':
             return '🟢'
         elif status =='playable':
             return '🟡'

@@ -79,7 +79,7 @@ def get_logo_id(exe, name):
 def get_image_id(type, exe, name):
     if type == 'bpmbanner':
         return get_bpmbanner_id(exe, name)
-    if type == 'banner':
+    elif type == 'banner':
         return get_banner_id(exe, name)
     elif type == 'poster':
         return get_poster_id(exe, name)
