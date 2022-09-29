@@ -63,11 +63,11 @@ function images() {
 		},
 
 		imageURLs: {
-			banner: 0,
-			poster: 0,
-			background: 0,
-			logo: 0,
-			icon: 0,
+			banner: null,
+			poster: null,
+			background: null,
+			logo: null,
+			icon: null,
 		},
 
 		setGameName(name, id) {
@@ -92,11 +92,11 @@ function images() {
 			};
 
 			this.imageURLs = {
-				banner: 0,
-				poster: 0,
-				background: 0,
-				logo: 0,
-				icon: 0,
+				banner: null,
+				poster: null,
+				background: null,
+				logo: null,
+				icon: null,
 			};
 
 			this.loadImages();
@@ -108,7 +108,7 @@ function images() {
 				this.selected[type] = 0;
 			}
 
-			this.imageURLs[type] = this.images[type][this.selected[type]].url;
+			this.imageURLs[type] = this.getImg(type, 'url');
 		},
 
 		prev(type) {
@@ -116,15 +116,27 @@ function images() {
 			if (this.selected[type] < 0) {
 				this.selected[type] = this.images[type].length - 1;
 			}
-			this.imageURLs[type] = this.images[type][this.selected[type]].url;
+			this.imageURLs[type] = this.getImg(type, 'url');
 		},
 
 		async loadImages() {
 			for (type of IMAGE_TYPES) {
 				this.images[type] = await fetchimgs(`/steamgrid/images/${this.gameID}?type=${type}`);
-				this.imageURLs[type] = this.images[type][this.selected[type]].url;
+				this.imageURLs[type] = this.getImg(type, 'url');
 			}
 		},
+
+		getImg(type, field) {
+			if (!this.images[type]) {
+				return null;
+			}
+
+			if (!this.images[type][this.selected[type]]) {
+				return null;
+			}
+
+			return this.images[type][this.selected[type]][field] || null;
+		}
 	};
 }
 </script>
@@ -154,7 +166,7 @@ function images() {
 			<div class="label" x-text="capitalize(type)"></div>
 			<div style="margin-top: 10px; margin-bottom: 30px;">
 				<span style="font-size: 40px; cursor: pointer;" @click="prev(type)">⬅️ </span>
-				<img style="all: initial; max-width: 60%; vertical-align:middle" :src="images[type][selected[type]].thumb">
+				<img style="all: initial; max-width: 60%; vertical-align:middle" :src="getImg(type, 'thumb')">
 				<input x-model="imageURLs[type]" type="hidden" :id="`image-url-${type}`" :name="`image-url-${type}`" />
 				<span style="font-size: 40px; cursor: pointer;" @click="next(type)">➡️ </span>
 			</div>

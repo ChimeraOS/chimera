@@ -277,7 +277,8 @@ def shortcut_create():
     }
 
     for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
-        shortcut[img_type] = image_paths[img_type]
+        if img_type in image_paths:
+            shortcut[img_type] = image_paths[img_type]
 
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
@@ -329,7 +330,8 @@ def shortcut_update():
     shortcut['hidden'] = hidden == 'on'
 
     for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
-        shortcut[img_type] = image_paths[img_type]
+        if img_type in image_paths:
+            shortcut[img_type] = image_paths[img_type]
 
     if content:
         (content_src_path, content_dst_name) = tmpfiles[content]
