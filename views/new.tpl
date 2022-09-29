@@ -164,7 +164,7 @@ function images() {
 	<template x-for="type in IMAGE_TYPES">
 		<div>
 			<div class="label" x-text="capitalize(type)"></div>
-			<div style="margin-top: 10px; margin-bottom: 30px;">
+			<div style="margin-top: 10px; margin-bottom: 30px; user-select: none;">
 				<span style="font-size: 40px; cursor: pointer;" @click="prev(type)">⬅️ </span>
 				<img style="all: initial; max-width: 60%; vertical-align:middle" :src="getImg(type, 'thumb')">
 				<input x-model="imageURLs[type]" type="hidden" :id="`image-url-${type}`" :name="`image-url-${type}`" />
