@@ -77,7 +77,9 @@ function images() {
 
 		setGameName(name, id) {
 			this.showSuggestions = false;
-			this.gameName = name;
+			if (!this.isEditing) {
+				this.gameName = name;
+			}
 			this.gameID = id;
 			this.gameOptions = [];
 			this.selected = {
