@@ -19,7 +19,7 @@ async function fetchimgs(url) {
 function images() {
 	return {
 		isEditing: '{{isEditing}}' === 'True',
-		gameName: '{{name}}',
+		gameName: "{{!name}}",
 		gameID: null,
 		gameOptions: [],
 		showSuggestions: true,
