@@ -189,6 +189,9 @@ class SteamShortcutsFile():
         if 'cmd' not in entry:
             raise Exception('Entry missing required field "cmd".')
 
+        if 'hidden' in entry and entry['hidden']:
+            return
+
         shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
 
         shortcut = self.match_app_id(shortcut_id)
