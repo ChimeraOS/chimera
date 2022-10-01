@@ -23,6 +23,11 @@ function images() {
 		gameID: null,
 		gameOptions: [],
 		showSuggestions: true,
+		async clearGameOptions() {
+			await new Promise(r => setTimeout(r, 500));
+			this.showSuggestions = false;
+			this.gameOptions = [];
+		},
 		async updateGameOptions() {
 			if (!this.gameName) {
 				this.gameOptions = [];
@@ -149,7 +154,7 @@ function images() {
 
 	<div class="label">Name</div>
 	<div class="steamgridapi">
-		<input id="gamename" x-effect="updateGameOptions()" x-model.debounce.500ms="gameName" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
+		<input id="gamename" @blur="clearGameOptions()" x-effect="updateGameOptions()" x-model.debounce.500ms="gameName" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
 		<template x-for="game in gameOptions" x-show="showSuggestions">
 			<div class="game-name-suggestion" @click="setGameName(game.name, game.id)" x-text="game.name"></div>
 		</template>
