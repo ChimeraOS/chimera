@@ -33,7 +33,7 @@ function images() {
 				this.gameOptions = [];
 				return;
 			}
-			url = "/steamgrid/search/" + this.gameName;
+			url = "/steamgrid/search/" + this.gameName.replace(/'/g, "");
 			response = await fetch(url);
 			games = await response.json();
 			if (!games.success || !this.showSuggestions) {
