@@ -26,7 +26,7 @@ def validate_html(endpoint, document):
     :param document: the html content
     :return: None
     """
-    tidied, errors = tidy_document(document)
+    _, errors = tidy_document(document, options={"show-warnings": "no"})
     if errors:
         raise SystemError(
             "Errors were found in the following HTML returned by function {}:\n{}\n\nErrors:\n{}".format(
