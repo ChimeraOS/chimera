@@ -1,11 +1,11 @@
 import os
 import sys
 import importlib
-sys.modules["chimera_app.auth_decorator"] = importlib.import_module("tests.stubs.auth_decorator")
 from tidylib import tidy_document
 from bottle import request
+sys.modules["chimera_app.auth_decorator"] = \
+        importlib.import_module("tests.stubs.auth_decorator")
 from chimera_app.server import \
-        root, \
         platforms, \
         platform_page, \
         new, \
@@ -21,19 +21,19 @@ from chimera_app.config import PLATFORMS, BIN_PATH
 def validate_html(endpoint, document):
     """
     This function can be used to make sure HTML returned is valid
-    It raises an exception describing what's wrong then non-valid HTML was entered
+    It raises an exception describing what's wrong then non-valid HTML was
+    entered
     :param endpoint: name of the function which returned the html content
     :param document: the html content
     :return: None
     """
-    tidied, errors = tidy_document(document)
+    _, errors = tidy_document(document, options={"show-warnings": "no"})
     if errors:
         raise SystemError(
-            "Errors were found in the following HTML returned by function {}:\n{}\n\nErrors:\n{}".format(
-                endpoint,
-                document,
-                errors
-            )
+            f"Errors were found in the following HTML returned by function"
+            f" {endpoint}:\n"
+            f"{document}\n\n"
+            f"Errors:\n{errors}"
         )
 
 
