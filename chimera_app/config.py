@@ -89,7 +89,7 @@ FTP_SERVER = FTPServer(SETTINGS_HANDLER)
 
 SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
-STEAMGRID_HANDLER = Steamgrid("f092e3045f4f041c4bf8a9db2cb8c25c")
+STEAMGRID_HANDLER = Steamgrid("423ef7be0f4b9f8cfa1a471149c5b72c")
 
 STREAMING_HANDLER = StreamServer(SETTINGS_HANDLER)
 
