@@ -569,7 +569,7 @@ def mangohud_reset():
 @authenticate
 def steam_restart():
     try:
-        subprocess.call(["pkill", "steamos-session"])
+        subprocess.call(["steam", "-shutdown"])
     finally:
         redirect('/actions')
 
