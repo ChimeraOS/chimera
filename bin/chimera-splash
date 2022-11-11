@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import pygame
+from chimera_app.config import RESOURCE_DIR
+
+
+class Color:
+    TEXT = 252, 252, 252
+    BACKGROUND = 0, 0, 0
+
+
+# init pygame
+pygame.init()
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+font_size = int(screen.get_width()/48)
+font = pygame.font.SysFont('dejavusans', font_size)
+background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
+
+
+background = pygame.image.load(background_image_path)
+
+info_text = font.render("Downloading game configuration updates", True, Color.TEXT)
+info_text_rect = pygame.Rect(
+    int(screen.get_width() / 2 - info_text.get_width() / 2),
+    font_size,
+    info_text.get_width(),
+    info_text.get_height()
+)
+
+
+def main():
+    while 1:
+        screen.fill(Color.BACKGROUND)
+        screen.blit(pygame.transform.scale(background,
+                                           (screen.get_width(),
+                                           screen.get_height())),
+                    (0, 0))
+        screen.blit(info_text, info_text_rect)
+        pygame.display.update()
+        clock.tick(30)
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
