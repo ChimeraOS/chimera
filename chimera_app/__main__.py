@@ -4,7 +4,6 @@ from chimera_app.compat_tools import install_all_compat_tools
 from chimera_app.shortcuts import create_all_shortcuts
 from chimera_app.steam_config import apply_all_tweaks
 from chimera_app.steam_images import apply_custom_steam_images
-from chimera_app.splash_screen import SplashScreen
 
 
 def setup_argparse():
@@ -24,10 +23,6 @@ def setup_argparse():
                         type=int,
                         default=8844,
                         help=('Port to use for web server (default: 8844)')
-                        )
-    parser.add_argument('-l', '--splash',
-                        action="store_true",
-                        help='Show splash screen when downloading data'
                         )
     group_ex = parser.add_mutually_exclusive_group()
     group_ex.add_argument('-d', '--daemon',
@@ -90,16 +85,10 @@ def main():
         run_server(args.port)
 
     if args.update:
-        if args.splash:
-            splash = SplashScreen()
-            splash.launch()
         try:
             update_data(args.force_update)
         except:
             print('Data update failed')
-        finally:
-            if args.splash:
-                splash.kill()
 
     if args.compat:
         try:
