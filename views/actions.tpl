@@ -18,18 +18,6 @@
 		</div>
 	% end
 
-	<a href="/actions/mangohud">
-		<div class="action">
-			<i class="ri-dashboard-2-fill"></i> Performance Overlay
-		</div>
-	</a>
-
-	<a href="/actions/steam/overlay">
-		<div class="action">
-			<i class="ri-stack-fill"></i> Steam Overlay
-		</div>
-	</a>
-
 	<a href="/actions/retroarch/load_state">
 		<div class="action">
 			<i class="ri-upload-2-fill"></i> Load Game
@@ -39,12 +27,6 @@
 	<a href="/actions/retroarch/save_state">
 		<div class="action">
 			<i class="ri-download-2-fill"></i> Save Game
-		</div>
-	</a>
-
-	<a href="/actions/steam/compositor">
-		<div class="action">
-			<i class="ri-window-fill"></i> Window Mode
 		</div>
 	</a>
 

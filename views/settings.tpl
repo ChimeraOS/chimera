@@ -1,11 +1,5 @@
 % rebase('base.tpl')
 <form action="/system/update" method="post" enctype="multipart/form-data">
-    <h4>Performance Overlay</h4>
-    <hr>
-    <a class="button" href="/system/mangohud/edit_config">
-        Configure MangoHud
-    </a>
-    
     <h4>Storage</h4>
     <hr>
     <a class="button" href="/system/storage">

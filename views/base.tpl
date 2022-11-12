@@ -30,7 +30,6 @@
             <div class="menuitems" id="mainmenu">
                 <a href="/library">Library</a>
                 <a href="/actions">Actions</a>
-                <a href="/virtual_keyboard">Virtual Keyboard</a>
                 <a href="/system">System</a>
                 <a href="/logout">Log Out</a>
             </div>
