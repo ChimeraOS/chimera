@@ -43,6 +43,7 @@ setup(
         'inotify_simple',
         'pyudev',
         'leveldb',
+        'paste',
     ],
 
     # metadata to display on PyPI
