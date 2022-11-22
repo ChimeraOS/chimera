@@ -52,9 +52,16 @@ For console platforms, Chimera creates shortcuts in Steam which launch each game
 
 ## Screenshots
 
-![Platforms](screenshots/platforms.png?raw=true)
+### Library page 
+![Library](screenshots/platforms.png?raw=true)
+
+### Flathub library page
 ![Flathub](screenshots/flathub.png?raw=true)
+
+### Flathub game page
 ![Flathub Game](screenshots/flathub-game.png?raw=true)
+
+### Actions page
 ![Actions](screenshots/actions.png?raw=true)
 
 ## Feature Details
