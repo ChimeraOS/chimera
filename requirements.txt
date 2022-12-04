@@ -5,6 +5,7 @@ requests
 pyftpdlib
 beaker
 pygame
+pyglet
 psutil
 bcrypt
 Pillow
