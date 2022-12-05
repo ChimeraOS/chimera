@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import sys
-import pygame
+import pyglet
 
 
 class Color:
-    TEXT = 252, 252, 252
-    BACKGROUND = 15, 47, 78
+    TEXT = (252, 252, 252, 255)
+    BACKGROUND = (15, 47, 78, 255)
 
 
 # Load the password from the command line arguments
@@ -16,70 +16,86 @@ else:
     exit(1)
 
 
-# init pygame
-pygame.init()
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
-font_size = int(screen.get_width()/26)
-font = pygame.font.SysFont('dejavusans', font_size)
-large_font = pygame.font.SysFont('dejavusans', font_size*2, bold=True)
+# Setup controller events
+controllers = pyglet.input.get_controllers()
 
-# Setup joystick
-pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+def on_button_press(controller, button_name):
+    if button_name in ['a', 'b', 'x', 'y', 'start', 'back', 'guide', 'dpleft', 'dpright','dpup', 'dpdown']:
+        pyglet.app.exit()
 
-# Create text to display on screen
-password_text = large_font.render(password, True, Color.TEXT)
-password_text_rect = pygame.Rect(
-    int(screen.get_width() / 2 - password_text.get_width() / 2),
-    int(screen.get_height() / 2 - password_text.get_height() / 2),
-    password_text.get_width(),
-    password_text.get_height()
+for controller in controllers:
+    controller.open()
+    controller.on_button_press = on_button_press
+
+# Setup joystick events
+joysticks = pyglet.input.get_joysticks()
+
+def on_joybutton_press(joystick, button_name):
+    pyglet.app.exit()
+
+for joystick in joysticks:
+    joystick.open()
+    joystick.on_joybutton_press = on_joybutton_press
+
+# Initialize window
+window = pyglet.window.Window(fullscreen=True)
+
+# Solid Background
+background = pyglet.sprite.Sprite(
+    pyglet.image.SolidColorImagePattern(color=Color.BACKGROUND).create_image(
+        window.width, window.height)
 )
 
-instructions_text = font.render("Your password for the web interface is:", True, Color.TEXT)
-instructions_text_rect = pygame.Rect(
-    int(screen.get_width() / 2 - instructions_text.get_width() / 2),
-    font_size,
-    instructions_text.get_width(),
-    instructions_text.get_height()
-)
+# Display text instructions
+font_size = (window.width//20)
 
-quit_text = font.render("Press any button to exit this screen", True, Color.TEXT)
-quit_text_rect = pygame.Rect(
-    int(screen.get_width() / 2 - quit_text.get_width() / 2),
-    int(screen.get_height() - quit_text.get_height()*1.5 - font_size),
-    instructions_text.get_width(),
-    instructions_text.get_height()
-)
+password_label = pyglet.text.Label(password,
+                                   font_name='dejavusans',
+                                   font_size=font_size,
+                                   x=window.width//2,
+                                   y=window.height//2,
+                                   anchor_x='center',
+                                   anchor_y='center')
+password_label.bold=True
+password_label.color=Color.TEXT
 
+quit_label = pyglet.text.Label("Press any button or ESC to exit this screen",
+                               font_name='dejavusans',
+                               font_size=font_size//2,
+                               x=window.width//2,
+                               y=font_size,
+                               anchor_x='center',
+                               anchor_y='center')
+quit_label.color=Color.TEXT
 
-def exit_button_was_pressed() -> bool:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return True
-        elif event.type == pygame.KEYDOWN:
-            return True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            return True
-        elif event.type == pygame.JOYBUTTONDOWN:
-            if event.button in range(0, 11):
-                return True
-        return False
+instructions_label = pyglet.text.Label("Your password for the web interface is:",
+                               font_name='dejavusans',
+                               font_size=font_size//2,
+                               x=window.width//2,
+                               y=window.height - font_size,
+                               anchor_x='center',
+                               anchor_y='center')
+instructions_label.color=Color.TEXT
 
+@window.event
+def on_draw():
+    window.clear()
+    background.draw()
+    instructions_label.draw()
+    password_label.draw()
+    quit_label.draw()
+
+@window.event
+def on_key_press(symbol, modifiers):
+    if symbol == pyglet.window.key.ESCAPE:
+        pyglet.app.exit()
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    pyglet.app.exit()
 
 def main():
-    while 1:
-        if exit_button_was_pressed():
-            break
-        screen.fill(Color.BACKGROUND)
-        screen.blit(instructions_text, instructions_text_rect)
-        screen.blit(password_text, password_text_rect)
-        screen.blit(quit_text, quit_text_rect)
-        pygame.display.update()
-        clock.tick(30)
-    pygame.quit()
-
+    pyglet.app.run()
 
 if __name__ == "__main__":
     main()
