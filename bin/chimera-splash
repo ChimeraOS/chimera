@@ -1,20 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import pyglet
 from chimera_app.config import RESOURCE_DIR
 
-
-class Color:
-    TEXT = 252, 252, 252
-    BACKGROUND = 0, 0, 0
-
 window = pyglet.window.Window(fullscreen=True)
 
-text_size = int(window.height//48)
-label = pyglet.text.Label("Downloading game configuration updates...",
+text_size = int(window.height//32)
+label = pyglet.text.Label("Downloading configuration updates...",
                           font_name='dejavusans',
                           font_size=text_size,
                           x=window.width//2,
-                          y=(window.height  - 2 * text_size),
+                          y=text_size * 5,
                           anchor_x='center', anchor_y='center')
 
 background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
@@ -25,7 +20,7 @@ background_image.anchor_y = background_image.height // 2
 background = pyglet.sprite.Sprite(background_image,
                                   x=window.width//2,
                                   y=window.height//2)
-background.scale=0.4 * background_image.height / window.height
+background.scale=0.3 * background_image.height / window.height
 
 
 @window.event
