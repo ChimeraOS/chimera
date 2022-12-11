@@ -20,7 +20,7 @@ background_image.anchor_y = background_image.height // 2
 background = pyglet.sprite.Sprite(background_image,
                                   x=window.width//2,
                                   y=window.height//2)
-background.scale=0.3 * window.height / background_image.height
+background.scale=0.7 * window.height / background_image.height
 
 
 @window.event
