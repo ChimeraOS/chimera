@@ -62,4 +62,4 @@ class StorageConfig:
 
 
     def format_disk(self, disk):
-        return run(['sudo', '/usr/lib/media-support/format-media.sh', disk], capture_output=True, text=True, input="y")
+        return run(['sudo', '/usr/bin/shadowblip/format-media', disk], capture_output=True, text=True, input="y")
