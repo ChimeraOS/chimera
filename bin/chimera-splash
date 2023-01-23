@@ -29,10 +29,6 @@ def on_draw():
     background.draw()
     label.draw()
 
-@window.event
-def on_key_press(symbol, modifiers):
-    pyglet.app.exit()
-
 def main():
     pyglet.app.run(interval=0.1)
 
