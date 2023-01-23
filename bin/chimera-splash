@@ -3,6 +3,7 @@ import pyglet
 from chimera_app.config import RESOURCE_DIR
 
 window = pyglet.window.Window(fullscreen=True)
+batch = pyglet.graphics.Batch()
 
 text_size = int(window.height//32)
 label = pyglet.text.Label("Downloading configuration updates...",
@@ -10,7 +11,9 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           font_size=text_size,
                           x=window.width//2,
                           y=text_size * 5,
-                          anchor_x='center', anchor_y='center')
+                          anchor_x='center', anchor_y='center',
+                          batch=batch
+                         )
 
 background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
 background_image = pyglet.image.load(background_image_path)
@@ -19,15 +22,16 @@ background_image.anchor_y = background_image.height // 2
 
 background = pyglet.sprite.Sprite(background_image,
                                   x=window.width//2,
-                                  y=window.height//2)
+                                  y=window.height//2,
+                                  batch=batch
+                                 )
 background.scale=1.2 * window.height / background_image.height
 
 
 @window.event
 def on_draw():
     window.clear()
-    background.draw()
-    label.draw()
+    batch.draw()
 
 def main():
     pyglet.app.run(interval=0.1)
