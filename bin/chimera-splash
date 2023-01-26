@@ -1,8 +1,13 @@
 #!/usr/bin/env python
+import argparse
 import pyglet
 from chimera_app.config import RESOURCE_DIR
 
+DOWNLOAD_TOOL=str()
+PIPE_FILE=str()
+
 window = pyglet.window.Window(fullscreen=True)
+batch = pyglet.graphics.Batch()
 
 text_size = int(window.height//32)
 label = pyglet.text.Label("Downloading configuration updates...",
@@ -10,7 +15,9 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           font_size=text_size,
                           x=window.width//2,
                           y=text_size * 5,
-                          anchor_x='center', anchor_y='center')
+                          anchor_x='center', anchor_y='center',
+                          batch=batch
+                         )
 
 background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
 background_image = pyglet.image.load(background_image_path)
@@ -19,21 +26,50 @@ background_image.anchor_y = background_image.height // 2
 
 background = pyglet.sprite.Sprite(background_image,
                                   x=window.width//2,
-                                  y=window.height//2)
+                                  y=window.height//2,
+                                  batch=batch
+                                 )
 background.scale=1.2 * window.height / background_image.height
 
+def update_label():
+    progress = 0
+    with open(PIPE_FILE, 'r', encoding='utf-8') as progress_file:
+        progress = int(progress_file.readlines()[-1])
+    label.text=f"Downloading {DOWNLOAD_TOOL}: {progress}%"
 
 @window.event
 def on_draw():
+    if DOWNLOAD_TOOL and PIPE_FILE:
+        update_label()
     window.clear()
-    background.draw()
-    label.draw()
+    batch.draw()
 
-@window.event
-def on_key_press(symbol, modifiers):
-    pyglet.app.exit()
+def arg_parse():
+    parser = argparse.ArgumentParser(description="Simple ChimeraOS splash screen")
+    parser.add_argument("-t", "--tool",
+                        action='store',
+                        type=str,
+                        help="Tool name we are downloading"
+                       )
+    parser.add_argument("-p", "--pipe-file",
+                        action='store',
+                        type=str,
+                        help="Pipe file to check percentage"
+                       )
+
+    return parser.parse_args()
 
 def main():
+    global DOWNLOAD_TOOL
+    global PIPE_FILE
+
+    args = arg_parse()
+
+    # Only set tool and pipe if both are set otherwise just ignore
+    if args.tool and args.pipe_file:
+        DOWNLOAD_TOOL = args.tool
+        PIPE_FILE = args.pipe_file
+
     pyglet.app.run(interval=0.1)
 
 if __name__ == "__main__":
