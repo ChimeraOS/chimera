@@ -19,17 +19,27 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           batch=batch
                          )
 
-background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
-background_image = pyglet.image.load(background_image_path)
-background_image.anchor_x = background_image.width // 2
-background_image.anchor_y = background_image.height // 2
+frames = [
+    RESOURCE_DIR + f"/images/splash/animated_logo/ChimeraOS_txtv3_00{n:03}.png" for n in range(1, 100)
+]
+animation_frames = [pyglet.image.load(image) for image in frames]
 
-background = pyglet.sprite.Sprite(background_image,
+for frame in animation_frames:
+    frame.anchor_x = frame.width // 2
+    frame.anchor_y = frame.height // 2
+
+animation = pyglet.image.Animation.from_image_sequence(
+    animation_frames,
+    duration=0.016,
+    loop=True
+)
+
+background = pyglet.sprite.Sprite(img=animation,
                                   x=window.width//2,
                                   y=window.height//2,
                                   batch=batch
                                  )
-background.scale=0.40 * window.height / background_image.height
+background.scale=0.40 * window.height / background.height
 
 pyglet.gl.glClearColor(0, 0, 0, 1.0)
 
@@ -72,7 +82,7 @@ def main():
         DOWNLOAD_TOOL = args.tool
         PIPE_FILE = args.pipe_file
 
-    pyglet.app.run(interval=0.1)
+    pyglet.app.run()
 
 if __name__ == "__main__":
     main()
