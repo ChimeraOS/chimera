@@ -19,27 +19,10 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           batch=batch
                          )
 
-frames = [
-    RESOURCE_DIR + f"/images/splash/animated_logo/ChimeraOS_txtv3_00{n:03}.png" for n in range(1, 100)
-]
-animation_frames = [pyglet.image.load(image) for image in frames]
-
-for frame in animation_frames:
-    frame.anchor_x = frame.width // 2
-    frame.anchor_y = frame.height // 2
-
-animation = pyglet.image.Animation.from_image_sequence(
-    animation_frames,
-    duration=0.016,
-    loop=True
-)
-
-background = pyglet.sprite.Sprite(img=animation,
-                                  x=window.width//2,
-                                  y=window.height//2,
-                                  batch=batch
-                                 )
-background.scale=0.40 * window.height / background.height
+player = pyglet.media.Player()
+animated_logo_vid = pyglet.media.load(RESOURCE_DIR + f"/images/splash/animated_logo/animated_logo.webm")
+player.queue(animated_logo_vid)
+player.play()
 
 pyglet.gl.glClearColor(0, 0, 0, 1.0)
 
@@ -54,7 +37,22 @@ def on_draw():
     if DOWNLOAD_TOOL and PIPE_FILE:
         update_label()
     window.clear()
+
+    # Frames need to be taken from the player just before drawing them
+    frame = player.texture
+    frame.anchor_x = frame.width // 2
+    frame.anchor_y = frame.height // 2
+    frame_sprite = pyglet.sprite.Sprite(img=player.texture,
+                                 x=window.width//2,
+                                 y=window.height//2,
+                                 batch=batch
+                                )
+    frame_sprite.scale=0.40 * window.height / frame_sprite.height
     batch.draw()
+
+@window.event
+def on_close():
+    player.delete()
 
 def arg_parse():
     parser = argparse.ArgumentParser(description="Simple ChimeraOS splash screen")
