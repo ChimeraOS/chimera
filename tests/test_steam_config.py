@@ -70,8 +70,8 @@ def test_local_config_file_empty(empty_data):
     with open(local_config.path) as config_file:
         config_data = vdf.load(config_file)
 
-    assert('Apps' in config_data['UserLocalConfigStore'])
-    assert('Apps' in config_data['UserLocalConfigStore']
+    assert('apps' in config_data['UserLocalConfigStore'])
+    assert('apps' in config_data['UserLocalConfigStore']
                                 ['Software']
                                 ['Valve']
                                 ['Steam'])
