@@ -86,6 +86,74 @@ def test_shortcuts_load_data_multi(fake_data):
     assert(file.shortcuts_data[1]['tags'] == ['Flathub'])
 
 
+def test_shortcuts_delete(fake_data):
+    shortcut_path = os.path.expanduser(
+        '~/.local/share/chimera/shortcuts/multi.yaml')
+
+    file = ShortcutsFile(shortcut_path)
+    file.load_data()
+
+    file.remove_shortcut('SuperTux')
+
+    for shortcut in file.shortcuts_data:
+        if shortcut['name'] == 'SuperTux':
+            assert(shortcut['deleted'] == True)
+        else:
+            assert('deleted' not in shortcut)
+
+
+def test_shortcuts_prune(fake_data):
+    shortcut_path = os.path.expanduser(
+        '~/.local/share/chimera/shortcuts/multi.yaml')
+
+    file = ShortcutsFile(shortcut_path)
+    file.load_data()
+
+    file.remove_shortcut('SuperTux')
+    file.prune_deleted()
+
+    for shortcut in file.shortcuts_data:
+        assert(shortcut['name'] != 'SuperTux')
+
+
+def test_shortcuts_replace_deleted(fake_data):
+    shortcut_path = os.path.expanduser(
+        '~/.local/share/chimera/shortcuts/multi.yaml')
+
+    file = ShortcutsFile(shortcut_path)
+    file.load_data()
+
+    match1 = file.get_shortcut_match('SuperTux')
+    assert(match1['name'] == 'SuperTux')
+    assert(match1['cmd'] == 'flatpak run')
+
+    file.remove_shortcut('SuperTux')
+    file.add_shortcut({ 'name': 'SuperTux', 'cmd': 'flatpak run' })
+
+    match2 = file.get_shortcut_match('SuperTux')
+    assert('deleted' not in match2)
+    assert(match2['name'] == 'SuperTux')
+    assert(match2['cmd'] == 'flatpak run')
+
+
+def test_shortcuts_duplicates(fake_data):
+    shortcut_path = os.path.expanduser(
+        '~/.local/share/chimera/shortcuts/multi.yaml')
+
+    file = ShortcutsFile(shortcut_path)
+    file.load_data()
+
+    match1 = file.get_shortcut_match('SuperTux')
+    assert(match1)
+
+    exceptionRaised = False
+    try:
+        file.add_shortcut({ 'name': 'SuperTux', 'cmd': 'flatpak run' })
+    except:
+        exceptionRaised = True
+    assert(exceptionRaised == True)
+
+
 def test_static_get_banner_id():
     exe = "flatpak run"
     name = "SuperTuxKart"
