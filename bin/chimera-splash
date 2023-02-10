@@ -19,7 +19,7 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           batch=batch
                          )
 
-background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_background.png"
+background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
 background_image = pyglet.image.load(background_image_path)
 background_image.anchor_x = background_image.width // 2
 background_image.anchor_y = background_image.height // 2
@@ -29,7 +29,9 @@ background = pyglet.sprite.Sprite(background_image,
                                   y=window.height//2,
                                   batch=batch
                                  )
-background.scale=1.2 * window.height / background_image.height
+background.scale=0.40 * window.height / background_image.height
+
+pyglet.gl.glClearColor(0, 0, 0, 1.0)
 
 def update_label():
     progress = 0
