@@ -19,17 +19,25 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           batch=batch
                          )
 
-background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
-background_image = pyglet.image.load(background_image_path)
-background_image.anchor_x = background_image.width // 2
-background_image.anchor_y = background_image.height // 2
+HAVE_FFMPEG = pyglet.media.have_ffmpeg()
 
-background = pyglet.sprite.Sprite(background_image,
+if HAVE_FFMPEG:
+    player = pyglet.media.Player()
+    animated_logo_vid = pyglet.media.load(RESOURCE_DIR + "/images/splash/animated_logo.webm")
+    player.queue(animated_logo_vid)
+    player.play()
+else:
+    background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
+    background_image = pyglet.image.load(background_image_path)
+    background_image.anchor_x = background_image.width // 2
+    background_image.anchor_y = background_image.height // 2
+    background = pyglet.sprite.Sprite(background_image,
                                   x=window.width//2,
                                   y=window.height//2,
                                   batch=batch
                                  )
-background.scale=0.40 * window.height / background_image.height
+    background.scale=0.4 * window.height / background_image.height
+
 
 pyglet.gl.glClearColor(0, 0, 0, 1.0)
 
@@ -44,7 +52,25 @@ def on_draw():
     if DOWNLOAD_TOOL and PIPE_FILE:
         update_label()
     window.clear()
+
+    # Frames need to be taken from the player just before drawing them
+    if HAVE_FFMPEG:
+        frame = player.texture
+        frame.anchor_x = frame.width // 2
+        frame.anchor_y = frame.height // 2
+        frame_sprite = pyglet.sprite.Sprite(img=player.texture,
+                                     x=window.width//2,
+                                     y=window.height//2,
+                                     batch=batch
+                                    )
+        frame_sprite.scale=0.40 * window.height / frame_sprite.height
+
     batch.draw()
+
+@window.event
+def on_close():
+    if HAVE_FFMPEG:
+        player.delete()
 
 def arg_parse():
     parser = argparse.ArgumentParser(description="Simple ChimeraOS splash screen")
@@ -72,7 +98,7 @@ def main():
         DOWNLOAD_TOOL = args.tool
         PIPE_FILE = args.pipe_file
 
-    pyglet.app.run(interval=0.1)
+    pyglet.app.run()
 
 if __name__ == "__main__":
     main()
