@@ -144,15 +144,15 @@ class LocalSteamConfig(SteamConfigFile):
                                             }
 
         steam_input = data['UserLocalConfigStore']
-        if 'Apps' not in steam_input:
-            steam_input['Apps'] = {}
+        if 'apps' not in steam_input:
+            steam_input['apps'] = {}
 
         launch_options = (data['UserLocalConfigStore']
                               ['Software']
                               ['Valve']
                               ['Steam'])
-        if 'Apps' not in launch_options:
-            launch_options['Apps'] = {}
+        if 'apps' not in launch_options:
+            launch_options['apps'] = {}
 
         self.config_data = data
 
@@ -162,12 +162,12 @@ class LocalSteamConfig(SteamConfigFile):
         if not self.config_data:
             self.load_data()
 
-        steam_input_data = self.config_data['UserLocalConfigStore']['Apps']
+        steam_input_data = self.config_data['UserLocalConfigStore']['apps']
         launch_options = (self.config_data['UserLocalConfigStore']
                                           ['Software']
                                           ['Valve']
                                           ['Steam']
-                                          ['Apps'])
+                                          ['apps'])
 
         for key in tweak_data:
             if ('steam_input' in tweak_data[key] and

@@ -45,10 +45,12 @@ def fake_data(fs,
                                                     )
                      )
     fs.add_real_file(os.path.join(files_path, 'test-shortcuts-single.yaml'),
+                     read_only=False,
                      target_path=os.path.expanduser(
                          '~/.local/share/chimera/shortcuts/single.yaml')
                      )
     fs.add_real_file(os.path.join(files_path, 'test-shortcuts-multi.yaml'),
+                     read_only=False,
                      target_path=os.path.expanduser(
                          '~/.local/share/chimera/shortcuts/multi.yaml')
                      )

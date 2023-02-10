@@ -118,10 +118,11 @@ def platform_page(platform):
         if 'banner' in shortcut:
             filename = os.path.basename(shortcut['banner'])
             banner = f'/images/banner/{platform}/{filename}'
-        data.append({'hidden': hidden,
-                     'filename': filename,
-                     'banner': banner,
-                     'name': shortcut['name']})
+        if 'deleted' not in shortcut or shortcut['deleted'] != True:
+            data.append({'hidden': hidden,
+                         'filename': filename,
+                         'banner': banner,
+                         'name': shortcut['name']})
 
     return template('platform.tpl',
                     shortcuts=data,
@@ -256,7 +257,9 @@ def shortcut_create():
 
     shortcuts = PlatformShortcutsFile(platform)
 
-    if shortcuts.get_shortcut_match(name):
+    existing_shortcut = shortcuts.get_shortcut_match(name)
+    is_existing_shortcut_marked_deleted = 'deleted' in existing_shortcut and existing_shortcut['deleted'] == True
+    if existing_shortcut and not is_existing_shortcut_marked_deleted:
         return 'Shortcut already exists'
 
     for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:

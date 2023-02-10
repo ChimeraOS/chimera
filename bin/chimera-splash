@@ -27,7 +27,8 @@ if HAVE_FFMPEG:
     player.queue(animated_logo_vid)
     player.play()
 else:
-    background_image = pyglet.image.load(RESOURCE_DIR + "/images/splash/chimeraos_logo.png")
+    background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
+    background_image = pyglet.image.load(background_image_path)
     background_image.anchor_x = background_image.width // 2
     background_image.anchor_y = background_image.height // 2
     background = pyglet.sprite.Sprite(background_image,
@@ -36,6 +37,7 @@ else:
                                   batch=batch
                                  )
     background.scale=0.4 * window.height / background_image.height
+
 
 pyglet.gl.glClearColor(0, 0, 0, 1.0)
 

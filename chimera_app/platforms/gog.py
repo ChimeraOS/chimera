@@ -62,7 +62,7 @@ class GOG(StorePlatform):
 
         shortcuts_file = PlatformShortcutsFile('gog')
         installed = shortcuts_file.get_shortcuts_data()
-        installed_ids = [game['id'] for game in installed]
+        installed_ids = [ game['id'] for game in installed if 'deleted' not in game or game['deleted'] != True ]
 
         text = subprocess.check_output(["wyvern", "ls", "--json"])
         data = json.loads(text)

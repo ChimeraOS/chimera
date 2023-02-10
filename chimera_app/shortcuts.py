@@ -33,6 +33,7 @@ def create_all_shortcuts():
 
     manager.load_shortcut_entries()
     manager.create_shortcuts()
+    manager.prune_deleted_shortcuts()
     manager.create_images()
     manager.register_compat_data()
 
@@ -95,7 +96,6 @@ class SteamShortcutsFile():
     path: str
     tags: dict
     user_id: str
-    new_data: dict
     current_data: dict
 
     def __init__(self, user_id: str, auto_load: bool = True):
@@ -104,8 +104,7 @@ class SteamShortcutsFile():
                                  'userdata',
                                  user_id,
                                  'config/shortcuts.vdf')
-        self.current_data = None
-        self.new_data = {}
+        self.current_data = {}
         self.tags = {}
         if auto_load:
             self.load_data()
@@ -117,12 +116,6 @@ class SteamShortcutsFile():
     def get_current_data(self) -> dict:
         """Returns this file's shortcut data as a list of dictionaries"""
         return self.current_data
-
-    def get_new_data(self) -> dict:
-        """Returns the new data that will be saved to the file as a list
-        of dictionaries
-        """
-        return self.new_data
 
     def load_data(self) -> None:
         """Reads shortcut data from this file. It returns a dictionary
@@ -146,17 +139,22 @@ class SteamShortcutsFile():
             self.load_data()
 
         data = self.current_data
-        # Match shortcut dictionary and return a copy of it it
-        for short in data:
-            if 'appid' in data[short] and data[short]['appid'] == app_id:
-                return data[short].copy()
+        # Match shortcut dictionary and return a copy of it
+        for index in data:
+            entry = data[index]
+            if 'appid' in entry and entry['appid'] == app_id:
+                return entry.copy(), index
 
-        return {}
+        # for new entries
+        return {}, len(self.current_data)
 
     def save(self) -> None:
         """Save current file with current shortcuts data"""
         out = {}
-        out['shortcuts'] = self.new_data
+        data = {}
+        for index in self.current_data:
+            data[str(index)] = self.current_data[index]
+        out['shortcuts'] = data
         ensure_directory_for_file(self.path)
         with open(self.path, 'wb') as ss_file:
             ss_file.write(vdf.binary_dumps(out))
@@ -189,12 +187,19 @@ class SteamShortcutsFile():
         if 'cmd' not in entry:
             raise Exception('Entry missing required field "cmd".')
 
-        if 'hidden' in entry and entry['hidden']:
+        shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
+        shortcut, index = self.match_app_id(shortcut_id)
+
+        if 'deleted' in entry and entry['deleted']:
+            if shortcut:
+                self.current_data.pop(index)
             return
 
-        shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
+        if 'hidden' in entry and entry['hidden']:
+            if shortcut:
+                self.current_data.pop(index)
+            return
 
-        shortcut = self.match_app_id(shortcut_id)
         shortcut['appid'] = shortcut_id
         shortcut['AppName'] = entry['name']
         shortcut['Exe'] = entry['cmd']
@@ -259,9 +264,7 @@ class SteamShortcutsFile():
             shortcut['tags'][str(t)] = tag
             t += 1
 
-        # Append to the current new data
-        new_entry = str(len(self.new_data))
-        self.new_data[new_entry] = shortcut
+        self.current_data[index] = shortcut
 
 
 class ShortcutsFile():
@@ -300,9 +303,15 @@ class ShortcutsFile():
         """Add a shortcut to the end of the shortcuts data list"""
         if 'name' not in shortcut or 'cmd' not in shortcut:
             raise Exception(f'Passed shortcut is not valid: {shortcut}')
-        if self.get_shortcut_match(shortcut['name']):
+
+        existing_shortcut = self.get_shortcut_match(shortcut['name'])
+        is_existing_shortcut_marked_deleted = 'deleted' in existing_shortcut and existing_shortcut['deleted'] == True
+        if existing_shortcut and not is_existing_shortcut_marked_deleted:
             raise Exception(f"File {self.path} already has a shortcut with "
                             f"name {shortcut['name']}")
+
+        if existing_shortcut:
+            self.shortcuts_data.remove(existing_shortcut)
         self.shortcuts_data.append(shortcut)
 
     def get_shortcut_match(self, name: str) -> dict:
@@ -318,8 +327,14 @@ class ShortcutsFile():
         """Remove a shortcut that has a given 'name'"""
         for shortcut in self.shortcuts_data:
             if name == shortcut['name']:
-                self.shortcuts_data.remove(shortcut)
+                shortcut['deleted'] = True
                 break
+
+    def prune_deleted(self) -> None:
+        """Prune any shortcuts marked deleted"""
+        for shortcut in self.shortcuts_data:
+            if 'deleted' in shortcut and shortcut['deleted'] == True:
+                self.shortcuts_data.remove(shortcut)
 
     def save(self) -> None:
         """Save this file with current shortcuts data"""
@@ -385,6 +400,13 @@ class ShortcutsManager():
             f.load_data()
             self.shortcut_entries = (self.shortcut_entries
                                      + f.get_shortcuts_data())
+
+    def prune_deleted_shortcuts(self) -> None:
+        """Drop shortcuts marked as deleted from all YAML files"""
+        for f in self.shortcut_files:
+            f.load_data()
+            f.prune_deleted()
+            f.save()
 
     def create_shortcuts(self) -> None:
         """Create all shortcuts for current entries"""
