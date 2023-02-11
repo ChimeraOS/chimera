@@ -55,6 +55,7 @@ PLATFORMS = {
     "psp":         "PlayStation Portable",
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
+    "sgb":         "Super Game Boy",
     "snes":        "Super Nintendo",
     "tg-16":       "TurboGrafx-16",
     "wii":         "Wii"
