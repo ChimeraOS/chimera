@@ -51,6 +51,15 @@ p.placeholder {
     background-color: #3268a8;
 }
 
+.app-container {
+    display: inline-block;
+}
+
+.app-container .title {
+    margin: 0;
+    padding: 0;
+}
+
 .img-container {
     position: relative;
     display: inline-block;
