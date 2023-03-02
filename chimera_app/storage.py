@@ -19,7 +19,7 @@ class StorageConfig:
         for device in context.list_devices(subsystem="block"):
             if device.device_type == "disk":
                 property_dict = dict(device.items())
-                name = property_dict.get('DEVNAME', "Unknown").split('/')[-1]
+                name = property_dict.get('DEVNAME', "Unknown")
                 if "loop" in name:
                     break
                 partitions = self.get_partitions(name)
@@ -53,7 +53,7 @@ class StorageConfig:
         for device in context.list_devices(subsystem="block"):
             if device.device_type == "partition":
                 property_dict = dict(device.items())
-                name = property_dict.get('DEVNAME', "Unknown").split('/')[-1]
+                name = property_dict.get('DEVNAME', "Unknown")
                 uuid = property_dict.get('ID_FS_UUID',"Unkown")
                 fstype = property_dict.get('ID_FS_TYPE',"Unkown")
                 if disk in name:
@@ -62,4 +62,4 @@ class StorageConfig:
 
 
     def format_disk(self, disk):
-        return run(['/usr/bin/shadowblip/format-media', disk], capture_output=True, text=True, input="y")
+        return run(['/usr/bin/shadowblip/format-media', '--full', '--device', disk], capture_output=True, text=True)
