@@ -33,6 +33,7 @@ PLATFORMS = {
     "3do":         "3DO",
     "arcade":      "Arcade",
     "atari-2600":  "Atari 2600",
+    "atari-7800":  "Atari 7800",
     "dreamcast":   "Dreamcast",
     "epic-store":  "Epic Games Store",
     "flathub":     "Flathub",
@@ -54,6 +55,7 @@ PLATFORMS = {
     "psp":         "PlayStation Portable",
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
+    "sgb":         "Super Game Boy",
     "snes":        "Super Nintendo",
     "tg-16":       "TurboGrafx-16",
     "wii":         "Wii"
