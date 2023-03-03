@@ -12,13 +12,13 @@ from chimera_app.file_utils import ensure_directory_for_file
 
 def update_data(force=False) -> bool:
     attempts = 0
-    while attempts < 10:
+    while attempts < 3:
         try:
             dl = Downloader()
             return dl.update(force=force)
         except:
             print('failed to update data (attempt {})'.format(attempts + 1))
-            time.sleep(2)
+            time.sleep(5)
             attempts += 1
 
     # allow the steam patch and chimera services to pick up the newly downloaded files
