@@ -49,7 +49,7 @@ class Flathub(StorePlatform):
 
     def _get_all_content(self):
         applications = []
-        api_response = requests.get(self.__api_url, timeout=5)
+        api_response = requests.get(self.__api_url, timeout=20)
         if api_response.status_code == requests.codes.ok:
             installed_list = self.__get_installed_list()
             for entry in api_response.json():

@@ -33,4 +33,4 @@ class Steamgrid:
         headers = {
             'Authorization': "Bearer {}".format(self.__api_key)
         }
-        return requests.get(url, headers=headers, timeout=5)
+        return requests.get(url, headers=headers, timeout=20)
