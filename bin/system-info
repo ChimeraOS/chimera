@@ -127,7 +127,6 @@ PRIMARY_VRAM=$(grep "Dedicated video memory:" /tmp/glxinfo.txt | cut -d':' -f2 |
 if icanuse pulsemixer; then
     AUDIO_DEVICE=$(pulsemixer --list-sinks | grep Default | cut -d',' -f2 | sed 's/ Name: //')
 elif icanuse pw-dump && icanuse pactl && icanuse jq; then
-    AUDIO_DEVICE_ALSA=$(pactl get-default-sink)
     AUDIO_DEVICE_QUERY=".[] | select(.type == \"PipeWire:Interface:Node\") | select(.info.props.\"node.name\" == \"$(pactl get-default-sink)\") | .info.props.\"node.nick\""
     AUDIO_DEVICE=$(pw-dump | jq --raw-output "$AUDIO_DEVICE_QUERY")
 else
