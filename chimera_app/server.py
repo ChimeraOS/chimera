@@ -268,7 +268,7 @@ def shortcut_create():
         ext = get_ext(image_urls[img_type])
         image_paths[img_type] = os.path.join(BANNER_DIR, img_type, platform, f"{name}{ext}")
         ensure_directory_for_file(image_paths[img_type])
-        download = requests.get(image_urls[img_type])
+        download = requests.get(image_urls[img_type], timeout=20)
         with open(image_paths[img_type], "wb") as image_file:
             image_file.write(download.content)
 
@@ -324,7 +324,7 @@ def shortcut_update():
         ext = get_ext(image_urls[img_type])
         image_paths[img_type] = os.path.join(BANNER_DIR, img_type, platform, f"{name}{ext}")
         ensure_directory_for_file(image_paths[img_type])
-        download = requests.get(image_urls[img_type])
+        download = requests.get(image_urls[img_type], timeout=20)
         with open(image_paths[img_type], "wb") as image_file:
             image_file.write(download.content)
 

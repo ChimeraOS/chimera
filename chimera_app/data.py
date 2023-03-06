@@ -54,7 +54,7 @@ class Downloader():
         """
         api_url = ('https://api.github.com/repos/chimeraos/'
                    'chimera-data/branches')
-        resp = requests.get(api_url)
+        resp = requests.get(api_url, timeout=10)
         db_path = os.path.join(self.db_path, "branches.json")
         ensure_directory_for_file(db_path)
         branches = resp.json()
