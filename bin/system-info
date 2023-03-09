@@ -1,6 +1,10 @@
 #!/bin/bash
 export LC_ALL=C
 
+function icanuse () {
+    test -x "$(command -v $1)"
+}
+
 # Scaffold some hefty guard rails around ensuring DISPLAY works
 if [ -z "${DISPLAY}" ]; then
     # Hunt for an accessible DISPLAY
@@ -25,7 +29,7 @@ fi
 # Dump data
 for CMD in glxinfo xdpyinfo xrandr; do
     # NOTE: xdpyinfo is not currently available in ChimeraOS; so we check availability
-    if [ -x "$(command -v ${CMD})" ]; then
+    if icanuse $CMD; then
         if ! "${CMD}" > "/tmp/${CMD}.txt"; then
             echo "ERROR! ${CMD} failed."
             exit 1
@@ -120,7 +124,14 @@ fi
 PRIMARY_VRAM=$(grep "Dedicated video memory:" /tmp/glxinfo.txt | cut -d':' -f2 | sed 's/^ *//')
 
 # Sound card:
-AUDIO_DEVICE=$(pulsemixer --list-sinks | grep Default | cut -d',' -f2 | sed 's/ Name: //')
+if icanuse pulsemixer; then
+    AUDIO_DEVICE=$(pulsemixer --list-sinks | grep Default | cut -d',' -f2 | sed 's/ Name: //')
+elif icanuse pw-dump && icanuse pactl && icanuse jq; then
+    AUDIO_DEVICE_QUERY=".[] | select(.type == \"PipeWire:Interface:Node\") | select(.info.props.\"node.name\" == \"$(pactl get-default-sink)\") | .info.props.\"node.nick\""
+    AUDIO_DEVICE=$(pw-dump | jq --raw-output "$AUDIO_DEVICE_QUERY")
+else
+    AUDIO_DEVICE="Unknown"
+fi
 
 # Memory:
 RAM=$(grep MemTotal /proc/meminfo | tr -s ' ' | cut -d' ' -f2)
