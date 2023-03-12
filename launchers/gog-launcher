@@ -15,4 +15,11 @@ if [ "$appdir" != "." ]; then
 	rm -rf $appdir
 fi
 
+exe=$(yq ".[] | select(.id == ${1}) | select(.platform == \"gog\") | .exe" ~/.local/share/chimera/data/gamedb.yaml)
+
+if [ -n "$exe" ] && [ "$exe" != "null" ]; then
+	echo $exe | sed 's/"//g'
+	exit
+fi
+
 cat goggame*.info | jq '.playTasks[0].path' | sed 's/"//g'
