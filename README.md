@@ -45,7 +45,7 @@ To restart Steam you can open the menu, click on "Actions", then select the "Res
 ### Command line interface
 If you use ChimeraOS or use `steamos-compositor-plus` and have `chimera` installed the required commands apply game tweaks and shortcuts to Steam will run automatically when the Steam session starts.
 
-Otherwise, you will need to run `chimera --update --tweaks` while Steam is not running because any changes applied while Steam is running will be overwritten by Steam.
+Otherwise, you will need to run `chimera --update` and `chimera --tweaks` while Steam is not running because any changes applied while Steam is running will be overwritten by Steam.
 
 ## Configuration
 For console platforms, Chimera creates shortcuts in Steam which launch each game with RetroArch. The default RetroArch configuration files are located under `/usr/share/chimera/config/`. You can override the default configuration by creating corresponding files under `~/.config/chimera/`.

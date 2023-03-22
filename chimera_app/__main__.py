@@ -37,7 +37,7 @@ def setup_argparse():
                           )
     group_ex.add_argument('-t', '--tweaks',
                           action="store_true",
-                          help='Download and apply all tweaks'
+                          help='Apply all tweaks; equivalent to --compat --config --shortcuts'
                           )
     group_ex.add_argument('-c', '--compat',
                           action="store_true",
