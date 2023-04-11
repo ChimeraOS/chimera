@@ -9,6 +9,8 @@ import bcrypt
 import requests
 import shutil
 import unicodedata
+import string
+import secrets
 from bottle import abort
 from bottle import app
 from bottle import redirect
@@ -57,6 +59,14 @@ PLATFORM_HANDLERS = {
     "gog": GOG(),
 }
 
+
+def refresh_local_password():
+    password = ''.join((secrets.choice(string.ascii_letters + string.digits) for i in range(100)))
+    f = open('/tmp/chimera-local-password', 'w')
+    f.write(password)
+    return password
+
+LOCAL_PASSWORD = refresh_local_password()
 
 def authenticate_platform(selected_platform):
     if selected_platform in PLATFORM_HANDLERS:
@@ -926,15 +936,25 @@ def logout():
     session.delete()
     return template('logout')
 
+@route('/authenticate', method='GET')
+def authenticate_get():
+    authenticate_route_handler()
 
 @route('/authenticate', method='POST')
+def authenticate_post():
+    authenticate_route_handler()
+
 def authenticate_route_handler():
+    global LOCAL_PASSWORD
+
     AUTHENTICATOR.kill()
-    password = request.forms.get('password')
+    password = request.forms.get('password') or request.query.get('password')
     session = request.environ.get('beaker.session')
     keep_password = SETTINGS_HANDLER.get_setting('keep_password') or False
     stored_hash = SETTINGS_HANDLER.get_setting('password')
-    if AUTHENTICATOR.matches_password(password.upper()) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
+    local_password = LOCAL_PASSWORD
+    LOCAL_PASSWORD=refresh_local_password()
+    if password == local_password or AUTHENTICATOR.matches_password(password.upper()) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()

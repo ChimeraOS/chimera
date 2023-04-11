@@ -1,0 +1,2 @@
+#! /bin/bash
+xdg-open http://localhost:8844/authenticate?password=$(cat /tmp/chimera-local-password)
