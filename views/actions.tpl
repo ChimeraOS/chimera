@@ -18,6 +18,18 @@
 		</div>
 	% end
 
+	% if get('tdp'):
+		<div class="action">
+						<a class="volume-down" href="/actions/power/tdp_down">
+							-
+						</a>
+						<a class="volume" style="color : lightgreen"><i class="ri-flashlight-fill"></i> {{get('tdp')}}W</a>
+						<a class="volume-up" href="/actions/power/tdp_up">
+							+
+						</a>
+		</div>
+	% end
+
 	<a href="/actions/retroarch/load_state">
 		<div class="action">
 			<i class="ri-upload-2-fill"></i> Load Game

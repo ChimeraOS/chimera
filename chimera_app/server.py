@@ -45,6 +45,7 @@ from chimera_app.platforms.epic_store import EpicStore
 from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
 from chimera_app.shortcuts import PlatformShortcutsFile
+import chimera_app.power as power
 
 
 server = SessionMiddleware(app(), SESSION_OPTIONS)
@@ -84,11 +85,11 @@ def root():
 @route('/actions')
 @authenticate
 def actions():
-    return template('actions.tpl', audio=get_audio(), bare=True)
+    return template('actions.tpl', audio=get_audio(), tdp=power.get_tdp(), bare=True)
 
 @route('/emulators')
 @authenticate
-def actions():
+def emulators():
     return template('emulators.tpl', bare=True)
 
 @route('/library')
@@ -920,6 +921,22 @@ def audio(profile):
     finally:
         redirect('/')
 
+
+@route('/actions/power/tdp_down')
+@authenticate
+def volume_down():
+    try:
+        power.set_tdp(power.get_tdp() - 1)
+    finally:
+        redirect('/actions')
+
+@route('/actions/power/tdp_up')
+@authenticate
+def volume_down():
+    try:
+        power.set_tdp(power.get_tdp() + 1)
+    finally:
+        redirect('/actions')
 
 @route('/login')
 def login():

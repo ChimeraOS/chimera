@@ -258,11 +258,11 @@ table[class=settings] th {
 }
 
 .volume {
+    width: 33%;
     border-left : 1px solid white;
     border-right : 1px solid white;
     padding : 20px 0;
     margin : -20px 0;
-    flex-grow: 1;
     background-color:#333333;
 }
 
@@ -277,9 +277,9 @@ table[class=settings] th {
 }
 
 .volume-up {
+    width: 33%;
     padding : 20px 0;
     margin : -20px 0;
-    flex-grow: 1;
     background-color:#333333;
 
 }
@@ -289,9 +289,9 @@ table[class=settings] th {
 }
 
 .volume-down {
+    width: 33%;
     padding : 20px 0;
     margin : -20px 0;
-    flex-grow: 1;
     background-color:#333333;
 }
 
