@@ -51,6 +51,20 @@ p.placeholder {
     background-color: #3268a8;
 }
 
+.app-container {
+    display: inline-block;
+ }
+
+ .app-container .title {
+    margin: 0 16px;
+    padding: 0;
+    text-align: center;
+    width: 248px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+ }
+
 .img-container {
     position: relative;
     display: inline-block;
