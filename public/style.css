@@ -53,6 +53,7 @@ p.placeholder {
 
 .app-container {
     display: inline-block;
+    margin-bottom: 20px;
  }
 
  .app-container .title {
@@ -68,7 +69,7 @@ p.placeholder {
 .img-container {
     position: relative;
     display: inline-block;
-    margin: 16px;
+    margin: 8px 16px;
     padding: 0px;
     height: 116px;
     width: 248px;
