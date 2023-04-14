@@ -51,10 +51,25 @@ p.placeholder {
     background-color: #3268a8;
 }
 
+.app-container {
+    display: inline-block;
+    margin-bottom: 20px;
+ }
+
+ .app-container .title {
+    margin: 0 16px;
+    padding: 0;
+    text-align: center;
+    width: 248px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+ }
+
 .img-container {
     position: relative;
     display: inline-block;
-    margin: 16px;
+    margin: 8px 16px;
     padding: 0px;
     height: 116px;
     width: 248px;
