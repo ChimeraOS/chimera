@@ -28,6 +28,7 @@ setup(
         ('bin', glob('launchers/*')),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),
+        ('share/applications', ['org.chimera.app.desktop']),
     ],
 
     # Project uses reStructuredText, so ensure that the docutils get
