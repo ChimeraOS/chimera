@@ -1,10 +1,13 @@
 % rebase('base.tpl')
 
 % if isInstalledOverview:
-<div class="img-container">
-    <a href="/library/{{ platform }}/new">
-        <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut">
-    </a>
+<div class="app-container">
+    <div class="img-container">
+        <a href="/library/{{ platform }}/new">
+            <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut">
+        </a>
+    </div>
+     <p class="title">&nbsp;</p>
 </div>
 % end
 
