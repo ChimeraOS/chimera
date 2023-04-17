@@ -1,2 +1,9 @@
 #! /bin/bash
-xdg-open http://localhost:8844/authenticate?password=$(cat /tmp/chimera-local-password)
+
+URL=http://localhost:8844/authenticate?password=$(cat /tmp/chimera-local-password || echo '')
+
+if command -v chimera-session > /dev/null && chimera-session | grep '* gamepadui' > /dev/null; then
+	steam steam://openurl/${URL}
+else
+	xdg-open ${URL}
+fi
