@@ -52,7 +52,7 @@ def set_tdp(new_tdp):
     if not device:
         return
 
-    if new_tdp < device.tdp_min or new_tdp > device.tdp_max:
+    if new_tdp < device['tdp_min'] or new_tdp > device['tdp_max']:
         return
 
     run([ 'sudo', '--non-interactive', POWER_TOOL_PATH, 'set-tdp', str(new_tdp) ])

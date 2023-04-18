@@ -924,7 +924,7 @@ def audio(profile):
 
 @route('/actions/power/tdp_down')
 @authenticate
-def volume_down():
+def tdp_down():
     try:
         power.set_tdp(power.get_tdp() - 1)
     finally:
@@ -932,7 +932,7 @@ def volume_down():
 
 @route('/actions/power/tdp_up')
 @authenticate
-def volume_down():
+def tdp_up():
     try:
         power.set_tdp(power.get_tdp() + 1)
     finally:
