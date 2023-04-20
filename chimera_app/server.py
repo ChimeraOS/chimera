@@ -11,6 +11,7 @@ import shutil
 import unicodedata
 import string
 import secrets
+import threading
 from bottle import abort
 from bottle import app
 from bottle import redirect
@@ -52,6 +53,10 @@ server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 
 tmpfiles = {}
+
+storage_operation_device = None
+storage_operation_status = None
+storage_operation_log = None
 
 
 PLATFORM_HANDLERS = {
@@ -832,23 +837,111 @@ def suspend_system():
         redirect('/actions')
 
 
-@route('/system/storage',method='GET')
+@route('/system/storage', method='GET')
+@authenticate
+def storage_page():
+    return template('storage.tpl')
+
+
+def operation_status():
+    global storage_operation_status
+    global storage_operation_device
+    global storage_operation_log
+
+    return {
+        'type' : 'format',
+        'options' : {
+            'device' : storage_operation_device
+        },
+        'status' : storage_operation_status,
+        'log' : storage_operation_log
+    }
+
+# {
+#     devices : [
+#         {
+#             name,
+#             model,
+#             device_type,  # 'disk' or 'partition'
+#             uuid,
+#             mount_point,
+#             fstype,
+#         },
+#     ],
+#     operation : {
+#         type : 'format',
+#         options : {
+#             device : '/dev/sda'
+#         }
+#         status : 'in-progress'
+#         log : '...'
+#     },
+# }
+@route('/api/storage', method='GET')
 @authenticate
 def storage_display():
-    disks = STORAGE_HANDLER.get_disks()
-    return template('storage.tpl', disks=disks)
+    devices = STORAGE_HANDLER.get_disks()
+    response.content_type = 'application/json'
+    return {
+        'devices' : devices,
+        'operation' : operation_status()
+    }
 
-
-@route('/system/storage/format', method='POST')
+# {
+#     operation : 'format',
+#     options: {
+#         device : '/dev/sda'
+#     }
+# }
+@route('/api/storage', method='POST')
 @authenticate
 def storage_format():
-    disk = request.POST.get("disk")
-    proc = STORAGE_HANDLER.format_disk(disk)
+    global storage_operation_status
+    global storage_operation_device
+    global storage_operation_log
+
+    if storage_operation_status == 'in-progress':
+        return
+
+    data = request.json
+    operation = data['operation']
+
+    if operation == 'reset':
+        storage_operation_status = None
+        storage_operation_device = None
+        storage_operation_log    = None
+        return
+
+    if operation != 'format':
+        return
+
+    device = data['options']['device']
+    thread = threading.Thread(target=storage_format_task,
+                                args=[device])
+
+    storage_operation_status = 'in-progress'
+    storage_operation_device = device
+    storage_operation_log    = None
+
+    thread.start()
+
+    response.content_type = 'application/json'
+    return {
+        'operation' : operation_status()
+    }
+
+def storage_format_task(device):
+    global storage_operation_status
+    global storage_operation_device
+    global storage_operation_log
+
+    proc = STORAGE_HANDLER.format_disk(device)
     if proc.returncode == 0:
-        log = proc.stdout
+        storage_operation_log = proc.stdout
+        storage_operation_status = 'success'
     else:
-        log = proc.stderr
-    return template('format_status.tpl', log=log)
+        storage_operation_log = proc.stderr
+        storage_operation_status = 'fail'
 
 
 def get_audio():

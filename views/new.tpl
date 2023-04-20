@@ -1,6 +1,6 @@
 % rebase('base.tpl')
 
-<script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
+<script src="/public/alpinejs@3.12.0.min.js"></script>
 
 <script>
 

@@ -390,3 +390,30 @@ p.platform-login-description a:hover {
     content: "⚠️";
     margin: 0 10px 0 0;
 }
+
+table {
+    border-collapse: collapse;
+    margin: 0px;
+}
+
+.row-border {
+    border-top: 1pt solid black;
+}
+
+.narrow-content {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button.small {
+    padding: 0px;
+    margin: 5px;
+    height: 50px;
+}
+
+@media screen and (max-width: 950px) {
+    .optional {
+        display: none;
+    }
+}

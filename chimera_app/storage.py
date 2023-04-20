@@ -5,60 +5,52 @@ import re
 
 from subprocess import run
 
+
+# Is target a substring of any candidate strings?
+def do_any_contain(candidates, target):
+    for candidate in candidates:
+        if target in candidate:
+            return True
+    return False
+
+
 class StorageConfig:
 
-
     def __init__(self):
-        pass 
+        pass
 
 
-    # Modified from https://www.programcreek.com/python/example/98337/pyudev.Context
     def get_disks(self):
-        disks = []
+        # categorize partitions and get their mount points
+        bad_parts_list = [] # an array of partition names which should be ignored
+        good_parts = {} # a map of mount points indexed by partition name
+        for part in psutil.disk_partitions():
+            if part.mountpoint in [ "/", "/boot", "/boot/efi", "/boot/grub" ]: # exclude system partitions
+                bad_parts_list.append(part.device)
+            else:
+                good_parts[part.device] = part.mountpoint
+
+        # get device details
+        devices = []
         context = pyudev.Context()
         for device in context.list_devices(subsystem="block"):
-            if device.device_type == "disk":
-                property_dict = dict(device.items())
-                name = property_dict.get('DEVNAME', "Unknown")
-                if "loop" in name:
-                    break
-                partitions = self.get_partitions(name)
-                is_sys_dev=False
-                # Make sure we don't list the system drive.
-                for part in psutil.disk_partitions():
-                    for part_dict in partitions:
-                        # part.device is full path, partitions is truncated partition name.
-                        strip_path = part.device.replace("/dev/", "") 
-                        if strip_path in part_dict["name"]:
-                            if part.mountpoint in ["/", "/boot", "/boot/efi", "/boot/grub"]:
-                                is_sys_dev=True
-                                break
-                            else:
-                                part_dict["mount_point"] = part.mountpoint
+            props = dict(device.items())
+            name = props.get('DEVNAME')
+            media_type = props.get('ID_TYPE')
 
-                # Append the disk to the list.
-                if not is_sys_dev:
-                    disks.append(
-                    {
-                        'name':     name,	    	
-                        'model':	property_dict.get('ID_MODEL', "Unknown"),
-                        'partitions': tuple(partitions)
-			        })
-        return disks 
+            if media_type != 'disk' or do_any_contain(bad_parts_list, name):
+                continue
 
+            devices.append({
+                'name'        : name,
+                'device_type' : device.device_type,
+                'mount_point' : good_parts[name] if name in good_parts else None,
+                'model'       : props.get('ID_MODEL'),
+                'uuid'        : props.get('ID_FS_UUID'),
+                'fstype'      : props.get('ID_FS_TYPE'),
+            })
 
-    def get_partitions(self, disk):
-        partitions = []
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem="block"):
-            if device.device_type == "partition":
-                property_dict = dict(device.items())
-                name = property_dict.get('DEVNAME', "Unknown")
-                uuid = property_dict.get('ID_FS_UUID',"Unkown")
-                fstype = property_dict.get('ID_FS_TYPE',"Unkown")
-                if disk in name:
-                    partitions.append({"name": name, "mount_point": "", "uuid": uuid, "fstype": fstype})
-        return partitions
+        return devices
 
 
     def format_disk(self, disk):
