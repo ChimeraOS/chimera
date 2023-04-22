@@ -21,6 +21,7 @@ setup(
         ('share/chimera/views', glob('views/*.tpl')),
         ('share/chimera/public', glob('public/*.js')),
         ('share/chimera/public', glob('public/*.css')),
+        ('share/chimera/public', glob('public/*.webp')),
         ('share/chimera/config', glob('config/*.cfg')),
         ('share/chimera/config', glob('config/*.conf')),
         ('share/chimera/bin',    glob('bin/*')),
