@@ -21,6 +21,9 @@ label = pyglet.text.Label("Downloading configuration updates...",
 
 HAVE_FFMPEG = pyglet.media.have_ffmpeg()
 
+# Disable animated splash until we figure this out
+HAVE_FFMPEG = False
+
 if HAVE_FFMPEG:
     player = pyglet.media.Player()
     animated_logo_vid = pyglet.media.load(RESOURCE_DIR + "/images/splash/animated_logo.webm")
