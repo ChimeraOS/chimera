@@ -17,7 +17,7 @@ setup(
         ('share/chimera/images', glob('images/*.png')),
         ('share/chimera/images/flathub', glob('images/flathub/*.png')),
         ('share/chimera/images/splash', glob('images/splash/*.png')),
-        ('share/chimera/images/splash', glob('images/splash/*.webm')),
+        ('share/chimera/images/splash', glob('images/splash/*.gif')),
         ('share/chimera/views', glob('views/*.tpl')),
         ('share/chimera/public', glob('public/*.js')),
         ('share/chimera/public', glob('public/*.css')),
