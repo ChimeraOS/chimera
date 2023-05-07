@@ -36,16 +36,16 @@ class StorageConfig:
         for device in context.list_devices(subsystem="block"):
             props = dict(device.items())
             name = props.get('DEVNAME')
-            media_type = props.get('ID_TYPE')
+            is_allowed_type = props.get('ID_TYPE') == 'disk' or props.get('ID_DRIVE_FLASH_SD') == '1' or props.get('ID_DRIVE_MEDIA_FLASH_SD') == '1'
 
-            if media_type != 'disk' or do_any_contain(bad_parts_list, name):
+            if not is_allowed_type or do_any_contain(bad_parts_list, name):
                 continue
 
             devices.append({
                 'name'        : name,
                 'device_type' : device.device_type,
                 'mount_point' : good_parts[name] if name in good_parts else None,
-                'model'       : props.get('ID_MODEL'),
+                'model'       : props.get('ID_MODEL') or props.get('ID_NAME'),
                 'uuid'        : props.get('ID_FS_UUID'),
                 'fstype'      : props.get('ID_FS_TYPE'),
             })
