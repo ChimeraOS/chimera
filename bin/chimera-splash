@@ -19,8 +19,8 @@ label = pyglet.text.Label("Downloading configuration updates...",
                           batch=batch
                          )
 
-background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_animated_logo.gif"
-background_image = pyglet.image.load_animation(background_image_path)
+background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
+background_image = pyglet.image.load(background_image_path)
 background = pyglet.sprite.Sprite(img=background_image, batch=batch)
 
 # Center and scale to screen
