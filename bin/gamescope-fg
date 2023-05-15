@@ -6,7 +6,15 @@ exec "$@" & # start game
 sleep 1 # wait a bit for game window
 
 # find window with size greater than 99x99 that is not a steam window
-RESULT=`xwininfo -display $DISPLAY -root -tree | grep "^     0x" | grep -E "[0-9]{3}x[0-9]{3}" | grep -v \"Steam\"\: | grep -v \"SteamOverlay\"\: | grep -v \"steamwebhelper\"`
+RESULT=$(xwininfo -display $DISPLAY -root -tree | grep "^     0x" | grep -E "[0-9]{3}x[0-9]{3}" \
+    | grep -v \"steam\" \
+    | grep -v \"Steam\"\: \
+    | grep -v \"SteamOverlay\"\: \
+    | grep -v \"steamwebhelper\"\: \
+    | grep -v \"Steam\ Big\ Picture\ Mode\"\: \
+    | grep -v \"mangoapp\ overlay\ window\"\: \
+)
+
 WIN_ID=`echo $RESULT | cut -d' ' -f 1`
 
 ORIGINAL=`xprop -display :0 -root | grep GAMESCOPECTRL_BASELAYER_APPID | cut -d'=' -f 2`
