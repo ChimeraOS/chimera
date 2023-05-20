@@ -1,0 +1,6 @@
+#! /bin/bash
+romname=${@%.zip}
+mkdir ~/"$@"
+fuse-zip "$@" ~/"$@"
+/usr/share/chimera/bin/launcher snes snes9x ~/"$@"/$romname
+fusermount -u ~/"$@"
