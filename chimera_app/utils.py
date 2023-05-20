@@ -50,7 +50,7 @@ def delete_file_link(base_dir, platform, name):
 
 
 def is_direct(platform, content_type):
-    return ((platform == "arcade" or platform == "neo-geo") and
+    return ((platform == "arcade" or platform == "neo-geo" or platform == "snesmsu1") and
             content_type == "content")
 
 
