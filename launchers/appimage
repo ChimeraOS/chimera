@@ -3,3 +3,5 @@
 cd $HOME/.local/share/chimera/content/appimage/
 chmod +x "$@"
 ./"$@"
+
+#/usr/share/chimera/bin/launcher atari-7800 prosystem "$@"
