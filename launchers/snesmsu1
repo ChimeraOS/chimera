@@ -4,4 +4,4 @@ cd .snesmsu1
 #mkdir tmp
 fusermount -u tmp
 fuse-zip -r "$@" tmp
-/usr/share/chimera/bin/launcher snes snes9x "$HOME/.local/share/chimera/content/snesmsu1/.snesmsu1/tmp/$romname"
+/usr/share/chimera/bin/launcher snesmsu1 snes9x "$HOME/.local/share/chimera/content/snesmsu1/.snesmsu1/tmp/$romname"
