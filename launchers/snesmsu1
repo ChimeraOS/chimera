@@ -1,7 +1,8 @@
 #! /bin/bash
 romname="${@%.zip}"
 cd .snesmsu1
-#mkdir tmp
-fusermount -u tmp
+mkdir tmp
 fuse-zip -r "$@" tmp
 /usr/share/chimera/bin/launcher snesmsu1 snes9x "$HOME/.local/share/chimera/content/snesmsu1/.snesmsu1/tmp/$romname"
+fusermount -u tmp
+rmdir tmp
