@@ -8,8 +8,9 @@ POWER_TOOL_PATH = os.path.join(BIN_PATH, 'power-tool')
 
 DEVICE_DB = {
     'AYANEO::AYANEO 2' : {
-        'tdp_min' : 15,
-        'tdp_max' : 28,
+        'min_tdp'   : 5,
+        'max_tdp'   : 33,
+        'max_boost' : 5,
     }
 }
 
@@ -52,7 +53,7 @@ def set_tdp(new_tdp):
     if not device:
         return
 
-    if new_tdp < device['tdp_min'] or new_tdp > device['tdp_max']:
+    if new_tdp < device['min_tdp'] or new_tdp > device['max_tdp']:
         return
 
-    run([ 'sudo', '--non-interactive', POWER_TOOL_PATH, 'set-tdp', str(new_tdp) ])
+    run([ 'sudo', '--non-interactive', POWER_TOOL_PATH, 'set-tdp', str(new_tdp), str(device['max_boost']) ])
