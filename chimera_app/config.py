@@ -57,6 +57,7 @@ PLATFORMS = {
     "sega-cd":     "Sega CD",
     "sgb":         "Super Game Boy",
     "snes":        "Super Nintendo",
+    "snesmsu1":    "SUper Nintendo MSU1",
     "tg-16":       "TurboGrafx-16",
     "wii":         "Wii"
 }
