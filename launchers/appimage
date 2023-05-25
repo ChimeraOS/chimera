@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cd $HOME/.local/share/chimera/content/appimage/
+chmod +x "$@"
+./"$@"
+

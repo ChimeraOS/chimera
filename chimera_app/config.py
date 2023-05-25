@@ -31,6 +31,7 @@ MANGOHUD_DIR = context.CONFIG_HOME + "/MangoHud"
 PLATFORMS = {
     "32x":         "32X",
     "3do":         "3DO",
+    "appimage":    "AppImage",
     "arcade":      "Arcade",
     "atari-2600":  "Atari 2600",
     "atari-7800":  "Atari 7800",
