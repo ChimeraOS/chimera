@@ -7,19 +7,38 @@ POWER_TOOL_PATH = os.path.join(BIN_PATH, 'power-tool')
 
 
 DEVICE_DB = {
-    'AYANEO::AYANEO 2' : {
+    # Aya Neo 2021
+    'AMD Ryzen 5 4500U with Radeon Graphics' : {
+        'min_tdp'   : 5,
+        'max_tdp'   : 28,
+        'max_boost' : 2,
+    },
+    # Aya Neo Air
+    'AMD Ryzen 5 5560U with Radeon Graphics' : {
+        'min_tdp'   : 3,
+        'max_tdp'   : 28,
+        'max_boost' : 2,
+    },
+    # ONEXPLAYER Mini AMD
+    'AMD Ryzen 7 5800U with Radeon Graphics' : {
         'min_tdp'   : 5,
         'max_tdp'   : 33,
         'max_boost' : 5,
-    }
+    },
+    # Aya Neo 2
+    # AOKZOE A1
+    # Aya Neo Air Plus
+    'AMD Ryzen 7 6800U with Radeon Graphics' : {
+        'min_tdp'   : 5,
+        'max_tdp'   : 33,
+        'max_boost' : 5,
+    },
 }
 
 
 def get_device_info():
-    product_name = open('/sys/devices/virtual/dmi/id/product_name', 'r').read().strip()
-    vendor_name = open('/sys/devices/virtual/dmi/id/sys_vendor', 'r').read().strip()
-
-    key = vendor_name + '::' + product_name
+    results = run([ 'bash', '-c', 'lscpu | grep "Model name" | cut -d: -f2' ], capture_output=True, text=True)
+    key = results.stdout.strip()
 
     if not key in DEVICE_DB:
         return None
