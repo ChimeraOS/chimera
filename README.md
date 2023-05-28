@@ -7,14 +7,10 @@ Chimera is a web app for remotely installing non-Steam software to your Linux ba
  - upload ROMs for supported console emulators
  - quick actions
    - adjust audio volume
-   - toggle performance overlay (MangoHud)
-   - toggle Steam overlay
+   - adjust TDP of supported devices
    - load/save emulator state
-   - toggle window mode (switch between SteamOS compositor and Openbox)
    - restart steam
    - suspend/reboot/power off
- - virtual keyboard
- - performance overlay configuration (MangoHud)
  - built-in FTP server
  - enable SSH access
 
@@ -40,10 +36,10 @@ You can connect to Chimera on ChimeraOS by opening a browser on another computer
 
 After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
 
-To restart Steam you can open the menu, click on "Actions", then select the "Restart Steam".
+To restart Steam you can open the menu, click on "Actions", then select "Restart Steam".
 
 ### Command line interface
-If you use ChimeraOS or use `steamos-compositor-plus` and have `chimera` installed the required commands apply game tweaks and shortcuts to Steam will run automatically when the Steam session starts.
+If you use ChimeraOS or use `gamescope-session` and have `chimera` installed, the required commands to apply game tweaks and shortcuts to Steam will run automatically when the Steam session starts.
 
 Otherwise, you will need to run `chimera --update` and `chimera --tweaks` while Steam is not running because any changes applied while Steam is running will be overwritten by Steam.
 
@@ -66,8 +62,12 @@ For console platforms, Chimera creates shortcuts in Steam which launch each game
 
 ## Feature Details
 
+### Non-Steam stores
+
+GOG, Epic, and Flathub applications and games are evaluated for compatibility and assigned a rating of "Unsupported", "Playable", and "Verified", reflecting the Steam Deck ratings. You can contribute to these ratings by submitting a PR against [chimera-data](https://github.com/chimeraos/chimera-data) or commenting in the `compatibility-reports` channel on the [ChimeraOS Discord](https://discord.gg/fKsUbrt).
+
 ### Install Flathub apps
-Only a limited set of applications are available for immediate installation from Flathub. Many applications on Flathub have compatibility issues with the ChimeraOS compositor and require testing. The set of available applications will be expanded over time.
+You can install any application on Flathub by going to `Library`, then selecting `Flathub`.
 
 Chimera also looks in `~/.local/share/chimera/banners/flathub/` for a list of additionally allowed Flathub applications. Just add a PNG or JPEG image of size 460x215 or 920x430 with the Flathub app id as the file name under that directory. The Flathub app id can be obtained from the last part of the URL of the Flathub page for the application. For example, the id for Minecraft is `com.mojang.Minecraft`.
 
