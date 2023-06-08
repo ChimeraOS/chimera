@@ -161,7 +161,6 @@ Each game is specified by its Steam app id. Note that the app id MUST be quoted.
 
 ### Steam Shortcuts (chimera --shortcuts)
 Reads one or more YAML formatted shortcut definition files stored under `~/.local/share/chimera/shortcuts/` and adds the shortcuts to all available Steam accounts.
-NOTE: any existing shortcut data will be lost and replaced with shortcuts specified in the shortcut definition files.
 
 #### Single shortcut per file example
 ```
