@@ -10,3 +10,5 @@ bcrypt
 Pillow
 vdf
 pyudev
+leveldb
+paste
