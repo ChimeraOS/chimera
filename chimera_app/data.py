@@ -14,12 +14,13 @@ def update_data(force=False) -> bool:
     attempts = 0
     while attempts < 3:
         try:
+            if attempts > 0:
+                time.sleep(5)
             dl = Downloader()
             return dl.update(force=force)
         except:
-            print('failed to update data (attempt {})'.format(attempts + 1))
-            time.sleep(5)
             attempts += 1
+            print('failed to update data (attempt {})'.format(attempts))
 
     # allow the steam patch and chimera services to pick up the newly downloaded files
     subprocess.call(["systemctl", "--user", "restart", "steam-patch"])
