@@ -1,0 +1,4 @@
+#! /bin/bash
+
+ln -s /usr/share/libretro/ppsspp/assets ~/.local/share/chimera/content/spsp/PPSSPP
+/usr/share/chimera/bin/launcher spsp ppsspp "$@"
