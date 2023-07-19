@@ -155,6 +155,10 @@ PLATFORMS_DEFAULT = {
         "name": "Master System",
         "enabled": True,
     },
+    "msdos": {
+    	"name": "MSDOS",
+    	"enabled": False,
+    },
     "n3ds": {
         "name": "Nintendo 3DS",
         "enabled": False,
@@ -183,7 +187,7 @@ PLATFORMS_DEFAULT = {
         "name": "PlayStation 2",
         "enabled": True,
     },
-    "psp": {
+    "spsp": {
         "name": "PlayStation Portable",
         "enabled": True,
     },
