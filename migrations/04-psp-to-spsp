@@ -1,0 +1,69 @@
+#!/bin/bash
+
+echo "migration start: $0"
+
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CHIMERA=$DATA_HOME/chimera
+
+if [ -d $CHIMERA/content/psp ]; then
+	echo "renaming content/psp"
+	mv $CHIMERA/content/psp $CHIMERA/content/spsp
+fi
+
+if [ -d $CHIMERA/saves/psp ]; then
+	echo "renaming saves/psp"
+	mv $CHIMERA/saves/psp $CHIMERA/saves/spsp
+fi
+
+if [ -d $CHIMERA/images/background/psp ]; then
+	echo "renaming images/background/psp"
+	mv $CHIMERA/images/background/psp $CHIMERA/images/background/spsp
+fi
+
+if [ -d $CHIMERA/images/banner/psp ]; then
+	echo "renaming images/banner/psp"
+	mv $CHIMERA/images/banner/psp $CHIMERA/images/banner/spsp
+fi
+
+if [ -d $CHIMERA/images/icon/psp ]; then
+	echo "renaming images/icon/psp"
+	mv $CHIMERA/images/icon/psp $CHIMERA/images/icon/spsp
+fi
+
+if [ -d $CHIMERA/images/logo/psp ]; then
+	echo "renaming images/logo/psp"
+	mv $CHIMERA/images/logo/psp $CHIMERA/images/logo/spsp
+fi
+
+if [ -d $CHIMERA/images/poster/psp ]; then
+	echo "renaming images/poster/psp"
+	mv $CHIMERA/images/poster/psp $CHIMERA/images/poster/spsp
+fi
+
+if [ -f $CHIMERA/shortcuts/chimera.psp.yaml ]; then
+	echo "renaming shortcuts/chimera.psp.yaml"
+	mv $CHIMERA/shortcuts/chimera.psp.yaml $CHIMERA/shortcuts/chimera.spsp.yaml
+fi
+
+if [ -d $CHIMERA/shortcuts ]; then
+	pushd $CHIMERA/shortcuts > /dev/null
+
+	if grep "cmd: gc$" chimera.spsp.yaml &> /dev/null; then
+	    echo "renaming shortcut commands"
+	    sed -i 's|cmd: psp$|cmd: spsp|' chimera.spsp.yaml;
+	fi
+
+	if grep "/psp\"" chimera.spsp.yaml &> /dev/null; then
+	    echo "renaming shortcut execution directories"
+	    sed -i 's|/psp"|/spsp"|' chimera.spsp.yaml;
+	fi
+
+	if grep "/psp/" chimera.spsp.yaml &> /dev/null; then
+	    echo "renaming shortcut image paths"
+	    sed -i 's|/psp/|/spsp/|' chimera.spsp.yaml;
+	fi
+
+	popd > /dev/null
+fi
+
+echo "migration finish: $0"
