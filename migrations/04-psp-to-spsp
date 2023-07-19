@@ -48,7 +48,7 @@ fi
 if [ -d $CHIMERA/shortcuts ]; then
 	pushd $CHIMERA/shortcuts > /dev/null
 
-	if grep "cmd: gc$" chimera.spsp.yaml &> /dev/null; then
+	if grep "cmd: psp$" chimera.spsp.yaml &> /dev/null; then
 	    echo "renaming shortcut commands"
 	    sed -i 's|cmd: psp$|cmd: spsp|' chimera.spsp.yaml;
 	fi
