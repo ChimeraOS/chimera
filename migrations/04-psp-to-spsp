@@ -11,7 +11,7 @@ if [ -d $CHIMERA/content/psp ]; then
 	mkdir $CHIMERA/content/spsp
 	mkdir $CHIMERA/content/spsp/PSP
 	echo "Move saves from PSP to spsp/PSP"
-	mv $CHIMERA/content/psp/* $CHIMERA/content/spsp/PSP/
+	mv $CHIMERA/content/psp/* $CHIMERA/content/spsp/PSP
 fi
 
 if [ -d $CHIMERA/saves/psp ]; then
