@@ -53,7 +53,7 @@ PLATFORMS = {
     "n64":         "Nintendo 64",
     "ps1":         "PlayStation",
     "ps2":         "PlayStation 2",
-    "psp":         "PlayStation Portable",
+    "spsp":        "PlayStation Portable",
     "saturn":      "Saturn",
     "sega-cd":     "Sega CD",
     "sgb":         "Super Game Boy",
