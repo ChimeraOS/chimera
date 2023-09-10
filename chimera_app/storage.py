@@ -52,6 +52,10 @@ class StorageConfig:
 
         return devices
 
-
+    # format the device
     def format_disk(self, disk):
         return run(['/usr/bin/shadowblip/format-media', '--full', '--device', disk], capture_output=True, text=True)
+
+    # adds disk for use as Steam storage
+    def add_disk(self, disk):
+        return run(['/usr/bin/shadowblip/init-media', disk], capture_output=True, text=True)

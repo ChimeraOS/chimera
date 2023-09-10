@@ -54,6 +54,7 @@ server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 tmpfiles = {}
 
+storage_operation_type = None
 storage_operation_device = None
 storage_operation_status = None
 storage_operation_log = None
@@ -844,12 +845,13 @@ def storage_page():
 
 
 def operation_status():
+    global storage_operation_type
     global storage_operation_status
     global storage_operation_device
     global storage_operation_log
 
     return {
-        'type' : 'format',
+        'type' : storage_operation_type,
         'options' : {
             'device' : storage_operation_device
         },
@@ -895,7 +897,8 @@ def storage_display():
 # }
 @route('/api/storage', method='POST')
 @authenticate
-def storage_format():
+def storage_operation():
+    global storage_operation_type
     global storage_operation_status
     global storage_operation_device
     global storage_operation_log
@@ -907,17 +910,24 @@ def storage_format():
     operation = data['operation']
 
     if operation == 'reset':
+        storage_operation_type   = None
         storage_operation_status = None
         storage_operation_device = None
         storage_operation_log    = None
         return
 
-    if operation != 'format':
+    if operation == 'format':
+        func = STORAGE_HANDLER.format_disk
+    elif operation == 'add':
+        func = STORAGE_HANDLER.add_disk
+    else:
         return
 
+    storage_operation_type = operation
+
     device = data['options']['device']
-    thread = threading.Thread(target=storage_format_task,
-                                args=[device])
+    thread = threading.Thread(target=storage_task,
+                                args=[device, func])
 
     storage_operation_status = 'in-progress'
     storage_operation_device = device
@@ -930,12 +940,12 @@ def storage_format():
         'operation' : operation_status()
     }
 
-def storage_format_task(device):
+def storage_task(device, func):
     global storage_operation_status
     global storage_operation_device
     global storage_operation_log
 
-    proc = STORAGE_HANDLER.format_disk(device)
+    proc = func(device)
     if proc.returncode == 0:
         storage_operation_log = proc.stdout
         storage_operation_status = 'success'
