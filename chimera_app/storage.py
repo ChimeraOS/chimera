@@ -6,10 +6,10 @@ import re
 from subprocess import run
 
 
-# Is target a substring of any candidate strings?
+# Is target a substring of any candidate strings or vice versa?
 def do_any_contain(candidates, target):
     for candidate in candidates:
-        if target in candidate:
+        if target in candidate or candidate in target:
             return True
     return False
 
@@ -22,11 +22,11 @@ class StorageConfig:
 
     def get_disks(self):
         # categorize partitions and get their mount points
-        bad_parts_list = [] # an array of partition names which should be ignored
+        ignore_list = [] # an array of device/partition names which should be ignored
         good_parts = {} # a map of mount points indexed by partition name
         for part in psutil.disk_partitions():
             if part.mountpoint in [ "/", "/boot", "/boot/efi", "/boot/grub" ]: # exclude system partitions
-                bad_parts_list.append(part.device)
+                ignore_list.append(part.device)
             else:
                 good_parts[part.device] = part.mountpoint
 
@@ -36,9 +36,14 @@ class StorageConfig:
         for device in context.list_devices(subsystem="block"):
             props = dict(device.items())
             name = props.get('DEVNAME')
-            is_allowed_type = props.get('ID_TYPE') == 'disk' or props.get('ID_DRIVE_FLASH_SD') == '1' or props.get('ID_DRIVE_MEDIA_FLASH_SD') == '1'
+            is_allowed = props.get('DEVTYPE') == 'disk' or props.get('DEVTYPE') == 'partition' or props.get('ID_TYPE') == 'disk' or props.get('ID_DRIVE_FLASH_SD') == '1' or props.get('ID_DRIVE_MEDIA_FLASH_SD') == '1'
+            is_ignored = props.get('DEVTYPE') == 'disk' and (props.get('UDISKS_IGNORE') == '1' or props.get('UDISKS_PRESENTATION_HIDE') == '1') # only ignore/hide entire disks, not individual partitions
 
-            if not is_allowed_type or do_any_contain(bad_parts_list, name):
+            if not is_allowed or is_ignored:
+                ignore_list.append(name)
+                continue
+
+            if do_any_contain(ignore_list, name):
                 continue
 
             devices.append({
