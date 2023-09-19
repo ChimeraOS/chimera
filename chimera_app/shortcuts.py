@@ -15,6 +15,9 @@ from chimera_app.file_utils import ensure_directory_for_file
 
 STATUS_TAGS = [ 'ChimeraOS Verified', 'ChimeraOS Playable', 'ChimeraOS Unsupported' ]
 
+# a list of migrated commands: keys correspond to the command that was migrated to and values correspond to the previous command that was migrated away from
+MIGRATIONS = { 'spsp' : 'psp' }
+
 
 def create_all_shortcuts():
     """Convenience function to create all shortcuts with default parameters"""
@@ -132,7 +135,7 @@ class SteamShortcutsFile():
                 self.current_data = data['shortcuts']
 
     def match_app_id(self, app_id: str) -> dict:
-        """Returns the a copy of the shortcut dictionary of the given app_id.
+        """Returns a copy of the shortcut dictionary of the given app_id.
         If not found returns a new empty dictionary.
         """
         if not self.current_data:
@@ -186,6 +189,13 @@ class SteamShortcutsFile():
             raise Exception('Entry missing required field "name".')
         if 'cmd' not in entry:
             raise Exception('Entry missing required field "cmd".')
+
+        # remove old shortcuts after a change in 'cmd' which causes the game's id to change and matching to fail resulting in duplicate shortcuts
+        if entry['cmd'] in MIGRATIONS.keys():
+            shortcut_id = get_shortcut_id(MIGRATIONS[entry['cmd']], entry['name'])
+            shortcut, index = self.match_app_id(shortcut_id)
+            if shortcut:
+                self.current_data.pop(index)
 
         shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
         shortcut, index = self.match_app_id(shortcut_id)
