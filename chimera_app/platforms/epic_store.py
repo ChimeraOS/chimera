@@ -16,9 +16,8 @@ class EpicStore(StorePlatform):
                                          'metadata')
 
     def is_authenticated(self):
-        return os.path.isfile(os.path.join(context.CONFIG_HOME,
-                                           "legendary",
-                                           "user.json"))
+        output = subprocess.check_output(['legendary', 'status'])
+        return '<not logged in>' not in output.decode('utf-8')
 
     def authenticate(self, password):
         clean_password = password.replace('authorizationCode', '')
