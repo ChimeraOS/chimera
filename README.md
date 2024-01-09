@@ -32,7 +32,7 @@ To have game patches be applied, you must also run the following command
 ## Usage
 
 ### Web interface
-You can connect to Chimera on ChimeraOS by opening a browser on another computer and entering `chimeraos.local`. If that does not work, then determine the IP address of your ChimeraOS system by looking at the network settings and enter it directly into your browser.
+You can connect to Chimera on ChimeraOS by opening a browser on another computer and entering `chimeraos.local:8844`. If that does not work, then determine the IP address of your ChimeraOS system by looking at the network settings and enter it directly into your browser along with the port number, for example: `192.168.10.120:8844`.
 
 After installing any app, you must restart Steam for the newly installed application or game to appear in the Steam Big Picture UI.
 
