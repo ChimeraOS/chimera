@@ -1058,11 +1058,11 @@ def logout():
 
 @route('/authenticate', method='GET')
 def authenticate_get():
-    authenticate_route_handler()
+    return authenticate_route_handler()
 
 @route('/authenticate', method='POST')
 def authenticate_post():
-    authenticate_route_handler()
+    return authenticate_route_handler()
 
 def authenticate_route_handler():
     global LOCAL_PASSWORD
