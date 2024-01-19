@@ -38,7 +38,12 @@ class Authenticator:
 
     def kill(self):
         for process in psutil.process_iter():
-            if self.__app in process.cmdline() and self.__fg not in process.cmdline():
+            try:
+                cmdline = process.cmdline()
+            except:
+                continue
+
+            if self.__app in cmdline and self.__fg not in cmdline:
                 print("Stopping authenticator")
                 process.kill()
                 break
