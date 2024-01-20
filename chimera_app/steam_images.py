@@ -50,7 +50,7 @@ def apply_image(steamid, img_path, type) -> None:
             os.makedirs(dst_dir)
         dst = dst_dir + str(img_id) + ext
         if os.path.islink(dst) or os.path.isfile(dst):
-            return # do not delete/overwrite user customizations
+            continue # do not delete/overwrite user customizations
         os.symlink(img_path, dst)
 
 def apply_custom_steam_images():
