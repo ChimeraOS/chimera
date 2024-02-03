@@ -22,5 +22,5 @@ def test_runs(monkeypatch):
 
 def test_platform_images():
     app = TestApp(server)
-    for platform, name in PLATFORMS.items():
+    for platform in PLATFORMS:
         assert app.get('/images/{}.png'.format(platform)).status == '200 OK'

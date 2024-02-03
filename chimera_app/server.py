@@ -115,12 +115,12 @@ def platform_page(platform):
                 showAll=False,
                 isInstalledOverview=True,
                 platform=platform,
-                platformName=PLATFORMS[platform]
+                platformName=PLATFORMS[platform]['name']
             )
         else:
             return template('custom_login',
                             platform=platform,
-                            platformName=PLATFORMS[platform])
+                            platformName=PLATFORMS[platform]['name'])
 
     shortcut_file = PlatformShortcutsFile(platform)
     shortcuts = sorted(shortcut_file.get_shortcuts_data(),
@@ -144,7 +144,7 @@ def platform_page(platform):
     return template('platform.tpl',
                     shortcuts=data,
                     platform=platform,
-                    platformName=PLATFORMS[platform])
+                    platformName=PLATFORMS[platform]['name'])
 
 
 @route('/library/<platform>/authenticate', method='POST')
@@ -182,13 +182,13 @@ def new(platform):
             isInstalledOverview=False,
             isNew=True,
             platform=platform,
-            platformName=PLATFORMS[platform]
+            platformName=PLATFORMS[platform]['name']
         )
     return template('new.tpl',
                     isNew=True,
                     isEditing=False,
                     platform=platform,
-                    platformName=PLATFORMS[platform],
+                    platformName=PLATFORMS[platform]['name'],
                     name='',
                     hidden=''
                     )
@@ -206,7 +206,7 @@ def edit(platform, name):
         if content:
             return template(
                 'custom_edit', app=content, platform=platform,
-                platformName=PLATFORMS[platform], name=content_id
+                platformName=PLATFORMS[platform]['name'], name=content_id
             )
         else:
             abort(404, 'Content not found')
@@ -217,7 +217,7 @@ def edit(platform, name):
     return template('new.tpl',
                     isEditing=True,
                     platform=platform,
-                    platformName=PLATFORMS[platform],
+                    platformName=PLATFORMS[platform]['name'],
                     name=name,
                     hidden=shortcut['hidden']
                     )
@@ -291,9 +291,9 @@ def shortcut_create():
 
     shortcut = {
         'name': name,
-        'cmd': platform,
+        'cmd': PLATFORMS[platform]['cmd'],
         'hidden': hidden == 'on',
-        'tags': [PLATFORMS[platform]]
+        'tags': [PLATFORMS[platform]['name']]
     }
 
     for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
