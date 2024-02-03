@@ -11,6 +11,21 @@ from chimera_app.streaming import StreamServer
 from chimera_app.mangohud_config import MangoHudConfig
 
 
+def merge_single_level(src1, src2):
+    keys = src1.keys() | src2.keys()
+
+    result = {}
+    for key in keys:
+            if key in src1 and key in src2:
+                    result[key] = src1[key] | src2[key]
+            elif key in src1:
+                    result[key] = src1[key]
+            else:
+                    result[key] = src2[key]
+
+    return result
+
+
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
     RESOURCE_DIR = "/usr/share/chimera"
@@ -27,41 +42,6 @@ RECORDINGS_DIR = context.DATA_HOME + '/chimera/recordings'
 SETTINGS_DIR = context.CONFIG_HOME + '/chimera'
 UPLOADS_DIR = os.path.join(context.CACHE_HOME, 'chimera', 'uploads')
 MANGOHUD_DIR = context.CONFIG_HOME + "/MangoHud"
-
-PLATFORMS = {
-    "32x":         "32X",
-    "3do":         "3DO",
-    "appimage":    "AppImage",
-    "arcade":      "Arcade",
-    "atari-2600":  "Atari 2600",
-    "atari-7800":  "Atari 7800",
-    "dreamcast":   "Dreamcast",
-    "epic-store":  "Epic Games Store",
-    "flathub":     "Flathub",
-    "gb":          "Game Boy",
-    "gba":         "Game Boy Advance",
-    "gbc":         "Game Boy Color",
-    "ngc":         "GameCube",
-    "sgg":         "Game Gear",
-    "genesis":     "Genesis",
-    "gog":         "GOG",
-    "jaguar":      "Jaguar",
-    "sms":         "Master System",
-    "nds":         "Nintendo DS",
-    "neo-geo":     "Neo Geo",
-    "nes":         "Nintendo",
-    "n64":         "Nintendo 64",
-    "ps1":         "PlayStation",
-    "ps2":         "PlayStation 2",
-    "spsp":        "PlayStation Portable",
-    "saturn":      "Saturn",
-    "sega-cd":     "Sega CD",
-    "sgb":         "Super Game Boy",
-    "snes":        "Super Nintendo",
-    "snesmsu1":    "Super Nintendo MSU1",
-    "tg-16":       "TurboGrafx-16",
-    "wii":         "Wii"
-}
 
 SETTINGS_DEFAULT = {
     "enable_ftp_server": False,
@@ -102,8 +82,172 @@ MANGOHUD_HANDLER = MangoHudConfig(MANGOHUD_DIR)
 
 STORAGE_HANDLER = StorageConfig()
 
-if SETTINGS_HANDLER.get_setting('platforms'):
-    PLATFORMS = SETTINGS_HANDLER.get_setting('platforms')
+PLATFORMS_DEFAULT = {
+    "32x": {
+        "name": "32X",
+        "enabled": True,
+    },
+    "3do": {
+        "name": "3DO",
+        "enabled": True,
+    },
+    "appimage": {
+        "name": "AppImage",
+        "enabled": False,
+    },
+    "arcade": {
+        "name": "Arcade",
+        "enabled": True,
+    },
+    "atari-2600": {
+        "name": "Atari 2600",
+        "enabled": True,
+    },
+    "atari-7800": {
+        "name": "Atari 7800",
+        "enabled": True,
+    },
+    "dreamcast": {
+        "name": "Dreamcast",
+        "enabled": True,
+    },
+    "epic-store": {
+        "name": "Epic Games Store",
+        "enabled": True,
+    },
+    "flathub": {
+        "name": "Flathub",
+        "enabled": True,
+    },
+    "gb": {
+        "name": "Game Boy",
+        "enabled": True,
+    },
+    "gba": {
+        "name": "Game Boy Advance",
+        "enabled": True,
+    },
+    "gbc": {
+        "name": "Game Boy Color",
+        "enabled": True,
+    },
+    "ngc": {
+        "name": "GameCube",
+        "enabled": True,
+    },
+    "sgg": {
+        "name": "Game Gear",
+        "enabled": True,
+    },
+    "genesis": {
+        "name": "Genesis",
+        "enabled": True,
+    },
+    "gog": {
+        "name": "GOG",
+        "enabled": True,
+    },
+    "jaguar": {
+        "name": "Jaguar",
+        "enabled": True,
+    },
+    "sms": {
+        "name": "Master System",
+        "enabled": True,
+    },
+    "msdos": {
+        "name": "MS DOS",
+        "enabled": False,
+    },
+    "neo-geo": {
+        "name": "Neo Geo",
+        "enabled": True,
+    },
+    "n3ds": {
+        "name": "Nintendo 3DS",
+        "enabled": False,
+    },
+    "nds": {
+        "name": "Nintendo DS",
+        "enabled": True,
+    },
+    "nes": {
+        "name": "Nintendo",
+        "enabled": True,
+    },
+    "n64": {
+        "name": "Nintendo 64",
+        "enabled": True,
+    },
+    "ps1": {
+        "name": "PlayStation",
+        "enabled": True,
+    },
+    "ps2": {
+        "name": "PlayStation 2",
+        "enabled": True,
+    },
+    "spsp": {
+        "name": "PlayStation Portable",
+        "enabled": True,
+    },
+    "saturn": {
+        "name": "Saturn",
+        "enabled": True,
+    },
+    "sega-cd": {
+        "name": "Sega CD",
+        "enabled": True,
+    },
+    "sgb": {
+        "name": "Super Game Boy",
+        "enabled": False,
+    },
+    "snes": {
+        "name": "Super Nintendo",
+        "enabled": True,
+    },
+    "snesmsu1": {
+        "name": "Super Nintendo MSU1",
+        "enabled": False,
+    },
+    "tg-16": {
+        "name": "TurboGrafx-16",
+        "enabled": True,
+    },
+    "wii": {
+        "name": "Wii",
+        "enabled": True,
+    },
+    "switch": {
+        "name": "Switch",
+        "enabled": False,
+    },
+}
+
+# set a default cmd property on all default platforms
+for platform_id in PLATFORMS_DEFAULT:
+    PLATFORMS_DEFAULT[platform_id]['cmd'] = platform_id
+
+# merge user settings with default platforms
+PLATFORMS = PLATFORMS_DEFAULT
+PLATFORM_SETTINGS = SETTINGS_HANDLER.get_setting('platforms')
+if PLATFORM_SETTINGS:
+    PLATFORMS = merge_single_level(PLATFORMS_DEFAULT, PLATFORM_SETTINGS)
+
+# set id property on all platforms
+for platform_id in PLATFORMS:
+    PLATFORMS[platform_id]['id'] = platform_id
+
+# drop disabled and invalid platforms
+FILTERED_PLATFORMS = {}
+for key, value in PLATFORMS.items():
+    if 'enabled' not in value or not value['enabled'] or 'name' not in value or 'cmd' not in value:
+        continue
+
+    FILTERED_PLATFORMS[key] = value
+
+PLATFORMS = dict(sorted(FILTERED_PLATFORMS.items(), key=lambda item: item[1]['name']))
 
 
 GAMEDB = {
