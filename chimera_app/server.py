@@ -372,8 +372,8 @@ def shortcut_update():
 @route('/shortcuts/delete', method='POST')
 @authenticate
 def shortcut_delete():
-    name = sanitize(request.forms.get('name'))
-    platform = sanitize(request.forms.get('platform'))
+    name = sanitize(request.forms.name)
+    platform = sanitize(request.forms.platform)
 
     shortcuts = PlatformShortcutsFile(platform)
     shortcuts.remove_shortcut(name)
