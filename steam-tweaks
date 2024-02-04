@@ -10,3 +10,10 @@ chimera --images & # do not wait for image downloads
 
 # make sure the patch service picks up the latest downloaded data
 systemctl --user restart steam-patch
+
+# disable http2 for faster downloads in steam
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+STEAM_DEV_CFG="${DATA_HOME}/Steam/steam_dev.cfg"
+if [ ! -e $STEAM_DEV_CFG ]; then
+    echo "@nClientDownloadEnableHTTP2PlatformLinux 0" > $STEAM_DEV_CFG
+fi
