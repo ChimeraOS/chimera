@@ -45,7 +45,7 @@ setup(
         'inotify_simple',
         'pyudev',
         'leveldb',
-        'paste',
+        'tornado',
     ],
 
     # metadata to display on PyPI

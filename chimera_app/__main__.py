@@ -74,7 +74,7 @@ def run_server(port):
 
     os.chdir(RESOURCE_DIR)
     FTP_SERVER.run()
-    bottle.run(app=server, host='0.0.0.0', port=port, server='paste')
+    bottle.run(app=server, host='0.0.0.0', port=port, server='tornado')
 
 
 def main():
