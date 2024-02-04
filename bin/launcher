@@ -39,6 +39,14 @@ if [ ! -e ${CONFIG_HOME}/retroarch/autoconfig ]; then
 	ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
 fi
 
+# use the RetroArch config as is, allowing users to manually configure RetroArch if they want to
+if [ "${CHIMERA_DISABLE_RETROARCH_CONFIG_OVERRIDES}" == "1" ]; then
+	retroarch \
+	--libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
+	"$@"
+	exit $?
+fi
+
 if [ -e ${CORE_CONFIG} ]; then
 	cp ${CORE_CONFIG} ${CONFIG_HOME}/retroarch/retroarch-core-options.cfg
 fi
