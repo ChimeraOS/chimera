@@ -96,7 +96,7 @@ class GOG(StorePlatform):
             content.append(dic({"content_id": cid,
                                 "summary": "",
                                 "name": info.title,
-                                "native": info.worksOn['Linux'],
+                                "native": False,
                                 "installed_version": None,
                                 "available_version": None,
                                 "image_url": banner,
