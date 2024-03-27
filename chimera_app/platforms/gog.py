@@ -47,7 +47,8 @@ class GOG(StorePlatform):
                 shortcut[img_type] = img_path
 
         if not content.native:
-            shortcut['compat_tool'] = content.compat_tool or 'proton_7'
+            # must specify explicit compat_tool proton version for automatic download to work
+            shortcut['compat_tool'] = content.compat_tool or 'proton_8'
 
             if content.compat_config:
                 shortcut['compat_config'] = content.compat_config

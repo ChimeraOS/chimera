@@ -25,13 +25,14 @@ class EpicStore(StorePlatform):
         subprocess.check_output(["legendary", "auth", "--code", clean_password])
 
     def get_shortcut(self, content):
+        # must specify explicit compat_tool proton version for automatic download to work
         shortcut = {
             'name': content.name,
             'hidden': False,
             'cmd': '$(epic-store ' + content.content_id + ')',
             'dir': self.__get_folder_path(content.content_id),
             'tags': list(filter(None, [ "Epic Games Store", status_to_collection_name(content.status) ])),
-            'compat_tool': content.compat_tool or 'proton_7'
+            'compat_tool': content.compat_tool or 'proton_8'
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
