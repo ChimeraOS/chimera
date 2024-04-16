@@ -24,8 +24,8 @@
     <hr>
     FTP can be used for transferring files to and from this machine. You can connect to use with an FTP client at ftp://{{hostname}}:{{settings["ftp_port"]}}/ if enabled.<br>
 
-	<div class="label">Enable FTP server</div>
-	<input type="checkbox" name="enable_ftp_server" id="enable_ftp_server" onclick="setShowFTPSettings()" {{'checked' if settings["enable_ftp_server"] else ''}} />
+    <div class="label">Enable FTP server</div>
+    <input type="checkbox" name="enable_ftp_server" id="enable_ftp_server" onclick="setShowFTPSettings()" {{'checked' if settings["enable_ftp_server"] else ''}} />
 
     <div id="ftp">
         <div class="label">FTP username</div>
@@ -38,7 +38,7 @@
         <input type="number" name="ftp_port" value="{{settings["ftp_port"]}}" min="1025" max="65535"/>
     </div>
 
-	<h4>SSH</h4>
+    <h4>SSH</h4>
     <hr>
     SSH allows you to access the command line of this machine remotely. Once your SSH public key has been added, you can connect to this server with "ssh {{username}}@{{hostname}}".<br>
 
@@ -70,7 +70,7 @@
     Allows launching games remotely when enabled.<br><br>
     <input type="checkbox" name="enable_remote_launch" id="enable_remote_launch" {{'checked' if settings["enable_remote_launch"] else ''}} />
 
-	<button>Save</button>
+    <button>Save</button>
 </form>
 <script>
     function setShowPasswordField() {
