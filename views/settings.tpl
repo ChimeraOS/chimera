@@ -63,6 +63,13 @@
         </table>
     % end
 
+    <h4>Other</h4>
+    <hr>
+
+    <div class="label">Enable Remote Launch</div>
+    Allows launching games remotely when enabled.<br><br>
+    <input type="checkbox" name="enable_remote_launch" id="enable_remote_launch" {{'checked' if settings["enable_remote_launch"] else ''}} />
+
 	<button>Save</button>
 </form>
 <script>

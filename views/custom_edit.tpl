@@ -60,6 +60,11 @@
 				<button class="add">Update to version {{app.available_version}}</button>
 			</form>
 		% end
+		% if steamShortcutID:
+		<form action="/launch/{{steamShortcutID}}">
+			<button>Launch</button>
+		</form>
+		% end
 		<form action="/{{platform}}/uninstall/{{app.content_id}}">
 			<button class="delete">Uninstall</button>
 		</form>

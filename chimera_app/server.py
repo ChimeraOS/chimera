@@ -46,6 +46,7 @@ from chimera_app.platforms.epic_store import EpicStore
 from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
 from chimera_app.shortcuts import PlatformShortcutsFile
+from chimera_app.shortcuts import get_bpmbanner_id
 import chimera_app.power as power
 
 
@@ -190,23 +191,30 @@ def new(platform):
                     platform=platform,
                     platformName=PLATFORMS[platform]['name'],
                     name='',
-                    hidden=''
+                    hidden='',
+                    steamShortcutID=None
                     )
 
 
 @route('/library/<platform>/edit/<name>')
 @authenticate
 def edit(platform, name):
+    remoteLaunchEnabled = SETTINGS_HANDLER.get_setting('enable_remote_launch')
     if platform in PLATFORM_HANDLERS:
         if not authenticate_platform(platform):
             return
 
         content_id = name
         content = PLATFORM_HANDLERS[platform].get_content(content_id)
+        shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
         if content:
             return template(
-                'custom_edit', app=content, platform=platform,
-                platformName=PLATFORMS[platform]['name'], name=content_id
+                'custom_edit',
+                app=content,
+                platform=platform,
+                platformName=PLATFORMS[platform]['name'],
+                name=content_id,
+                steamShortcutID=(get_bpmbanner_id(shortcut['cmd'], shortcut['name']) if remoteLaunchEnabled else None),
             )
         else:
             abort(404, 'Content not found')
@@ -219,7 +227,8 @@ def edit(platform, name):
                     platform=platform,
                     platformName=PLATFORMS[platform]['name'],
                     name=name,
-                    hidden=shortcut['hidden']
+                    hidden=shortcut['hidden'],
+                    steamShortcutID=(get_bpmbanner_id(platform, name) if remoteLaunchEnabled else None),
                     )
 
 
@@ -536,6 +545,7 @@ def settings():
 @authenticate
 def settings_update():
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
+    SETTINGS_HANDLER.set_setting("enable_remote_launch", sanitize(request.forms.get('enable_remote_launch')) == 'on')
 
     # Make sure the login password is long enough
     login_password = sanitize(request.forms.get('login_password'))
@@ -1103,3 +1113,14 @@ def steamgrid_search(search_string):
 @route('/steamgrid/images/<game_id>')
 def steamgrid_get_images(game_id):
     return STEAMGRID_HANDLER.get_images(game_id, request.query.type)
+
+
+@route('/launch/<id>')
+def launch_game(id):
+    enabled = SETTINGS_HANDLER.get_setting('enable_remote_launch')
+    if not enabled or not id.isnumeric() or type(id) != str:
+        redirect('/')
+        return
+
+    subprocess.call(["steam", "steam://rungameid/{}".format(id)])
+    return 'Launched {}...'.format(id)

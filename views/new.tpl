@@ -197,6 +197,11 @@ FilePond.setOptions({
 });
 </script>
 
+% if steamShortcutID:
+<form action="/launch/{{steamShortcutID}}">
+	<button>Launch</button>
+</form>
+% end
 
 % if isEditing:
 <form action="/shortcuts/delete" method="post">
