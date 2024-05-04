@@ -8,15 +8,15 @@ function check {
 		return 1
 	fi
 
-	out=$(gbopyrator 2> /dev/null)
+	cart_name=$(gbopyrator 2> /dev/null | grep "Detected game:" | cut -d":" -f2- | awk '{$1=$1;print}')
 	
-	if echo $out | grep ".gb " &> /dev/null; then
+	if echo $cart_name | grep ".gb$" &> /dev/null; then
 		# Game Boy cart detected
-		echo "gb"
+		echo "gb:::$cart_name"
 		return 0
-	elif echo $out | grep ".gbc " &> /dev/null; then
+	elif echo $cart_name | grep ".gbc$" &> /dev/null; then
 		# Game Boy Color cart detected
-		echo "gbc"
+		echo "gbc:::$cart_name"
 		return 0
 	else
 		# No valid cart detected
@@ -25,27 +25,29 @@ function check {
 }
 
 function load {
-	# TODO: use the actual rom name so we can consistently use saves
 	launcher=$1
+	cart=$2
 
-	ROM=$DUMP_DIR/gboperator-rom-dump
+	ROM="$DUMP_DIR/$cart"
 
-	mkdir -p $DUMP_DIR
+	mkdir -p "$DUMP_DIR"
 	trap "rm -rf $DUMP_DIR" EXIT
-	gbopyrator --dump-rom $ROM
-	$launcher $ROM
+	gbopyrator --dump-rom "$ROM"
+	$launcher "$ROM"
 }
 
-cart_type=$(check)
+result=$(check)
 code=$?
+cart_type=$(echo $result | cut -d":" -f1)
+cart_name=$(echo $result | cut -d":" -f4-)
 
 if [ "$1" == "--check" ]; then
-	echo "Detected: $cart_type"
+	echo "Detected: [$cart_type] $cart_name"
 	exit $code
 elif [ "$1" == "--trigger" ] && [ "$code" == "0" ] && [ ! -e $DUMP_DIR ]; then
 	# cart detected, trigger cart launch through Steam if not already triggered
 	steam steam://rungameid/12273638796687310848
-elif [ -z "$1" ] && [ -n "$cart_type" ]; then
+elif [ -z "$1" ] && [ -n "$cart_type" ] && [ -n "$cart_name" ]; then
 	# no parameters means this script has been called from Steam, launch the cart directly if one is detected
-	load $cart_type
+	load "$cart_type" "$cart_name"
 fi
