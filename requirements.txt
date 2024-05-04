@@ -11,4 +11,4 @@ Pillow
 vdf
 pyudev
 plyvel
-paste
+tornado
