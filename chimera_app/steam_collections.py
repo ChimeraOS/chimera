@@ -1,5 +1,5 @@
 import os
-import leveldb
+import plyvel
 import json
 import sys
 import time
@@ -12,7 +12,6 @@ class SteamCollections():
 
     def __init__(self, userid):
         self.collections = None
-        self.bom = None
         self.db = None
         self.userid = userid
         self.url = '_https://steamloopback.host\x00\x01U{userid}-cloud-storage-namespace-1'.format(userid=self.userid).encode('utf-8')
@@ -28,13 +27,14 @@ class SteamCollections():
                 self.collections = None
                 return
 
-            self.db = leveldb.LevelDB(dbdir)
+            self.db = plyvel.DB(dbdir)
 
-            value = self.db.Get(self.url)
-            dvalue = value.decode('utf-8')
-
-            self.bom = dvalue[0]
-            self.collections = self.__decode(dvalue)
+            value = self.db.get(self.url)
+            if value:
+                self.collections = self.__decode(value)
+            else:
+                self.db.close()
+                self.db = None
         except Exception as e:
             print('failed to load steam collections:', e)
             self.collections = None
@@ -94,7 +94,8 @@ class SteamCollections():
             return
 
         out = self.__encode()
-        self.db.Put(self.url, out.encode('utf-8'))
+        self.db.put(self.url, out, sync=True)
+        self.db.close()
         self.db = None
 
 
@@ -104,8 +105,7 @@ class SteamCollections():
                 col[1]['value'] = json.dumps(col[1]['value'])
 
         out = json.dumps(self.collections)
-        out = self.bom + out
+        out = '\x01{}'.format(out).encode('utf-8')
 
         self.collections = None
-        self.bom = None
         return out
