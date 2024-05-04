@@ -44,7 +44,7 @@ setup(
         'vdf',
         'inotify_simple',
         'pyudev',
-        'leveldb',
+        'plyvel',
         'tornado',
     ],
 

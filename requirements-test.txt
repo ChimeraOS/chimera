@@ -11,7 +11,7 @@ bcrypt
 Pillow
 vdf
 pyudev
-leveldb
+plyvel
 pytest
 pytidylib
 requests-mock
