@@ -1,4 +1,4 @@
-- cmd: cart-loader
+- cmd: chimera-cart-loader
   condition: lsusb | grep 1d50:6018
   hidden: false
   name: Cart Loader

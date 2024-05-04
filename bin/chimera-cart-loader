@@ -44,7 +44,7 @@ if [ "$1" == "--check" ]; then
 	exit $code
 elif [ "$1" == "--trigger" ] && [ "$code" == "0" ] && [ ! -e $DUMP_DIR ]; then
 	# cart detected, trigger cart launch through Steam if not already triggered
-	steam steam://rungameid/12698891677692067840
+	steam steam://rungameid/12273638796687310848
 elif [ -z "$1" ] && [ -n "$cart_type" ]; then
 	# no parameters means this script has been called from Steam, launch the cart directly if one is detected
 	load $cart_type
