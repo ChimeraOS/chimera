@@ -21,18 +21,20 @@ MIGRATIONS = { 'spsp' : 'psp' }
 
 def create_all_shortcuts():
     """Convenience function to create all shortcuts with default parameters"""
-    if not os.path.isdir(context.SHORTCUT_DIRS):
-        print(f'Shortcuts directory does not exist ({context.SHORTCUT_DIRS})')
-        return
+    for shortcut_dir in context.SHORTCUT_DIRS:
+        if not os.path.isdir(shortcut_dir):
+            print(f'Shortcuts directory does not exist ({shortcut_dir})')
+            return
 
     manager = ShortcutsManager()
     for user_dir in context.STEAM_USER_DIRS:
         # Should change the STEAM_USER_DIRS into USER_IDS
         manager.add_steam_file_for_user(os.path.basename(user_dir))
 
-    for file in os.scandir(context.SHORTCUT_DIRS):
-        if file.is_file():
-            manager.add_shortcuts_file_from_path(file.path)
+    for shortcut_dir in context.SHORTCUT_DIRS:
+        for file in os.scandir(shortcut_dir):
+            if file.is_file():
+                manager.add_shortcuts_file_from_path(file.path)
 
     manager.load_shortcut_entries()
     manager.create_shortcuts()
@@ -210,6 +212,15 @@ class SteamShortcutsFile():
                 self.current_data.pop(index)
             return
 
+        if 'condition' in entry and entry['condition']:
+            # drop the shortcut if the condition command returns an error code
+            code = os.system(entry['condition'])
+            if code != 0:
+                if shortcut:
+                    self.current_data.pop(index)
+                return
+
+
         shortcut['appid'] = shortcut_id
         shortcut['AppName'] = entry['name']
         shortcut['Exe'] = entry['cmd']
@@ -362,7 +373,7 @@ class PlatformShortcutsFile(ShortcutsFile):
 
     def __init__(self, platform: str, auto_load: bool = True):
         self.platform = platform
-        path = os.path.join(context.SHORTCUT_DIRS, f'chimera.{platform}.yaml')
+        path = os.path.join(context.USER_SHORTCUT_DIR, f'chimera.{platform}.yaml')
         super().__init__(path, auto_load)
 
 
