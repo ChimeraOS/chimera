@@ -9,7 +9,7 @@ function check {
 	fi
 
 	cart_name=$(gbopyrator 2> /dev/null | grep "Detected game:" | cut -d":" -f2- | awk '{$1=$1;print}')
-	
+
 	if echo $cart_name | grep ".gb$" &> /dev/null; then
 		# Game Boy cart detected
 		echo "gb:::$cart_name"
