@@ -1,0 +1,15 @@
+#! /bin/bash
+
+hascart=false
+
+while true; do
+	chimera-cart-loader --check
+	result=$?
+	if [ "$result" == "0" ] && [ $hascart == false ]; then
+		chimera-cart-loader --trigger
+		hascart=true
+	elif [ "$result" != "0" ] && [ $hascart == true ]; then
+		hascart=false
+	fi
+	sleep 3
+done
