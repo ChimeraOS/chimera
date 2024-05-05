@@ -3,3 +3,7 @@
   hidden: false
   name: Cart Loader
   poster: /usr/share/chimera/images/cart-loader/poster.png
+  banner: /usr/share/chimera/images/cart-loader/banner.png
+  background: /usr/share/chimera/images/cart-loader/background.png
+  logo: /usr/share/chimera/images/cart-loader/logo.png
+  icon: /usr/share/chimera/images/cart-loader/icon.png
