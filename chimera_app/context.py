@@ -13,15 +13,11 @@ def __get_steam_user_dirs(steam_dir):
     return user_dirs
 
 
-RESOURCE_DIR = os.getcwd()
-if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
-    RESOURCE_DIR = "/usr/share/chimera"
-
 CACHE_HOME = os.path.expanduser('~/.cache')
 CONFIG_HOME = os.path.expanduser('~/.config')
 DATA_HOME = os.path.expanduser('~/.local/share')
 USER_SHORTCUT_DIR = os.path.join(DATA_HOME, 'chimera/shortcuts')
-SYSTEM_SHORTCUT_DIR = os.path.join(RESOURCE_DIR, 'shortcuts')
+SYSTEM_SHORTCUT_DIR = '/usr/share/chimera/shortcuts'
 SHORTCUT_DIRS = [ USER_SHORTCUT_DIR, SYSTEM_SHORTCUT_DIR ]
 TOOLS_DIR = os.path.join(DATA_HOME, 'chimera/data/compat/tools')
 TOOLS_TEMPLATE_FILE = os.path.join(DATA_HOME, 'chimera/data/compat/tool-stub.tpl')

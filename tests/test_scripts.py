@@ -21,6 +21,7 @@ def fake_data(fs,
               monkeypatch):
     files_path = os.path.join(os.path.dirname(__file__), 'files')
 
+    fs.create_dir("/usr/share/chimera/shortcuts")
     fs.create_dir(os.path.expanduser('~/.cache'))
     fs.create_dir(os.path.expanduser('~/.local/share/chimera'))
     fs.create_dir(os.path.expanduser('~/.local/share/Steam/config'))
