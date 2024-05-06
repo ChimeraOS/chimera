@@ -425,6 +425,9 @@ class ShortcutsManager():
     def prune_deleted_shortcuts(self) -> None:
         """Drop shortcuts marked as deleted from all YAML files"""
         for f in self.shortcut_files:
+            if context.SYSTEM_SHORTCUT_DIR in f.path and f.path.index(context.SYSTEM_SHORTCUT_DIR) == 0:
+                # system shortcuts are read-only
+                continue
             f.load_data()
             f.prune_deleted()
             f.save()
