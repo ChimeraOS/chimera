@@ -1,0 +1,53 @@
+#!/bin/bash
+
+DUMP_DIR=/tmp/chimera-cart-loader
+
+function check {
+	if ! lsusb | grep "1d50:6018" &> /dev/null; then
+		# gboperator not connected
+		return 1
+	fi
+
+	cart_name=$(gbopyrator 2> /dev/null | grep "Detected game:" | cut -d":" -f2- | awk '{$1=$1;print}')
+
+	if echo $cart_name | grep ".gb$" &> /dev/null; then
+		# Game Boy cart detected
+		echo "gb:::$cart_name"
+		return 0
+	elif echo $cart_name | grep ".gbc$" &> /dev/null; then
+		# Game Boy Color cart detected
+		echo "gbc:::$cart_name"
+		return 0
+	else
+		# No valid cart detected
+		return 2
+	fi
+}
+
+function load {
+	launcher=$1
+	cart=$2
+
+	ROM="$DUMP_DIR/$cart"
+
+	mkdir -p "$DUMP_DIR"
+	trap "rm -rf $DUMP_DIR" EXIT
+	gbopyrator --dump-rom "$ROM"
+	$launcher "$ROM"
+}
+
+result=$(check)
+code=$?
+cart_type=$(echo $result | cut -d":" -f1)
+cart_name=$(echo $result | cut -d":" -f4-)
+
+if [ "$1" == "--check" ]; then
+	echo "Detected: [$cart_type] $cart_name"
+	exit $code
+elif [ "$1" == "--trigger" ] && [ "$code" == "0" ] && [ ! -e $DUMP_DIR ]; then
+	# cart detected, trigger cart launch through Steam if not already triggered
+	steam steam://rungameid/12273638796687310848
+elif [ -z "$1" ] && [ -n "$cart_type" ] && [ -n "$cart_name" ]; then
+	# no parameters means this script has been called from Steam, launch the cart directly if one is detected
+	load "$cart_type" "$cart_name"
+fi

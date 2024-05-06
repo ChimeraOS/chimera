@@ -34,7 +34,6 @@ BIN_PATH = os.path.abspath('bin')
 if not os.path.isdir(BIN_PATH):
     BIN_PATH = "/usr/share/chimera/bin"
 
-SHORTCUT_DIR = context.SHORTCUT_DIRS
 BANNER_DIR = context.DATA_HOME + '/chimera/images'
 DATA_DIR = context.DATA_HOME + '/chimera/data'
 CONTENT_DIR = context.DATA_HOME + '/chimera/content'

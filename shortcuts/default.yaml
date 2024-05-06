@@ -1,0 +1,9 @@
+- name: Cart Loader
+  cmd: chimera-cart-loader
+  condition: lsusb | grep 1d50:6018
+  hidden: false
+  poster: /usr/share/chimera/images/cart-loader/poster.png
+  banner: /usr/share/chimera/images/cart-loader/banner.png
+  background: /usr/share/chimera/images/cart-loader/background.png
+  logo: /usr/share/chimera/images/cart-loader/logo.png
+  icon: /usr/share/chimera/images/cart-loader/icon.png
