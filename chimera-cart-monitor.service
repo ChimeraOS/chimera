@@ -4,7 +4,7 @@ Requires=dev-gboperator.device
 After=dev-gboperator.device
 
 [Service]
-ExecStart=/usr/bin/chimera-cart-monitor
+ExecStart=/usr/share/chimera/bin/chimera-cart-monitor
 Restart=always
 
 [Install]
