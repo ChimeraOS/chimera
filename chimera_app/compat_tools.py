@@ -25,7 +25,8 @@ OFFICIAL_COMPAT_TOOLS = {
     "proton_experimental":  "1493710",
     "proton_63":            "1580130",
     "proton_7":             "1887720",
-    "proton_8":             "2348590"
+    "proton_8":             "2348590",
+    "proton_9":             "2805730"
 }
 
 

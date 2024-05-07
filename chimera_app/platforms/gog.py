@@ -48,7 +48,7 @@ class GOG(StorePlatform):
 
         if not content.native:
             # must specify explicit compat_tool proton version for automatic download to work
-            shortcut['compat_tool'] = content.compat_tool or 'proton_8'
+            shortcut['compat_tool'] = content.compat_tool or 'proton_9'
 
             if content.compat_config:
                 shortcut['compat_config'] = content.compat_config

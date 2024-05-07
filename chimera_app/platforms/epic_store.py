@@ -32,7 +32,7 @@ class EpicStore(StorePlatform):
             'cmd': '$(epic-store ' + content.content_id + ')',
             'dir': self.__get_folder_path(content.content_id),
             'tags': list(filter(None, [ "Epic Games Store", status_to_collection_name(content.status) ])),
-            'compat_tool': content.compat_tool or 'proton_8'
+            'compat_tool': content.compat_tool or 'proton_9'
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
