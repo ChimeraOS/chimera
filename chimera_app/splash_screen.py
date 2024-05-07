@@ -6,9 +6,8 @@ from chimera_app.config import BIN_PATH
 
 class SplashScreen:
     def __init__(self):
-        bin_path = BIN_PATH
-        self.__app = os.path.join(bin_path, 'chimera-splash')
-        self.__fg = os.path.join(bin_path, 'gamescope-fg')
+        self.__app = os.path.join(BIN_PATH, 'chimera-splash')
+        self.__fg = os.path.join(BIN_PATH, 'gamescope-fg')
 
     def launch(self) -> None:
         print("Showing splash screen")

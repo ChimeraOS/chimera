@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if [ ! -e ~/.config/retroarch/system/pcsx2 ]; then
+	mkdir -p ~/.config/retroarch/system/pcsx2
+	ln -s ~/.local/share/chimera/content/ps2 ~/.config/retroarch/system/pcsx2/bios
+fi
+
+/usr/libexec/chimera/launcher ps2 pcsx2 "$@"

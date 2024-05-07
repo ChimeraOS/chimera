@@ -9,11 +9,11 @@ setup(
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
                   },
-    scripts=['steam-tweaks',
-             'steam-patch',
-             ],
-
     data_files=[
+        ('bin', glob('bin/*')),
+        ('lib/systemd/system', glob('systemd/system/*')),
+        ('lib/systemd/user', glob('systemd/user/*')),
+        ('libexec/chimera', glob('libexec/*')),
         ('share/chimera/images', glob('images/*.png')),
         ('share/chimera/images/flathub', glob('images/flathub/*.png')),
         ('share/chimera/images/splash', glob('images/splash/*.png')),
@@ -25,9 +25,7 @@ setup(
         ('share/chimera/public', glob('public/*.webp')),
         ('share/chimera/config', glob('config/*.cfg')),
         ('share/chimera/config', glob('config/*.conf')),
-        ('share/chimera/bin',    glob('bin/*')),
         ('share/chimera/migrations', glob('migrations/*')),
-        ('bin', glob('launchers/*')),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),
         ('share/applications', ['org.chimeraos.app.desktop']),

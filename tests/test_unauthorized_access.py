@@ -166,12 +166,6 @@ def test_steam_restart(unauthorized_app):
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
-def test_steam_compositor(unauthorized_app):
-    resp = unauthorized_app.get('/actions/steam/compositor')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
 def test_steam_overlay(unauthorized_app):
     resp = unauthorized_app.get('/actions/steam/overlay')
     assert(resp.status_code == 302)

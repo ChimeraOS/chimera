@@ -4,5 +4,5 @@ Version=1.0
 Terminal=false
 Type=Application
 Name=Chimera
-Exec=/usr/share/chimera/bin/chimera-web-launcher
+Exec=/usr/libexec/chimera/chimera-web-launcher
 Icon=/usr/share/chimera/images/chimera-logo.png

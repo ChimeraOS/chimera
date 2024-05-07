@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/share/chimera/bin/launcher sms genesis_plus_gx "$@"

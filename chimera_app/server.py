@@ -604,15 +604,6 @@ def steam_restart():
         redirect('/actions')
 
 
-@route('/actions/steam/compositor')
-@authenticate
-def steam_compositor():
-    try:
-        subprocess.call(["bin/toggle-steamos-compositor"])
-    finally:
-        redirect('/actions')
-
-
 @route('/emulators/yuzu')
 @authenticate
 def emulators_yuzu():
