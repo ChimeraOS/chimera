@@ -1,6 +1,0 @@
-#! /bin/bash
-
-rm -f ~/.local/share/chimera/content/wii/dolphin-emu/Sys
-mkdir -p ~/.local/share/chimera/content/wii/dolphin-emu
-ln -s /usr/share/dolphin-emu/sys ~/.local/share/chimera/content/wii/dolphin-emu/Sys
-/usr/share/chimera/bin/launcher wii dolphin "$@"

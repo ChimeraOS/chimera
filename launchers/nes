@@ -1,3 +1,0 @@
-#! /bin/bash
-
-/usr/share/chimera/bin/launcher nes nestopia "$@"

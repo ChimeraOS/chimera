@@ -30,9 +30,9 @@ RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
     RESOURCE_DIR = "/usr/share/chimera"
 
-BIN_PATH = os.path.abspath('bin')
+BIN_PATH = os.path.abspath('libexec')
 if not os.path.isdir(BIN_PATH):
-    BIN_PATH = "/usr/share/chimera/bin"
+    BIN_PATH = "/usr/libexec/chimera"
 
 BANNER_DIR = context.DATA_HOME + '/chimera/images'
 DATA_DIR = context.DATA_HOME + '/chimera/data'

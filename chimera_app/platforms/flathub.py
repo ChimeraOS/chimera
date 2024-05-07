@@ -3,11 +3,11 @@ import subprocess
 import requests
 from typing import List, Dict
 from chimera_app.platforms.store_platform import StorePlatform, dic
-from chimera_app.config import RESOURCE_DIR, BANNER_DIR
+from chimera_app.config import RESOURCE_DIR, BANNER_DIR, BIN_PATH
 from chimera_app.steam_config import status_to_collection_name
 
 
-FLATPAK_WRAPPER = "bin/flatpak-wrapper"
+FLATPAK_WRAPPER = os.path.join(BIN_PATH, 'flatpak-wrapper')
 
 
 def listdir(path):

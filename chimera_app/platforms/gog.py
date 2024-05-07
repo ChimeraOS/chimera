@@ -126,7 +126,7 @@ class GOG(StorePlatform):
         ensure_directory(cachedir)
 
         if not content.native:
-            cmd = ["bin/gog-install",
+            cmd = [os.path.join(BIN_PATH, 'gog-install')
                    content.content_id,
                    os.path.join(CONTENT_DIR, 'gog', content.content_id)]
             return subprocess.Popen(cmd,
