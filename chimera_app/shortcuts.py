@@ -1,6 +1,7 @@
 """Module to manage shortcuts in the entire chimera toolset"""
 
 import os
+import shutil
 from typing import List
 from datetime import date
 from zlib import crc32
@@ -442,6 +443,14 @@ class ShortcutsManager():
                 steam_file.add_shortcut(entry)
             steam_file.save()
 
+    # dst: image path without any extension
+    # dstext: intended destination extension including period
+    def remove_all_images(self, dst, dstext):
+        for ext in [ dstext, '.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG' ]:
+            f = dst + ext
+            if os.path.islink(f) or os.path.isfile(f):
+                os.remove(f)
+
     def create_image(self, entry, img_type_src, img_type_dst = None) -> None:
         if img_type_src not in entry:
             return
@@ -453,13 +462,20 @@ class ShortcutsManager():
         img_id = get_image_id(img_type_dst, entry['cmd'], entry['name'])
         _, ext = os.path.splitext(img_path)
         for user_dir in context.STEAM_USER_DIRS:
-            dst_dir = user_dir + '/config/grid/'
+            dst_dir = os.path.join(user_dir, 'config', 'grid')
             if not os.path.isdir(dst_dir):
                 os.makedirs(dst_dir)
-            dst = dst_dir + str(img_id) + ext
-            if os.path.islink(dst) or os.path.isfile(dst):
-                os.remove(dst)
-            os.symlink(img_path, dst)
+            dst = os.path.join(dst_dir, str(img_id))
+            self.remove_all_images(dst, ext)
+            dst = dst + ext
+
+            home_dir = os.path.expanduser('~')
+            if home_dir in img_path and img_path.index(home_dir) == 0:
+                # image file is inside user's home directory, use symlinks for efficiency
+                os.symlink(img_path, dst)
+            else:
+                # Steam does not load images outside the user's home directory, so copy the files instead
+                shutil.copyfile(img_path, dst)
 
     def create_images(self) -> None:
         """Create all image files for current entries"""
