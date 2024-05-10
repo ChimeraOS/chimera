@@ -55,6 +55,14 @@ def fake_data(fs,
                      target_path=os.path.expanduser(
                          '~/.local/share/chimera/shortcuts/multi.yaml')
                      )
+    fs.add_real_file(os.path.join(files_path, 'image.png'),
+                     read_only=True,
+                     target_path='/usr/share/chimera/images/flathub/org.supertuxproject.SuperTux.png',
+                     )
+    fs.add_real_file(os.path.join(files_path, 'image.png'),
+                     read_only=False,
+                     target_path='/home/joaquin/develop/chimera/images/flathub/org.supertuxproject.SuperTux.png',
+                     )
 
     # Patch STEAM_USER_DIRS as per pyfakefs limitations
     monkeypatch.setattr(chimera_app.context, 'STEAM_USER_DIRS',
