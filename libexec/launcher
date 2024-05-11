@@ -34,9 +34,14 @@ savestate_directory = ${SAVE_DIR}
 
 
 mkdir -p ${CONFIG_HOME}/retroarch
+AUTOCONFIG=${CONFIG_HOME}/retroarch/autoconfig
+if [ ! -e ${AUTOCONFIG} ] || [ -L ${AUTOCONFIG} ]; then
+	rm -f ${AUTOCONFIG}
+	mkdir -p ${AUTOCONFIG}
+fi
 
-if [ ! -e ${CONFIG_HOME}/retroarch/autoconfig ]; then
-	ln -s /usr/share/libretro/autoconfig ${CONFIG_HOME}/retroarch/autoconfig
+if [ ! -e ${AUTOCONFIG}/steam-virtual-gamepad.cfg ]; then
+	ln -s /usr/share/chimera/config/steam-virtual-gamepad.cfg ${AUTOCONFIG}/
 fi
 
 # use the RetroArch config as is, allowing users to manually configure RetroArch if they want to
@@ -55,6 +60,9 @@ if [ "${RETRO_CORE}" == "dolphin" ]; then
 	mkdir -p ${CONFIG_HOME}/retroarch/config/remaps/dolphin-emu
 	cp -f ${CORE_CONFIG} ${CONFIG_HOME}/retroarch/config/remaps/dolphin-emu/dolphin-emu.rmp
 fi
+
+# Ignore all controller devices except for Steam Input
+export SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT="0x28de/0x11ff"
 
 retroarch \
 --appendconfig "${RETRO_CONFIG}|${CORE_CONFIG}" \
