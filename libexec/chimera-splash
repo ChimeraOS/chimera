@@ -3,14 +3,13 @@ import argparse
 import pyglet
 from chimera_app.config import RESOURCE_DIR
 
-DOWNLOAD_TOOL=str()
 PIPE_FILE=str()
 
 window = pyglet.window.Window(fullscreen=True)
 batch = pyglet.graphics.Batch()
 
 text_size = int(window.height//32)
-label = pyglet.text.Label("Downloading configuration updates...",
+label = pyglet.text.Label("",
                           font_name='dejavusans',
                           font_size=text_size,
                           x=window.width//2,
@@ -32,14 +31,12 @@ background.y = window.height//2 - background.height // 2
 pyglet.gl.glClearColor(0, 0, 0, 1.0)
 
 def update_label():
-    progress = 0
-    with open(PIPE_FILE, 'r', encoding='utf-8') as progress_file:
-        progress = int(progress_file.readlines()[-1])
-    label.text=f"Downloading {DOWNLOAD_TOOL}: {progress}%"
+    with open(PIPE_FILE, 'r', encoding='utf-8') as message_file:
+        label.text = f"{message_file.readlines()[-1]}".strip()
 
 @window.event
 def on_draw():
-    if DOWNLOAD_TOOL and PIPE_FILE:
+    if PIPE_FILE:
         update_label()
     window.clear()
     batch.draw()
@@ -50,11 +47,6 @@ def on_close():
 
 def arg_parse():
     parser = argparse.ArgumentParser(description="Simple ChimeraOS splash screen")
-    parser.add_argument("-t", "--tool",
-                        action='store',
-                        type=str,
-                        help="Tool name we are downloading"
-                       )
     parser.add_argument("-p", "--pipe-file",
                         action='store',
                         type=str,
@@ -64,14 +56,11 @@ def arg_parse():
     return parser.parse_args()
 
 def main():
-    global DOWNLOAD_TOOL
     global PIPE_FILE
 
     args = arg_parse()
 
-    # Only set tool and pipe if both are set otherwise just ignore
-    if args.tool and args.pipe_file:
-        DOWNLOAD_TOOL = args.tool
+    if args.pipe_file:
         PIPE_FILE = args.pipe_file
 
     pyglet.app.run()

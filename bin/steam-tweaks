@@ -1,19 +1,43 @@
 #! /bin/bash
 
+msgpipe=/tmp/chimera-splash-msg
+
+trap "rm -f $msgpipe; killall chimera-splash" EXIT
+
+if [[ ! -p $msgpipe ]]; then
+    mkfifo $msgpipe
+fi
+
+/usr/libexec/chimera/gamescope-fg /usr/libexec/chimera/chimera-splash --pipe-file $msgpipe &
+
+echo "Applying migrations (1/4)..." > $msgpipe
 /usr/share/chimera/migrations/01-chimera-dir --logout
+echo "Applying migrations (2/4)..." > $msgpipe
 /usr/share/chimera/migrations/02-multi-image-types
+echo "Applying migrations (3/4)..." > $msgpipe
 /usr/share/chimera/migrations/03-gc-to-ngc
+echo "Applying migrations (4/4)..." > $msgpipe
 /usr/share/chimera/migrations/04-psp-to-spsp
-chimera --update --splash
+
+echo "Downloading configuration updates..." > $msgpipe
+chimera --update
+
+echo "Applying configuration (1/3)..." > $msgpipe
 chimera --tweaks
-chimera --images & # do not wait for image downloads
 
-# make sure the patch service picks up the latest downloaded data
-systemctl --user restart steam-patch
-
+echo "Applying configuration (2/3)..." > $msgpipe
 # disable http2 for faster downloads in steam
 DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
 STEAM_DEV_CFG="${DATA_HOME}/Steam/steam_dev.cfg"
 if [ ! -e $STEAM_DEV_CFG ]; then
     echo "@nClientDownloadEnableHTTP2PlatformLinux 0" > $STEAM_DEV_CFG
 fi
+
+echo "Applying configuration (3/3)..." > $msgpipe
+chimera --images & # do not wait for image downloads
+
+echo "Reloading services..." > $msgpipe
+# make sure the patch service picks up the latest downloaded data
+systemctl --user restart steam-patch
+
+echo "Starting Steam..." > $msgpipe
