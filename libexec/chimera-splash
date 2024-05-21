@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import pyglet
+import os.path
 from chimera_app.config import RESOURCE_DIR
 
 PIPE_FILE=str()
@@ -17,8 +18,14 @@ label = pyglet.text.Label("",
                           anchor_x='center', anchor_y='center',
                           batch=batch
                          )
+path = "~/chimera/splash.png"
+image_path = os.path.expanduser(path)
+if os.path.exists(image_path):
+   background_image_path = image_path
+else:
+   #set default logo
+   background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
 
-background_image_path = RESOURCE_DIR + "/images/splash/chimeraos_logo.png"
 background_image = pyglet.image.load(background_image_path)
 background = pyglet.sprite.Sprite(img=background_image, batch=batch)
 
