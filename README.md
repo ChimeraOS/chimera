@@ -173,7 +173,7 @@ poster: /path/to/image.png      # the vertical poster image to use (600x900)
 background: /path/to/image.png  # the background/hero image to use (1920x620)
 logo: /path/to/image.png        # the logo image to use (overlayed on top of background image)
 icon: firefox                   # small icon to show in Steam
-compat_tool: proton_411         # use the given compatibility tool, useful for running Windows executables
+compat_tool: proton_9           # use the given compatibility tool, useful for running Windows executables
 compat_config: noesync          # use the given compatibility tool options
 hidden: false                   # 'false' to show the shortcut in Steam, 'true' to hide it
 tags:                           # a list of tags to be assigned to the shortcut in Steam
