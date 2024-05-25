@@ -502,6 +502,7 @@ class ShortcutsManager():
                     (compat_data[compat_id]
                                 ['compat_config']) = entry['compat_config']
 
-        config_file = steam_config.MainSteamConfig(auto_load=True)
+        config_file = steam_config.MainSteamConfig(auto_load=False)
+        config_file.load_data(clean=False)
         config_file.apply_tweaks(compat_data, priority=209)
         config_file.save()

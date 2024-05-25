@@ -193,7 +193,7 @@ class MainSteamConfig(SteamConfigFile):
         path_to_file = os.path.join(context.STEAM_DIR, 'config/config.vdf')
         super().__init__(path_to_file, auto_load)
 
-    def load_data(self) -> None:
+    def load_data(self, clean=True) -> None:
         if self.exists():
             data = vdf.load(open(self.path))
         else:
@@ -222,6 +222,10 @@ class MainSteamConfig(SteamConfigFile):
             stale_entries = []
 
             for game in steam['CompatToolMapping']:
+                priority_key = 'priority'
+                if 'Priority' in steam['CompatToolMapping'][game]:
+                    priority_key = 'Priority'
+
                 # remove entries that were disabled in the Steam UI by the user
                 if 'name' in steam['CompatToolMapping'][game] \
                     and 'config' in steam['CompatToolMapping'][game] \
@@ -230,9 +234,10 @@ class MainSteamConfig(SteamConfigFile):
                         stale_entries.append(game)
 
                 # remove all entries added by Chimera (they will be re-added if still configured)
-                elif 'Priority' in steam['CompatToolMapping'][game] \
-                    and (steam['CompatToolMapping'][game]['Priority'] == '209' \
-                         or steam['CompatToolMapping'][game]['Priority'] == '229'):
+                # covers the case where tweak entries were removed and so we want to remove them from the Steam config
+                elif clean and priority_key in steam['CompatToolMapping'][game] \
+                    and (steam['CompatToolMapping'][game][priority_key] == '209' \
+                         or steam['CompatToolMapping'][game][priority_key] == '229'):
                     stale_entries.append(game)
 
             for entry in stale_entries:
@@ -249,17 +254,21 @@ class MainSteamConfig(SteamConfigFile):
                                   ['Steam']['CompatToolMapping'])
 
         for key in tweak_data:
-            key_priority = priority
+            priority_value = priority
             if 'priority' in tweak_data[key]:
-                key_priority = tweak_data[key]['priority']
+                priority_value = tweak_data[key]['priority']
+
+            priority_key = 'priority'
+            if key in compat and 'Priority' in compat[key]:
+                priority_key = 'Priority'
 
             if (key not in compat or
-                    'Priority' not in compat[key] or
-                    int(compat[key]['Priority']) <= key_priority):
+                    priority_key not in compat[key] or
+                    int(compat[key][priority_key]) <= priority_value):
                 if 'compat_tool' in tweak_data[key]:
                     entry = {}
                     entry['name'] = tweak_data[key]['compat_tool']
                     if 'compat_config' in tweak_data[key]:
                         entry['config'] = tweak_data[key]['compat_config']
-                    entry['Priority'] = key_priority
+                    entry[priority_key] = priority_value
                     compat[key] = entry
