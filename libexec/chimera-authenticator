@@ -16,17 +16,6 @@ else:
     exit(1)
 
 
-# Setup controller events
-controllers = pyglet.input.get_controllers()
-
-def on_button_press(controller, button_name):
-    if button_name in ['a', 'b', 'x', 'y', 'start', 'back', 'guide', 'dpleft', 'dpright','dpup', 'dpdown']:
-        pyglet.app.exit()
-
-for controller in controllers:
-    controller.open()
-    controller.on_button_press = on_button_press
-
 # Setup joystick events
 joysticks = pyglet.input.get_joysticks()
 
