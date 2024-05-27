@@ -68,7 +68,7 @@ SESSION_OPTIONS = {
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
 
-AUTHENTICATOR = Authenticator(BIN_PATH, password_length=8)
+AUTHENTICATOR = Authenticator(BIN_PATH, password_length=5)
 
 FTP_SERVER = FTPServer(SETTINGS_HANDLER)
 
