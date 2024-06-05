@@ -19,6 +19,7 @@ def generate_password(length: int) -> str:
 class Authenticator:
     def __init__(self, bin_path: str, password_length: int):
         self.__app = os.path.join(bin_path, 'chimera-authenticator')
+        self.__wrap = os.path.join(bin_path, 'env-wrapper')
         self.__fg = os.path.join(bin_path, 'gamescope-fg')
         self.__password_length = password_length
         self.__password = generate_password(self.__password_length)
@@ -34,7 +35,7 @@ class Authenticator:
     def launch(self) -> None:
         print("Showing authenticator on screen")
         self.kill()
-        subprocess.Popen([self.__fg, self.__app, self.__password])
+        subprocess.Popen([self.__fg, self.__wrap, self.__app, self.__password])
 
     def kill(self):
         for process in psutil.process_iter():
