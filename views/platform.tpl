@@ -5,6 +5,13 @@
         <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut">
     </a>
 </div>
+% if remoteConnected:
+<div class="img-container">
+    <a href="/library/{{platform}}/new?remote=true">
+        <img src="/images/add-remote.png" alt="Add shortcut from remote source" title="Add shortcut from remote source">
+    </a>
+</div>
+% end
 
 % from urllib.parse import quote
 % for s in shortcuts:

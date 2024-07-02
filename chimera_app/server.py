@@ -45,6 +45,7 @@ from chimera_app.auth_decorator import authenticate
 from chimera_app.platforms.epic_store import EpicStore
 from chimera_app.platforms.flathub import Flathub
 from chimera_app.platforms.gog import GOG
+from chimera_app.platforms.chimera_remote import ChimeraRemote
 from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.shortcuts import get_bpmbanner_id
 import chimera_app.power as power
@@ -66,6 +67,25 @@ PLATFORM_HANDLERS = {
     "flathub": Flathub(),
     "gog": GOG(),
 }
+
+REMOTE_HANDLERS = {}
+def find_remote_chimera():
+    import socket
+
+    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    client.bind(("", 48844))
+    while True:
+        data, addr = client.recvfrom(1024)
+        if data != b'chimera service v1':
+            continue
+        for platform in PLATFORMS:
+            REMOTE_HANDLERS[platform] = ChimeraRemote(platform, addr[0])
+        break
+
+scan_thread = threading.Thread(target=find_remote_chimera)
+scan_thread.start()
 
 
 def refresh_local_password():
@@ -116,7 +136,8 @@ def platform_page(platform):
                 showAll=False,
                 isInstalledOverview=True,
                 platform=platform,
-                platformName=PLATFORMS[platform]['name']
+                platformName=PLATFORMS[platform]['name'],
+                remote=False,
             )
         else:
             return template('custom_login',
@@ -145,7 +166,8 @@ def platform_page(platform):
     return template('platform.tpl',
                     shortcuts=data,
                     platform=platform,
-                    platformName=PLATFORMS[platform]['name'])
+                    platformName=PLATFORMS[platform]['name'],
+                    remoteConnected=bool(REMOTE_HANDLERS))
 
 
 @route('/library/<platform>/authenticate', method='POST')
@@ -172,18 +194,30 @@ def banners(platform, filename):
 @route('/library/<platform>/new')
 @authenticate
 def new(platform):
+    handler = None
+    showAll = False
+    remote = False
     if platform in PLATFORM_HANDLERS:
+        handler = PLATFORM_HANDLERS[platform]
+        showAll = request.query.showAll
+    elif request.query.remote == 'true':
+        handler = REMOTE_HANDLERS[platform]
+        showAll = True
+        remote = True
+
+    if handler:
         if not authenticate_platform(platform):
             return
 
         return template(
             'custom',
-            app_list=PLATFORM_HANDLERS[platform].get_available_content(request.query.showAll),
-            showAll=request.query.showAll,
+            app_list=handler.get_available_content(showAll),
+            showAll=showAll,
             isInstalledOverview=False,
             isNew=True,
             platform=platform,
-            platformName=PLATFORMS[platform]['name']
+            platformName=PLATFORMS[platform]['name'],
+            remote=remote,
         )
     return template('new.tpl',
                     isNew=True,
@@ -200,13 +234,22 @@ def new(platform):
 @authenticate
 def edit(platform, name):
     remoteLaunchEnabled = SETTINGS_HANDLER.get_setting('enable_remote_launch')
+
+    handler = None
+    remote = False
     if platform in PLATFORM_HANDLERS:
+        handler = PLATFORM_HANDLERS[platform]
+    elif request.query.remote == 'true':
+        handler = REMOTE_HANDLERS[platform]
+        remote = True
+
+    if handler:
         if not authenticate_platform(platform):
             return
 
         content_id = name
-        content = PLATFORM_HANDLERS[platform].get_content(content_id)
-        shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+        content = handler.get_content(content_id)
+        shortcut = handler.get_shortcut(content)
         if content:
             return template(
                 'custom_edit',
@@ -215,6 +258,7 @@ def edit(platform, name):
                 platformName=PLATFORMS[platform]['name'],
                 name=content_id,
                 steamShortcutID=(get_bpmbanner_id(shortcut['cmd'], shortcut['name']) if remoteLaunchEnabled else None),
+                remote=remote,
             )
         else:
             abort(404, 'Content not found')
@@ -452,18 +496,26 @@ def delete_file_upload():
 @route('/<platform>/install/<content_id>')
 @authenticate
 def platform_install(platform, content_id):
-    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    handler = None
+    redirect_url = f'/library/{platform}/edit/{content_id}'
+    if platform in PLATFORM_HANDLERS:
+        handler = PLATFORM_HANDLERS[platform]
+    else:
+        handler = REMOTE_HANDLERS[platform]
+        redirect_url = f'/library/{platform}/edit/{content_id}?remote=true'
+
+    content = handler.get_content(content_id)
     if not content:
         abort(404, 'Content not found')
 
-    PLATFORM_HANDLERS[platform].install_content(content)
+    handler.install_content(content)
 
     shortcuts = PlatformShortcutsFile(platform)
-    shortcut = PLATFORM_HANDLERS[platform].get_shortcut(content)
+    shortcut = handler.get_shortcut(content)
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
 
-    PLATFORM_HANDLERS[platform].download_images(content)
+    handler.download_images(content)
 
     if ('compat_tool' in shortcut
             and shortcut['compat_tool'] in OFFICIAL_COMPAT_TOOLS):
@@ -475,7 +527,7 @@ def platform_install(platform, content_id):
         except Exception as e:
             print(e)
 
-    redirect(f'/library/{platform}/edit/{content_id}')
+    redirect(redirect_url)
 
 
 @route('/<platform>/uninstall/<content_id>')
@@ -509,7 +561,13 @@ def content_update(platform, content_id):
 @route('/<platform>/progress/<content_id>')
 @authenticate
 def install_progress(platform, content_id):
-    content = PLATFORM_HANDLERS[platform].get_content(content_id)
+    handler = None
+    if platform in PLATFORM_HANDLERS:
+        handler = PLATFORM_HANDLERS[platform]
+    else:
+        handler = REMOTE_HANDLERS[platform]
+
+    content = handler.get_content(content_id)
     if not content:
         abort(404, '{} not found'.format(content_id))
 

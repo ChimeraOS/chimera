@@ -3,7 +3,7 @@
 % if isInstalledOverview:
 <div class="app-container">
     <div class="img-container">
-        <a href="/library/{{ platform }}/new">
+        <a href="/library/{{ platform }}/new{{ '?remote=true' if remote == True else '' }}">
             <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut">
         </a>
     </div>
@@ -15,7 +15,7 @@
 % for app in app_list:
 <div class="app-container">
      <div class="img-container">
-         <a href="/library/{{ platform }}/edit/{{ app.content_id }}">
+         <a href="/library/{{ platform }}/edit/{{ app.content_id }}{{ '?remote=true' if remote == True else '' }}">
              <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ app.get('status_icon') }} {{ app.name }}">
          </a>
      </div>

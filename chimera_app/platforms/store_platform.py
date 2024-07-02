@@ -32,6 +32,9 @@ class StorePlatform:
     def _get_all_content(self) -> list:
         pass
 
+    def _post_install(self, content_id):
+        pass
+
     def get_content(self, content_id):
         app = None
         apps = self.get_installed_content()
@@ -190,4 +193,9 @@ class StorePlatform:
                     if "%" in value:
                         self.tasks[content_id].progress = int(value.replace("%", "").split('.')[0])
                 buf.truncate(0)
+
+        if self.tasks[content_id].operation == 'Installing':
+            time.sleep(2)
+            self._post_install(content_id)
+
         del self.tasks[content_id]

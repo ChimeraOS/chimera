@@ -65,9 +65,11 @@
 			<button>Launch</button>
 		</form>
 		% end
+		% if not remote:
 		<form action="/{{platform}}/uninstall/{{app.content_id}}">
 			<button class="delete">Uninstall</button>
 		</form>
+		% end
 	% else:
 		<form action="/{{ platform }}/install/{{app.content_id}}">
 			<button class="add">Install</button>
