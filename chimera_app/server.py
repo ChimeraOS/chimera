@@ -194,9 +194,17 @@ def new(platform):
         if not authenticate_platform(platform):
             return
 
+        try:
+            app_list = handler.get_available_content(showAll)
+        except:
+            if remote:
+                return '<p>Remote server was disconnected and cannot be found</p>'
+            else:
+                return '<p>Failed to get list of available content</p>'
+
         return template(
             'custom',
-            app_list=handler.get_available_content(showAll),
+            app_list=app_list,
             showAll=showAll,
             isInstalledOverview=False,
             isNew=True,
