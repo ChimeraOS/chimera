@@ -1,11 +1,12 @@
 % rebase('base.tpl')
+% from urllib.parse import quote
 
 <h2>{{app.name}}</h2>
 
 % if app.operation:
 	<script type="text/JavaScript">
 		async function reloadWhenDone() {
-			url = "/{{ platform }}/progress/" + "{{app.content_id}}";
+			url = "/{{ platform }}/progress/" + "{{ quote(app.content_id) }}";
 			let result;
 			try {
 				response = await fetch(url);
@@ -56,7 +57,7 @@
 % if not app.operation:
 	% if app.installed:
 		% if app.available_version != None and app.installed_version != app.available_version:
-			<form action="/{{platform}}/update/{{app.content_id}}">
+			<form action="/{{platform}}/update/{{ quote(app.content_id) }}">
 				<button class="add">Update to version {{app.available_version}}</button>
 			</form>
 		% end
@@ -66,12 +67,12 @@
 		</form>
 		% end
 		% if not remote:
-		<form action="/{{platform}}/uninstall/{{app.content_id}}">
+		<form action="/{{platform}}/uninstall/{{ quote(app.content_id) }}">
 			<button class="delete">Uninstall</button>
 		</form>
 		% end
 	% else:
-		<form action="/{{ platform }}/install/{{app.content_id}}">
+		<form action="/{{ platform }}/install/{{ quote(app.content_id) }}">
 			<button class="add">Install</button>
 		</form>
 	% end

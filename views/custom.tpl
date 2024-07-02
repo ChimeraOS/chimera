@@ -18,7 +18,7 @@
     % for app in app_list:
     <div class="app-container">
         <div class="img-container">
-            <a href="/library/{{ platform }}/edit/{{ app.content_id }}{{ '?remote=true' if remote == True else '' }}">
+            <a href="/library/{{ platform }}/edit/{{ quote(app.content_id) }}{{ '?remote=true' if remote == True else '' }}">
                 <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ app.get('status_icon') }} {{ app.name }}">
             </a>
         </div>
