@@ -70,6 +70,9 @@
     Allows launching games remotely when enabled.<br><br>
     <input type="checkbox" name="enable_remote_launch" id="enable_remote_launch" {{'checked' if settings["enable_remote_launch"] else ''}} />
 
+    <div class="label">Enable Content Sharing</div>
+    Allows other Chimera instances on the same network to download content from this instance. Only a single instance on your network should have this setting enabled. The server must be restarted for changes to this setting to take effect.<br><br>
+    <input type="checkbox" name="enable_content_sharing" id="enable_content_sharing" {{'checked' if settings["enable_content_sharing"] else ''}} />
     <button>Save</button>
 </form>
 <script>

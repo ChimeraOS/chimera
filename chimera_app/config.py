@@ -44,6 +44,7 @@ MANGOHUD_DIR = context.CONFIG_HOME + "/MangoHud"
 
 SETTINGS_DEFAULT = {
     "enable_remote_launch": False,
+    "enable_content_sharing": False,
     "enable_ftp_server": False,
     "ftp_username": "gamer",
     "ftp_password": generate_password(12),

@@ -12,6 +12,8 @@ import unicodedata
 import string
 import secrets
 import threading
+from urllib.parse import quote_plus as quote
+from urllib.parse import unquote_plus as unquote
 from bottle import abort
 from bottle import app
 from bottle import redirect
@@ -69,23 +71,6 @@ PLATFORM_HANDLERS = {
 }
 
 REMOTE_HANDLERS = {}
-def find_remote_chimera():
-    import socket
-
-    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    client.bind(("", 48844))
-    while True:
-        data, addr = client.recvfrom(1024)
-        if data != b'chimera service v1':
-            continue
-        for platform in PLATFORMS:
-            REMOTE_HANDLERS[platform] = ChimeraRemote(platform, addr[0])
-        break
-
-scan_thread = threading.Thread(target=find_remote_chimera)
-scan_thread.start()
 
 
 def refresh_local_password():
@@ -604,6 +589,7 @@ def settings():
 def settings_update():
     SETTINGS_HANDLER.set_setting("enable_ftp_server", sanitize(request.forms.get('enable_ftp_server')) == 'on')
     SETTINGS_HANDLER.set_setting("enable_remote_launch", sanitize(request.forms.get('enable_remote_launch')) == 'on')
+    SETTINGS_HANDLER.set_setting("enable_content_sharing", sanitize(request.forms.get('enable_content_sharing')) == 'on')
 
     # Make sure the login password is long enough
     login_password = sanitize(request.forms.get('login_password'))
@@ -1173,3 +1159,100 @@ def launch_game(id):
 
     subprocess.call(["steam", "steam://rungameid/{}".format(id)])
     return 'Launched {}...'.format(id)
+
+
+
+########## Content sharing feature
+
+def find_remote_chimera():
+    import socket
+
+    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    client.bind(("", 48844))
+    while True:
+        data, addr = client.recvfrom(1024)
+        if data != b'chimera service v1':
+            continue
+        for platform in PLATFORMS:
+            REMOTE_HANDLERS[platform] = ChimeraRemote(platform, addr[0])
+        break
+
+def broadcast_service():
+    import socket
+    import time
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    server.settimeout(0.2)
+    message = b"chimera service v1"
+    while True:
+        server.sendto(message, ('<broadcast>', 48844))
+        time.sleep(10)
+
+contentSharingEnabled = SETTINGS_HANDLER.get_setting('enable_content_sharing')
+if contentSharingEnabled:
+    broadcast_thread = threading.Thread(target=broadcast_service)
+    broadcast_thread.start()
+else:
+    scan_thread = threading.Thread(target=find_remote_chimera)
+    scan_thread.start()
+
+@route('/share/images/<image_type>/<platform>/<filename>')
+def download_images(image_type, platform, filename):
+    if not contentSharingEnabled:
+        abort(404)
+    if image_type not in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+        abort(404)
+    if platform not in PLATFORMS:
+        abort(404)
+    root = os.path.join(BANNER_DIR, image_type, platform)
+    return static_file(unquote(filename), root)
+
+
+@route('/share/content/<platform>/<filename>')
+def download_content(platform, filename):
+    if not contentSharingEnabled:
+        abort(404)
+    if platform not in PLATFORMS:
+        abort(404)
+    root = os.path.join(CONTENT_DIR, platform)
+    return static_file(unquote(filename), root)
+
+
+@route('/share/platforms/<platform>', method='GET')
+def api_get_platform_content(platform):
+    if not contentSharingEnabled:
+        abort(404)
+
+    shortcut_file = PlatformShortcutsFile(platform)
+    shortcuts = sorted(shortcut_file.get_shortcuts_data(),
+                       key=lambda s: s['name'])
+    data = []
+    for shortcut in shortcuts:
+        if 'hidden' in shortcut and shortcut['hidden']:
+            continue
+        if 'deleted' in shortcut and shortcut['deleted']:
+            continue
+        if not 'params' in shortcut or not shortcut['params']:
+            continue
+
+        content_filename = os.path.basename(shortcut['params'].strip('"'))
+
+        entry = {
+            'name': shortcut['name'],
+            'content_filename': content_filename,
+            'content_download_url': f'/share/content/{platform}/{quote(content_filename)}'
+        }
+
+        for image_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
+            if image_type in shortcut:
+                filename = os.path.basename(shortcut[image_type])
+                entry[image_type] = f'/share/images/{image_type}/{platform}/{quote(filename)}'
+
+        data.append(entry)
+
+    response.content_type = 'application/json'
+    return json.dumps(data)
