@@ -33,13 +33,24 @@ class ChimeraRemote(StorePlatform):
                 name = entry['name']
                 content_filename = entry['content_filename']
                 content_download_url = self.__host + entry['content_download_url']
-                banner = self.__host + entry['banner']
-                poster = self.__host + entry['poster']
-                background = self.__host + entry['background']
-                logo = self.__host + entry['logo']
-                icon = self.__host + entry['icon']
-                installed = False
+                banner = None
+                poster = None
+                background = None
+                logo = None
+                icon = None
 
+                if 'banner' in entry:
+                    banner = self.__host + entry['banner']
+                if 'poster' in entry:
+                    poster = self.__host + entry['poster']
+                if 'background' in entry:
+                    background = self.__host + entry['background']
+                if 'logo' in entry:
+                    logo = self.__host + entry['logo']
+                if 'icon' in entry:
+                    icon = self.__host + entry['icon']
+
+                installed = False
                 if name in installed_list:
                     installed = True
 

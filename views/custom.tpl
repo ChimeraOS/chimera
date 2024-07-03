@@ -12,27 +12,31 @@
 % end
 
 % from urllib.parse import quote
-% if not app_list:
-<p>No content available to install</p>
-% else:
-    % for app in app_list:
-    <div class="app-container">
-        <div class="img-container">
-            <a href="/library/{{ platform }}/edit/{{ quote(app.content_id) }}{{ '?remote=true' if remote == True else '' }}">
-                <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ app.get('status_icon') }} {{ app.name }}">
-            </a>
-        </div>
-        <p class="title">{{app.name}}</p>
+% for app in app_list:
+% icon = app.get('status_icon')
+% icon = icon + '  ' if icon else ''
+<div class="app-container">
+    <div class="img-container">
+        <a href="/library/{{ platform }}/edit/{{ quote(app.content_id) }}{{ '?remote=true' if remote == True else '' }}">
+            <img src="{{ app.image_url }}" alt="{{ app.name }}" title="{{ icon }}{{ app.name }}">
+        </a>
     </div>
+    % if not remote:
+    <p class="title">{{ icon }}{{ app.name }}</p>
     % end
+</div>
+% end
+
+
+% if not app_list and not isInstalledOverview:
+% if showAll:
+    <p>No content available to install</p>
+% else:
+    <p>No known compatible titles found</p>
+% end
 % end
 
 % if not showAll and not isInstalledOverview:
-
-    % if len(app_list) == 0:
-        <p>No known compatible titles found</p>
-    % end
-
     <div>
         <a style="min-width: 200px; width: 25%; display: inline-block;" class="button" href="?showAll=true">Show All Titles</a>
     </div>

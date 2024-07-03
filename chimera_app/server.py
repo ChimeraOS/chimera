@@ -12,8 +12,8 @@ import unicodedata
 import string
 import secrets
 import threading
-from urllib.parse import quote_plus as quote
-from urllib.parse import unquote_plus as unquote
+from urllib.parse import quote
+from urllib.parse import unquote
 from bottle import abort
 from bottle import app
 from bottle import redirect
@@ -196,7 +196,8 @@ def new(platform):
 
         try:
             app_list = handler.get_available_content(showAll)
-        except:
+        except Exception as err:
+            print(err)
             if remote:
                 return '<p>Remote server was disconnected and cannot be found</p>'
             else:
