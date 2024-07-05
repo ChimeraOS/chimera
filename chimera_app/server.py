@@ -42,6 +42,7 @@ from chimera_app.compat_tools import OfficialCompatTool
 from chimera_app.utils import sanitize
 from chimera_app.utils import upsert_file
 from chimera_app.utils import delete_file
+from chimera_app.utils import is_direct
 from chimera_app.file_utils import ensure_directory_for_file
 from chimera_app.auth_decorator import authenticate
 from chimera_app.platforms.epic_store import EpicStore
@@ -1228,6 +1229,8 @@ def download_content(platform, filename):
     if platform not in PLATFORMS:
         abort(404)
     root = os.path.join(CONTENT_DIR, platform)
+    if is_direct(platform, 'content'):
+        root = os.path.join(root, f'.{platform}')
     return static_file(unquote(filename), root)
 
 

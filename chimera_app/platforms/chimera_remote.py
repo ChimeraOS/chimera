@@ -4,6 +4,7 @@ import requests
 import tempfile
 from typing import List, Dict
 from chimera_app.utils import upsert_file
+from chimera_app.utils import is_direct
 from chimera_app.config import CONTENT_DIR
 from chimera_app.config import UPLOADS_DIR
 from chimera_app.shortcuts import PlatformShortcutsFile
@@ -83,11 +84,15 @@ class ChimeraRemote(StorePlatform):
         return [ game['name'] for game in installed if 'deleted' not in game or game['deleted'] != True ]
 
     def get_shortcut(self, content):
+        rundir = os.path.join(CONTENT_DIR, self.platform_code)
+        if is_direct(self.platform_code, 'content'):
+            rundir = os.path.join(rundir, f'.{self.platform_code}')
+
         shortcut = {
             'name': content.name,
             'hidden': False,
             'cmd': PLATFORMS[self.platform_code]['cmd'],
-            'dir': '"' + os.path.join(CONTENT_DIR, self.platform_code) + '"',
+            'dir': '"' + rundir + '"',
             'tags': [PLATFORMS[self.platform_code]['name']],
             'params': '"' + content.content_filename + '"',
         }
