@@ -74,7 +74,19 @@ def run_server(port):
 
     os.chdir(RESOURCE_DIR)
     FTP_SERVER.run()
-    bottle.run(app=server, host='0.0.0.0', port=port, server='tornado')
+
+    # Server   | url encoding | large file download (3.6 GB) | starts | multi-threaded | installed size
+    # default  | y            | y (32s)                      | y      | n              | 0 MB
+    # waitress | y            | y (32s)                      | y      | y              | 1 MB
+    # eventlet | y            | y (32s)                      | y      | y              | 17 MB
+    # paste    | n            | y (32s)                      | y      | y              | ?
+    # tornado  | y            | n                            | y      | y              | ?
+    # gunicorn | ?            | n                            | y      | y              | ?
+    # gevent   | ?            | ?                            | n      | y              | 10 MB
+    # twisted  | ?            | ?                            | n      | y              | ?
+    # cherrypy | ?            | ?                            | n      | y              | ?
+
+    bottle.run(app=server, host='0.0.0.0', port=port, server='waitress')
 
 
 def main():

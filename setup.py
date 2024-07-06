@@ -45,7 +45,7 @@ setup(
         'inotify_simple',
         'pyudev',
         'plyvel',
-        'tornado',
+        'waitress',
     ],
 
     # metadata to display on PyPI
