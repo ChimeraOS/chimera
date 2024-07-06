@@ -222,7 +222,7 @@ PLATFORMS_DEFAULT = {
     },
     "switch": {
         "name": "Switch",
-        "enabled": False,
+        "enabled": True,
     },
 }
 

@@ -1,3 +1,38 @@
 #! /bin/bash
 
-flatpak run org.yuzu_emu.yuzu -f -g "$@"
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+
+# install keys
+mkdir -p "${DATA_HOME}/yuzu/keys"
+ln -s "${DATA_HOME}/chimera/content/switch/prod.keys" "${DATA_HOME}/yuzu/keys/"
+ln -s "${DATA_HOME}/chimera/content/switch/title.keys" "${DATA_HOME}/yuzu/keys/"
+
+# setup app image
+chmod +x ${DATA_HOME}/chimera/content/switch/yuzu.AppImage
+
+# install firmware
+FIRMWARE_DIR=${DATA_HOME}/yuzu/nand/system/Contents/registered
+if [ ! -d FIRMWARE_DIR ]; then
+    mkdir -p ${FIRMWARE_DIR}
+fi
+
+if [ -z "$(ls -A $FIRMWARE_DIR 2>/dev/null)" ]; then
+    # extract firmware if firmware directory is empty
+    unzip ${DATA_HOME}/chimera/content/switch/firmware.zip -d ${FIRMWARE_DIR}
+fi
+
+# copy default configuration:
+# - telemetry off
+# - controllers configured for 4 players
+# - controller applet disabled
+if [ ! -d ${CONFIG_HOME}/yuzu ]; then
+    mkdir -p ${CONFIG_HOME}/yuzu
+fi
+
+if [ ! -e ${CONFIG_HOME}/yuzu/qt-config.ini ]; then
+    cp /usr/share/chimera/config/switch.cfg ${CONFIG_HOME}/yuzu/qt-config.ini
+fi
+
+# AppImage requires full path
+${DATA_HOME}/chimera/content/switch/yuzu.AppImage -f -g "${DATA_HOME}/chimera/content/switch/$@"
