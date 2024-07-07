@@ -1251,12 +1251,16 @@ def api_get_platform_content(platform):
         if not 'params' in shortcut or not shortcut['params']:
             continue
 
-        content_filename = os.path.basename(shortcut['params'].strip('"'))
+        content_pretty_filename = os.path.basename(shortcut['params'].strip('"'))
+        content_original_filename = content_pretty_filename
+        content_path = os.path.join(CONTENT_DIR, platform, content_pretty_filename)
+        if os.path.islink(content_path):
+            content_original_filename = os.path.basename(os.path.realpath(content_path))
 
         entry = {
             'name': shortcut['name'],
-            'content_filename': content_filename,
-            'content_download_url': f'/share/content/{platform}/{quote(content_filename)}'
+            'content_filename': content_original_filename,
+            'content_download_url': f'/share/content/{platform}/{quote(content_pretty_filename)}'
         }
 
         for image_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:

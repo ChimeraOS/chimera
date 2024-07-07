@@ -85,16 +85,20 @@ class ChimeraRemote(StorePlatform):
 
     def get_shortcut(self, content):
         rundir = os.path.join(CONTENT_DIR, self.platform_code)
+        _, content_extension = os.path.splitext(content.content_filename)
+        params = f'{content.name}{content_extension}'
+
         if is_direct(self.platform_code, 'content'):
             rundir = os.path.join(rundir, f'.{self.platform_code}')
+            params = content.content_filename
 
         shortcut = {
             'name': content.name,
             'hidden': False,
             'cmd': PLATFORMS[self.platform_code]['cmd'],
-            'dir': '"' + rundir + '"',
+            'dir': f'"{rundir}"',
             'tags': [PLATFORMS[self.platform_code]['name']],
-            'params': '"' + content.content_filename + '"',
+            'params': f'"{params}"',
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
