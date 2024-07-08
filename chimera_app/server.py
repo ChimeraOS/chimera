@@ -1,4 +1,5 @@
 import os
+import sys
 import pwd
 import subprocess
 import socket
@@ -1202,13 +1203,15 @@ def broadcast_service():
         server.sendto(message, ('<broadcast>', 48844))
         time.sleep(10)
 
-contentSharingEnabled = SETTINGS_HANDLER.get_setting('enable_content_sharing')
-if contentSharingEnabled:
-    broadcast_thread = threading.Thread(target=broadcast_service)
-    broadcast_thread.start()
-else:
-    scan_thread = threading.Thread(target=find_remote_chimera)
-    scan_thread.start()
+
+if 'pytest' not in sys.modules: # the threads interfere with tests
+    contentSharingEnabled = SETTINGS_HANDLER.get_setting('enable_content_sharing')
+    if contentSharingEnabled:
+        broadcast_thread = threading.Thread(target=broadcast_service)
+        broadcast_thread.start()
+    else:
+        scan_thread = threading.Thread(target=find_remote_chimera)
+        scan_thread.start()
 
 @route('/share/images/<image_type>/<platform>/<filename>')
 def download_images(image_type, platform, filename):
