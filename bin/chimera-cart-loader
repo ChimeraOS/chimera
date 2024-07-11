@@ -3,7 +3,7 @@
 DUMP_DIR=/tmp/chimera-cart-loader
 
 function check {
-	if ! lsusb | grep "1d50:6018" &> /dev/null; then
+	if [ ! -e /dev/gboperator ]; then
 		# gboperator not connected
 		return 1
 	fi

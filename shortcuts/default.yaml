@@ -1,6 +1,6 @@
 - name: Cart Loader
   cmd: chimera-cart-loader
-  condition: lsusb | grep 1d50:6018
+  condition: test -e /dev/gboperator
   hidden: false
   poster: /usr/share/chimera/images/cart-loader/poster.png
   banner: /usr/share/chimera/images/cart-loader/banner.png
