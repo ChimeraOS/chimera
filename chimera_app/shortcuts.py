@@ -459,6 +459,8 @@ class ShortcutsManager():
             img_type_dst = img_type_src
 
         img_path = entry[img_type_src]
+        if not os.path.exists(img_path):
+            return
         img_id = get_image_id(img_type_dst, entry['cmd'], entry['name'])
         _, ext = os.path.splitext(img_path)
         for user_dir in context.STEAM_USER_DIRS:
