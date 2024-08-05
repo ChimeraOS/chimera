@@ -1011,35 +1011,16 @@ def storage_task(device, func):
 
 
 def get_audio():
-    if not shutil.which('ponymix'):
+    if not shutil.which('wpctl'):
         return None
 
     try:
-        raw = subprocess.check_output(["ponymix", "list-profiles"])
-        entries = raw.decode('utf8').split('\n')
-
-        volume = subprocess.check_output(["ponymix", "get-volume"])
-        volume = volume.decode('utf8')
-
-        muted = subprocess.call(["ponymix", "is-muted"])
-        print(muted)
-
-        active = None
-        grouped = []
-        for i in range(0, len(entries), 2):
-            if '[active]' in entries[i]:
-                active = entries[i].replace(' [active]', '')
-                grouped.append((active, entries[i+1].strip()))
-            elif entries[i]:
-                grouped.append((entries[i], entries[i+1].strip()))
-
-        results = [e for e in grouped if 'input' not in e[0] and e[0] != 'off']
+        volume_raw = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]).decode('utf8')
+        volume = int(float(volume_raw.split(':')[1].split('[')[0].strip()) * 100)
 
         return {
-            'active': active,
-            'options': results,
             'volume': volume,
-            'muted': muted != 0
+            'muted': '[MUTED]' in volume_raw
         }
     except:
         return None
@@ -1049,7 +1030,7 @@ def get_audio():
 @authenticate
 def toggle_mute():
     try:
-        subprocess.call(["ponymix", "toggle"])
+        subprocess.call(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"])
     finally:
         redirect('/actions')
 
@@ -1058,7 +1039,7 @@ def toggle_mute():
 @authenticate
 def volume_up():
     try:
-        subprocess.call(["ponymix", "increase", "10"])
+        subprocess.call(["wpctl", "set-volume", "--limit", "1.0", "@DEFAULT_AUDIO_SINK@", "10%+"])
     finally:
         redirect('/actions')
 
@@ -1067,18 +1048,9 @@ def volume_up():
 @authenticate
 def volume_down():
     try:
-        subprocess.call(["ponymix", "decrease", "10"])
+        subprocess.call(["wpctl", "set-volume", "--limit", "1.0", "@DEFAULT_AUDIO_SINK@", "10%-"])
     finally:
         redirect('/actions')
-
-
-@route('/audio/<profile>')
-@authenticate
-def audio(profile):
-    try:
-        subprocess.call(["ponymix", "set-profile", profile])
-    finally:
-        redirect('/')
 
 
 @route('/actions/power/tdp_down')

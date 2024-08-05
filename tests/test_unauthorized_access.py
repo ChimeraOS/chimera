@@ -308,9 +308,3 @@ def test_volume_down(unauthorized_app):
     resp = unauthorized_app.get('/actions/audio/volume_down')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_audio_profile(unauthorized_app):
-    resp = unauthorized_app.get('/audio/profile')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')

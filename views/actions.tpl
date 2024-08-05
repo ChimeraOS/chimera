@@ -8,9 +8,9 @@
 							-
 						</a>
 						% if get('audio')['muted']:
-							<a class="volume" style="color : lightgreen" href="/actions/audio/toggle_mute"><i class="ri-volume-up-fill"></i> {{get('audio')['volume']}}</a>
-						% else:
 							<a class="volume" style="color : crimson" href="/actions/audio/toggle_mute"><i class="ri-volume-mute-fill"></i> {{get('audio')['volume']}}</a>
+						% else:
+							<a class="volume" style="color : lightgreen" href="/actions/audio/toggle_mute"><i class="ri-volume-up-fill"></i> {{get('audio')['volume']}}</a>
 						% end
 						<a class="volume-up" href="/actions/audio/volume_up">
 							+
