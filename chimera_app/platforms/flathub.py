@@ -1,6 +1,7 @@
 import os
 import subprocess
 import requests
+import yaml
 from typing import List, Dict
 from chimera_app.platforms.store_platform import StorePlatform, dic
 from chimera_app.config import RESOURCE_DIR, BANNER_DIR, BIN_PATH
@@ -25,7 +26,8 @@ class Flathub(StorePlatform):
         try:
             flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
             self.__add_repo("flathub", flathub_url)
-            self.__api_url = "https://flathub.org/api/v1/apps"
+            self.__data_url = "https://chimeraos.org/flathub-proxy/apps.yaml"
+            self.__data = None
         except Exception:
             print('Error: Failed to initialize flathub support')
 
@@ -49,55 +51,61 @@ class Flathub(StorePlatform):
 
     def _get_all_content(self):
         applications = []
-        api_response = requests.get(self.__api_url, timeout=20)
-        if api_response.status_code == requests.codes.ok:
-            installed_list = self.__get_installed_list()
-            for entry in api_response.json():
-                flatpak_id = entry['flatpakAppId']
-                name = entry['name']
-                description = entry['summary']
-                available_version = entry['currentReleaseVersion']
-                installed = False
-                version = ""
-                db = self._get_db_entry('flathub', flatpak_id)
 
-                banner = self._get_image_url('flathub', flatpak_id, 'banner')
-                poster = self._get_image_url('flathub', flatpak_id, 'poster')
-                background = self._get_image_url('flathub', flatpak_id, 'background')
-                logo = self._get_image_url('flathub', flatpak_id, 'logo')
-                icon = self._get_image_url('flathub', flatpak_id, 'icon')
+        if not self.__data:
+            res = requests.get(self.__data_url, timeout=20)
+            if res.status_code != requests.codes.ok:
+                return applications
+            content = res.content.decode('utf-8')
+            self.__data = yaml.safe_load(content)
 
-                default_img = 'https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/' + flatpak_id + '.png'
+        installed_list = self.__get_installed_list()
+        for entry in self.__data:
+            flatpak_id = entry['id']
+            name = entry['name']
+            description = entry['summary']
+            available_version = entry['version']
+            installed = False
+            version = ""
+            db = self._get_db_entry('flathub', flatpak_id)
 
-                if not banner:
-                    banner = default_img
+            banner = self._get_image_url('flathub', flatpak_id, 'banner')
+            poster = self._get_image_url('flathub', flatpak_id, 'poster')
+            background = self._get_image_url('flathub', flatpak_id, 'background')
+            logo = self._get_image_url('flathub', flatpak_id, 'logo')
+            icon = self._get_image_url('flathub', flatpak_id, 'icon')
 
-                if not poster:
-                    poster = default_img
+            default_img = 'https://dl.flathub.org/repo/appstream/x86_64/icons/128x128/' + flatpak_id + '.png'
 
-                for app in installed_list:
-                    if app['flatpak_id'].strip() == flatpak_id:
-                        installed = True
-                        version = app['version']
+            if not banner:
+                banner = default_img
 
-                applications.append(dic({"content_id": flatpak_id,
-                                         "summary": description,
-                                         "name": name,
-                                         "installed_version": version,
-                                         "available_version": available_version,
-                                         "image_url": banner,
-                                         "banner": banner,
-                                         "poster": poster,
-                                         "background": background,
-                                         "logo": logo,
-                                         "icon": icon,
-                                         "installed": installed,
-                                         "operation": None,
-                                         "status": db.status,
-                                         "status_icon": db.status_icon,
-                                         "notes": db.notes,
-                                         "launch_options": db.launch_options
-                                        }))
+            if not poster:
+                poster = default_img
+
+            for app in installed_list:
+                if app['flatpak_id'].strip() == flatpak_id:
+                    installed = True
+                    version = app['version']
+
+            applications.append(dic({"content_id": flatpak_id,
+                                     "summary": description,
+                                     "name": name,
+                                     "installed_version": version,
+                                     "available_version": available_version,
+                                     "image_url": banner,
+                                     "banner": banner,
+                                     "poster": poster,
+                                     "background": background,
+                                     "logo": logo,
+                                     "icon": icon,
+                                     "installed": installed,
+                                     "operation": None,
+                                     "status": db.status,
+                                     "status_icon": db.status_icon,
+                                     "notes": db.notes,
+                                     "launch_options": db.launch_options
+                                    }))
 
         return applications
 
