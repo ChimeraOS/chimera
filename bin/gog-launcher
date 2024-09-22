@@ -8,11 +8,14 @@ fi
 
 # Windows
 rm -rf tmp
-appdir=$(dirname `find . -name "goggame*.info"`)
+gogfile=$(find . -name "goggame*.info")
 
-if [ "$appdir" != "." ]; then
-	mv $appdir/* .
-	rm -rf $appdir
+if [ -n "$gogfile" ]; then
+	appdir=$(dirname $gogfile)
+	if [ "$appdir" != "." ]; then
+		mv $appdir/* .
+		rm -rf $appdir
+	fi
 fi
 
 exe=$(yq ".[] | select(.id == ${1}) | select(.platform == \"gog\") | .exe" ~/.local/share/chimera/data/gamedb.yaml)
@@ -22,4 +25,6 @@ if [ -n "$exe" ] && [ "$exe" != "null" ]; then
 	exit
 fi
 
-cat goggame*.info | jq '.playTasks[0].path' | sed 's/"//g'
+if [ -n "$gogfile" ]; then
+	cat goggame*.info | jq '.playTasks[0].path' | sed 's/"//g'
+fi
