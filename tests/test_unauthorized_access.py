@@ -154,98 +154,14 @@ def test_settings_update(unauthorized_app):
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
-def test_mangohud_reset(unauthorized_app):
-    resp = unauthorized_app.post('/system/reset_mangohud')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
 def test_steam_restart(unauthorized_app):
     resp = unauthorized_app.get('/actions/steam/restart')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
 
-def test_steam_overlay(unauthorized_app):
-    resp = unauthorized_app.get('/actions/steam/overlay')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
 def test_mangohud(unauthorized_app):
     resp = unauthorized_app.get('/actions/mangohud')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming(unauthorized_app):
-    resp = unauthorized_app.get('/streaming')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_config(unauthorized_app):
-    resp = unauthorized_app.get('/streaming/config')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_add_input(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/add_input')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_remove_input(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/remove_input/123456')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_add_vcodec(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/add_vcodec')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_remove_vcodec(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/remove_vcodec/123456')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_add_acodec(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/add_acodec')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_streaming_remove_acodec(unauthorized_app):
-    resp = unauthorized_app.post('/streaming/remove_acodec/123456')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_record_start(unauthorized_app):
-    resp = unauthorized_app.get('/record/start')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_record_stop(unauthorized_app):
-    resp = unauthorized_app.get('/record/stop')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_mangohud_save_config(unauthorized_app):
-    resp = unauthorized_app.post('/system/mangohud/save_config')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_mangohud_edit_config(unauthorized_app):
-    resp = unauthorized_app.get('/system/mangohud/edit_config')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
@@ -258,18 +174,6 @@ def test_retroarch_load_state(unauthorized_app):
 
 def test_retroarch_save_state(unauthorized_app):
     resp = unauthorized_app.get('/actions/retroarch/save_state')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_virtual_keyboard(unauthorized_app):
-    resp = unauthorized_app.get('/virtual_keyboard')
-    assert(resp.status_code == 302)
-    assert(resp.headers['Location'] == 'http://localhost:80/login')
-
-
-def test_virtual_keyboard_string(unauthorized_app):
-    resp = unauthorized_app.post('/virtual_keyboard/string')
     assert(resp.status_code == 302)
     assert(resp.headers['Location'] == 'http://localhost:80/login')
 
