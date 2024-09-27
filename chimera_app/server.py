@@ -36,8 +36,6 @@ from chimera_app.config import CONTENT_DIR
 from chimera_app.config import UPLOADS_DIR
 from chimera_app.config import SESSION_OPTIONS
 from chimera_app.config import STORAGE_HANDLER
-from chimera_app.config import STREAMING_HANDLER
-from chimera_app.config import MANGOHUD_HANDLER
 from chimera_app.compat_tools import OFFICIAL_COMPAT_TOOLS
 from chimera_app.compat_tools import OfficialCompatTool
 from chimera_app.utils import sanitize
@@ -643,12 +641,6 @@ def settings_update():
     redirect('/system')
 
 
-@route('/system/reset_mangohud', method='POST')
-@authenticate
-def mangohud_reset():
-    MANGOHUD_HANDLER.reset_config()
-    redirect('/system')
-
 
 @route('/actions/steam/restart')
 @authenticate
@@ -659,172 +651,13 @@ def steam_restart():
         redirect('/actions')
 
 
-@route('/emulators/yuzu')
-@authenticate
-def emulators_yuzu():
-    try:
-        subprocess.Popen(["/usr/bin/yuzu"])
-    finally:
-        redirect('/emulators')
-
-
-@route('/actions/steam/overlay')
-@authenticate
-def steam_overlay():
-    try:
-        subprocess.call(["xdotool", "key", "shift+Tab"])
-    finally:
-        redirect('/actions')
-
-
 @route('/actions/mangohud')
 @authenticate
 def mangohud():
-    key = MANGOHUD_HANDLER.get_toggle_hud_key()
     try:
-        subprocess.call(["xdotool", "key", key])
+        subprocess.call(["mangohudctl", "toggle", "no_display"])
     finally:
         redirect('/actions')
-
-
-@route('/streaming')
-@authenticate
-def streaming_control():
-    is_recording = STREAMING_HANDLER.is_recording()
-    return template('streaming_control.tpl',
-                    recording=is_recording)
-
-
-@route('/streaming/config')
-@authenticate
-def streaming_config():
-    current_inputs = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
-    current_vcodecs = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
-    current_acodecs = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
-    if type(current_inputs) is not list and current_inputs:
-        current_inputs = [current_inputs]
-    if type(current_vcodecs) is not list and current_vcodecs:
-        current_vcodecs = [current_vcodecs]
-    if type(current_acodecs) is not list and current_acodecs:
-        current_acodecs = [current_acodecs]
-    return template('streaming_config.tpl',
-                    inputs=current_inputs,
-                    vcodecs=current_vcodecs,
-                    acodecs=current_acodecs)
-
-
-@route('/streaming/add_input', method='POST')
-@authenticate
-def streaming_add_input():
-    current_input = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
-    new_input = request.forms.get('new_input')
-    if type(current_input) is list:
-        current_input.append(new_input)
-    elif type(current_input) is str:
-        if current_input.strip():
-            current_input = [current_input].append(new_input)
-        else:
-            current_input = new_input
-    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_input)
-    redirect('/streaming/config')
-
-
-@route('/streaming/remove_input/<input_id:int>', method='POST')
-@authenticate
-def streaming_remove_input(input_id):
-    current_input = SETTINGS_HANDLER.get_setting("ffmpeg_inputs")
-    if type(current_input) is list:
-        del current_input[input_id]
-    else:
-        current_input = ''
-    SETTINGS_HANDLER.set_setting("ffmpeg_inputs", current_input)
-    redirect('/streaming/config')
-
-
-@route('/streaming/add_vcodec', method='POST')
-@authenticate
-def streaming_add_vcodec():
-    current_vcodec = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
-    new_vcodec = request.forms.get('new_vcodec')
-    if type(current_vcodec) is list:
-        current_vcodec.append(new_vcodec)
-    elif type(current_vcodec) is str:
-        if current_vcodec.strip():
-            current_vcodec = [current_vcodec].append(new_vcodec)
-        else:
-            current_vcodec = new_vcodec
-
-    SETTINGS_HANDLER.set_setting("ffmpeg_vcodec", current_vcodec)
-    redirect('/streaming/config')
-
-
-@route('/streaming/remove_vcodec/<vcodec_id:int>', method='POST')
-@authenticate
-def streaming_remove_vcodec(vcodec_id):
-    current_vcodec = SETTINGS_HANDLER.get_setting("ffmpeg_vcodec")
-    if type(current_vcodec) is list:
-        del current_vcodec[vcodec_id]
-    else:
-        current_vcodec = ''
-    SETTINGS_HANDLER.set_setting("ffmpeg_vcodec", current_vcodec)
-    redirect('/streaming/config')
-
-
-@route('/streaming/add_acodec', method='POST')
-@authenticate
-def streaming_add_acodec():
-    current_acodec = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
-    new_acodec = request.forms.get('new_acodec')
-    if type(current_acodec) is list:
-        current_acodec.append(new_acodec)
-    elif type(current_acodec) is str:
-        if current_acodec.strip():
-            current_acodec = [current_acodec].append(new_acodec)
-        else:
-            current_acodec = new_acodec
-    SETTINGS_HANDLER.set_setting("ffmpeg_acodec", current_acodec)
-    redirect('/streaming/config')
-
-
-@route('/streaming/remove_acodec/<acodec_id:int>', method='POST')
-@authenticate
-def streaming_remove_acodec(acodec_id):
-    current_acodec = SETTINGS_HANDLER.get_setting("ffmpeg_acodec")
-    if type(current_acodec) is list:
-        del current_acodec[acodec_id]
-    else:
-        current_acodec = ''
-    SETTINGS_HANDLER.set_setting("ffmpeg_acodec", current_acodec)
-    redirect('/streaming/config')
-
-
-@route('/record/start')
-@authenticate
-def record_start():
-    STREAMING_HANDLER.record_screen()
-    return template('success.tpl')
-
-
-@route('/record/stop')
-@authenticate
-def record_stop():
-    STREAMING_HANDLER.stop_record()
-    return template('success.tpl')
-
-
-@route('/system/mangohud/save_config', method='POST')
-@authenticate
-def mangohud_save_config():
-    new_content = request.forms.get('new_content')
-    MANGOHUD_HANDLER.save_config(new_content)
-    redirect('/system')
-
-
-@route('/system/mangohud/edit_config')
-@authenticate
-def mangohud_edit():
-    current_content = MANGOHUD_HANDLER.get_current_config()
-    return template('mangohud_edit.tpl', file_content=current_content)
 
 
 def retroarch_cmd(msg):
@@ -848,23 +681,6 @@ def retro_save_state():
         retroarch_cmd('SAVE_STATE')
     finally:
         redirect('/actions')
-
-
-@route('/virtual_keyboard')
-@authenticate
-def virtual_keyboard():
-    return template('virtual_keyboard.tpl')
-
-
-@route('/virtual_keyboard/string', method='POST')
-@authenticate
-def virtual_keyboard_string():
-    string = request.forms.get('str')
-    string_without_controlcharacters = "".join(c for c in string if unicodedata.category(c) != "Cc")
-    try:
-        subprocess.call(["xdotool", "type", "--", string_without_controlcharacters])
-    finally:
-        redirect('/virtual_keyboard')
 
 
 @route('/actions/reboot')
