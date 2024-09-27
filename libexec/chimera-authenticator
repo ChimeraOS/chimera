@@ -15,6 +15,8 @@ else:
     print("No password to show specified")
     exit(1)
 
+# Initialize window
+window = pyglet.window.Window(fullscreen=True)
 
 # Setup joystick events
 joysticks = pyglet.input.get_joysticks()
@@ -23,11 +25,8 @@ def on_joybutton_press(joystick, button_name):
     pyglet.app.exit()
 
 for joystick in joysticks:
-    joystick.open()
+    joystick.open(window)
     joystick.on_joybutton_press = on_joybutton_press
-
-# Initialize window
-window = pyglet.window.Window(fullscreen=True)
 
 # Solid Background
 background = pyglet.sprite.Sprite(
