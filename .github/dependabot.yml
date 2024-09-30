@@ -1,0 +1,19 @@
+# dependabot.yml
+# Author: D.A.Pelasgus
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "alkazar"
+      - "samsagax"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "alkazar"
+      - "samsagax"
