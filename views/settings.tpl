@@ -40,7 +40,8 @@
 
     <h4>SSH</h4>
     <hr>
-    SSH allows you to access the command line of this machine remotely. Once your SSH public key has been added, you can connect to this server with "ssh {{username}}@{{hostname}}".<br>
+    SSH allows you to access the command line of this machine remotely. Once your SSH public key has been added, you can connect to this server with "ssh {{username}}@{{hostname}}". 
+    For more details, please refer to <a href="https://github.com/ChimeraOS/chimera/blob/master/README.md">the README file of the Github repository</a>.<br>
 
     <div class="label">Add public key</div>
     <input name="ssh_key"/>
