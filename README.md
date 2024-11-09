@@ -1,4 +1,4 @@
-<p align="center"><img src="src/images/logo.svg" alt="ChimeraOS" style="width: 150px;" /></p>
+<p align="center"><img src="images/logo.svg" alt="ChimeraOS" style="width: 150px;" /></p>
 
 [![status](https://img.shields.io/badge/status-stable-%23961937.svg?style=for-the-badge)](https://github.com/chimeraos/chimera)
 [![License](https://img.shields.io/badge/License-MIT-%23961937.svg?style=for-the-badge)](https://chimeraos.org)
