@@ -6,6 +6,7 @@ import vdf
 import pytest
 import chimera_app
 import chimera_app.shortcuts as shortcuts
+import chimera_app.context as context
 import chimera_app.compat_tools as compat_tools
 import chimera_app.data as chimera_data
 
@@ -65,7 +66,7 @@ def fake_data(fs,
                      )
 
     # Patch STEAM_USER_DIRS as per pyfakefs limitations
-    monkeypatch.setattr(chimera_app.context, 'STEAM_USER_DIRS',
+    monkeypatch.setattr(context, 'STEAM_USER_DIRS',
                         [os.path.expanduser(
                             '~/.local/share/Steam/userdata/12345678')]
                         )

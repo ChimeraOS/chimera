@@ -31,7 +31,7 @@ class Settings:
         settings[key] = value
         self.save(settings)
 
-    def get_setting(self, setting: str) -> any:
+    def get_setting(self, setting: str):
         with open(self.settings_file, "r") as file:
             settings = json.loads(file.read())
             try:

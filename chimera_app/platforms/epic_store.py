@@ -2,18 +2,27 @@ import subprocess
 import json
 import os
 import chimera_app.context as context
+from dataclasses import dataclass
 from chimera_app.config import CONTENT_DIR
-from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.platforms.store_platform import StorePlatform, App
 from chimera_app.steam_config import status_to_collection_name
 
+
+@dataclass
+class VersionInfo:
+    installed_version: str
+    available_version: str
 
 class EpicStore(StorePlatform):
     def __init__(self):
         super().__init__()
-        self.platform_code = 'epic-store'
         self.METADATA_DIR = os.path.join(context.CONFIG_HOME,
                                          'legendary',
                                          'metadata')
+
+    @property
+    def platform_code(self):
+        return 'epic-store'
 
     def is_authenticated(self):
         output = subprocess.check_output(['legendary', 'status'])
@@ -24,7 +33,7 @@ class EpicStore(StorePlatform):
         clean_password = ''.join(c for c in clean_password if c.isalnum())
         subprocess.check_output(["legendary", "auth", "--code", clean_password])
 
-    def get_shortcut(self, content):
+    def get_shortcut(self, content) -> dict:
         # must specify explicit compat_tool proton version for automatic download to work
         shortcut = {
             'name': content.name,
@@ -48,17 +57,17 @@ class EpicStore(StorePlatform):
 
         return shortcut
 
-    def __get_installed_content(self) -> list:
+    def __get_installed_content(self) -> dict:
         content = {}
         for line in subprocess.check_output(["legendary", "list-installed", "--csv"]).splitlines()[1:]:
             if isinstance(line, bytes):
                 line = line.decode("utf-8")
             data = line.split(',')
 
-            content[data[0]] = dic({
-                                "installed_version": data[2],
-                                "available_version": data[3],
-                            })
+            content[data[0]] = VersionInfo(
+                installed_version=data[2],
+                available_version=data[3]
+            )
 
         return content
 
@@ -90,27 +99,30 @@ class EpicStore(StorePlatform):
                 available_version = installed[epic_id].available_version
 
 
-            content.append(dic({
-                                "content_id": epic_id,
-                                "summary": "",
-                                "name": data[1],
-                                "installed_version": installed_version,
-                                "available_version": available_version,
-                                "image_url": banner,
-                                "banner": banner,
-                                "poster": poster,
-                                "background": background,
-                                "logo": logo,
-                                "icon": icon,
-                                "installed": is_installed,
-                                "operation": None,
-                                "status": db.status,
-                                "status_icon": db.status_icon,
-                                "notes": db.notes,
-                                "compat_tool": db.compat_tool,
-                                "compat_config": db.compat_config,
-                                "launch_options": db.launch_options
-                            }))
+            content.append(App(
+                content_id=epic_id,
+                summary="",
+                name=data[1],
+                installed_version=installed_version,
+                available_version=available_version,
+                image_url=banner,
+                banner=banner,
+                poster=poster,
+                background=background,
+                logo=logo,
+                icon=icon,
+                installed=is_installed,
+                operation=None,
+                status=db.status,
+                status_icon=db.status_icon,
+                notes=db.notes,
+                compat_tool=db.compat_tool,
+                compat_config=db.compat_config,
+                launch_options=db.launch_options,
+                content_filename=None,
+                content_download_url=None,
+                native=None
+            ))
 
         return content
 
@@ -155,15 +167,15 @@ class EpicStore(StorePlatform):
         return url
 
 
-    def _update(self, content_id) -> subprocess:
+    def _update(self, content_id) -> subprocess.Popen:
         return subprocess.Popen(["legendary", "--yes", "update", content_id],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    def _install(self, content) -> subprocess:
+    def _install(self, content) -> subprocess.Popen:
         return subprocess.Popen(
             ["legendary", "--yes", "install", "--base-path", os.path.join(CONTENT_DIR, 'epic-store'), content.content_id],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    def _uninstall(self, content_id) -> subprocess:
+    def _uninstall(self, content_id) -> subprocess.Popen:
         return subprocess.Popen(["legendary", "--yes", "uninstall", content_id],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

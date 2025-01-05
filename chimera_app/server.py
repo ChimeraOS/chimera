@@ -1,3 +1,5 @@
+# type: ignore
+
 import os
 import sys
 import pwd
@@ -355,8 +357,9 @@ def shortcut_create():
                                    platform,
                                    name,
                                    content_dst_name)
-        shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
-        shortcut['params'] = '"' + os.path.basename(content_path) + '"'
+        if content_path:
+            shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+            shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
     shortcuts.add_shortcut(shortcut)
     shortcuts.save()
@@ -408,8 +411,9 @@ def shortcut_update():
                                    platform,
                                    name,
                                    content_dst_name)
-        shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
-        shortcut['params'] = '"' + os.path.basename(content_path) + '"'
+        if content_path:
+            shortcut['dir'] = '"' + os.path.dirname(content_path) + '"'
+            shortcut['params'] = '"' + os.path.basename(content_path) + '"'
 
     shortcuts.save()
 
@@ -873,7 +877,9 @@ def volume_down():
 @authenticate
 def tdp_down():
     try:
-        power.set_tdp(power.get_tdp() - 1)
+        tdp = power.get_tdp()
+        if tdp:
+            power.set_tdp(tdp - 1)
     finally:
         redirect('/actions')
 
@@ -881,7 +887,9 @@ def tdp_down():
 @authenticate
 def tdp_up():
     try:
-        power.set_tdp(power.get_tdp() + 1)
+        tdp = power.get_tdp()
+        if tdp:
+            power.set_tdp(tdp + 1)
     finally:
         redirect('/actions')
 
@@ -918,7 +926,7 @@ def authenticate_route_handler():
     stored_hash = SETTINGS_HANDLER.get_setting('password')
     local_password = LOCAL_PASSWORD
     LOCAL_PASSWORD=refresh_local_password()
-    if password == local_password or AUTHENTICATOR.matches_password(password.upper()) or keep_password and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
+    if password == local_password or AUTHENTICATOR.matches_password(password.upper()) or (keep_password and stored_hash and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()

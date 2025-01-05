@@ -3,7 +3,7 @@ import subprocess
 import requests
 import yaml
 from typing import List, Dict
-from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.platforms.store_platform import StorePlatform, App
 from chimera_app.config import RESOURCE_DIR, BANNER_DIR, BIN_PATH
 from chimera_app.steam_config import status_to_collection_name
 
@@ -21,7 +21,6 @@ def listdir(path):
 class Flathub(StorePlatform):
     def __init__(self):
         super().__init__()
-        self.platform_code = 'flathub'
 
         try:
             flathub_url = "https://dl.flathub.org/repo/flathub.flatpakrepo"
@@ -30,6 +29,10 @@ class Flathub(StorePlatform):
             self.__data = None
         except Exception:
             print('Error: Failed to initialize flathub support')
+
+    @property
+    def platform_code(self):
+        return 'flathub'
 
     def is_authenticated(self):
         return True
@@ -88,28 +91,34 @@ class Flathub(StorePlatform):
                     installed = True
                     version = app['version']
 
-            applications.append(dic({"content_id": flatpak_id,
-                                     "summary": description,
-                                     "name": name,
-                                     "installed_version": version,
-                                     "available_version": available_version,
-                                     "image_url": banner,
-                                     "banner": banner,
-                                     "poster": poster,
-                                     "background": background,
-                                     "logo": logo,
-                                     "icon": icon,
-                                     "installed": installed,
-                                     "operation": None,
-                                     "status": db.status,
-                                     "status_icon": db.status_icon,
-                                     "notes": db.notes,
-                                     "launch_options": db.launch_options
-                                    }))
+            applications.append(App(
+                content_id=flatpak_id,
+                summary=description,
+                name=name,
+                installed_version=version,
+                available_version=available_version,
+                image_url=banner,
+                banner=banner,
+                poster=poster,
+                background=background,
+                logo=logo,
+                icon=icon,
+                installed=installed,
+                operation=None,
+                status=db.status,
+                status_icon=db.status_icon,
+                notes=db.notes,
+                launch_options=db.launch_options,
+                content_filename=None,
+                content_download_url=None,
+                native=None,
+                compat_tool=None,
+                compat_config=None
+            ))
 
         return applications
 
-    def __get_installed_list(self) -> List[Dict[str, any]]:
+    def __get_installed_list(self) -> List[dict]:
         installed_list = []
         for line in subprocess.check_output(["flatpak",
                                              "list",
@@ -168,7 +177,7 @@ class Flathub(StorePlatform):
 
         return shortcut
 
-    def _install(self, content) -> subprocess:
+    def _install(self, content) -> subprocess.Popen:
         return subprocess.Popen([FLATPAK_WRAPPER,
                                  "install",
                                  "--user",
@@ -178,7 +187,7 @@ class Flathub(StorePlatform):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
 
-    def _uninstall(self, content_id) -> subprocess:
+    def _uninstall(self, content_id) -> subprocess.Popen:
         return subprocess.Popen([FLATPAK_WRAPPER,
                                  "uninstall",
                                  "--user",
@@ -187,7 +196,7 @@ class Flathub(StorePlatform):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
 
-    def _update(self, content_id) -> subprocess:
+    def _update(self, content_id) -> subprocess.Popen:
         return subprocess.Popen([FLATPAK_WRAPPER,
                                  "update",
                                  "--user",

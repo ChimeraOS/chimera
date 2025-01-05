@@ -1,20 +1,44 @@
 import os
+import abc
 import time
 import subprocess
 import threading
 from io import BytesIO
+from dataclasses import dataclass
 from chimera_app.file_utils import ensure_directory
+from chimera_app.config import GameDbEntry
 from chimera_app.config import GAMEDB
 from chimera_app.config import BANNER_DIR
 
+@dataclass
+class Task:
+    progress: int
+    operation: str
 
-# allow accessing dictionary items as object attributes
-class dic(object):
-    def __init__(self, d):
-        self.__dict__ = d
-
-    def get(self, attr, default=None):
-        return getattr(self, attr, default)
+@dataclass
+class App:
+    content_id: str
+    summary: str
+    name: str
+    native: bool | None
+    content_filename: str | None
+    content_download_url: str | None
+    installed_version: str | None
+    available_version: str | None
+    image_url: str | None
+    banner: str | None
+    poster: str | None
+    background: str | None
+    logo: str | None
+    icon: str | None
+    installed: bool
+    operation: Task | None
+    status: str | None
+    status_icon: str | None
+    notes: list[str] | None
+    compat_tool: str | None
+    compat_config: str | None
+    launch_options: str | None
 
 
 class StorePlatform:
@@ -29,10 +53,33 @@ class StorePlatform:
         apps = self._get_all_content()
         return [app for app in apps if not app.installed and (listAll or app.status in [ 'verified', 'playable' ]) ]
 
+    @abc.abstractmethod
+    def _install(self, content) -> subprocess.Popen:
+        pass
+
+    @abc.abstractmethod
+    def _update(self, content_id) -> subprocess.Popen | None:
+        pass
+
+    @abc.abstractmethod
+    def _uninstall(self, content_id) -> subprocess.Popen | None:
+        pass
+
+    @abc.abstractmethod
     def _get_all_content(self) -> list:
         pass
 
+    @abc.abstractmethod
     def _post_install(self, content_id):
+        pass
+
+    @abc.abstractmethod
+    def get_shortcut(self, content) -> dict:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def platform_code(self) -> str:
         pass
 
     def get_content(self, content_id):
@@ -60,7 +107,7 @@ class StorePlatform:
     def create_task(self, content_id, opName):
         if content_id in self.tasks:
             return False
-        self.tasks[content_id] = dic({'progress': -1, 'operation': opName})
+        self.tasks[content_id] = Task(progress=-1, operation=opName)
         return True
 
     def uninstall_content(self, content_id):
@@ -84,38 +131,29 @@ class StorePlatform:
                                             content_id))
             thread.start()
 
-    def get_shortcut(self, content):
-        pass
-
-    def __get_status_icon(self, status):
-        if not status:
-            return None
-        elif status == 'verified':
-            return '🟢'
-        elif status =='playable':
-            return '🟡'
-        elif status == 'unsupported':
-            return '🔴'
-        else:
-            return '⚫'
-
-    def _get_db_entry(self, platform, content_id):
-        game = {}
+    def _get_db_entry(self, platform, content_id) -> GameDbEntry:
         cid = str(content_id)
 
         if cid in GAMEDB[platform]:
-            game = GAMEDB[platform][cid]
+            return GAMEDB[platform][cid]
 
-        if 'status' not in game:
-            game['status'] = 'unknown'
-
-        for key in [ 'notes', 'compat_tool', 'compat_config', 'launch_options' ]:
-            if key not in game:
-                game[key] = None
-
-        game['status_icon'] = self.__get_status_icon(game['status'])
-
-        return dic(game)
+        return GameDbEntry(
+            name="",
+            platform=platform,
+            id=content_id,
+            banner=None,
+            poster=None,
+            background=None,
+            logo=None,
+            icon=None,
+            compat_tool=None,
+            compat_config=None,
+            launch_options=None,
+            status=None,
+            store=None,
+            steam_input=None,
+            notes=None
+        )
 
     def _get_image_url(self, platform, content_id, img_type='banner'):
         game = None
@@ -128,10 +166,11 @@ class StorePlatform:
         if not game:
             return None
 
-        if img_type in game:
-            img = game[img_type]
-        elif 'banner' in game and game['banner'].startswith('steam:'):
-            img = game['banner']
+        img = getattr(game, img_type)
+        banner = getattr(game, 'banner')
+
+        if not img and banner and banner.startswith('steam:'):
+            img = banner
 
         if img and img.startswith('steam:'):
             steam_id = img.split(':')[1]
@@ -154,7 +193,7 @@ class StorePlatform:
             img_url = getattr(content, img_type)
             if img_url and img_url.startswith('http'):
                 img_path = self.get_image_path(content, img_type)
-                subprocess.check_output(["curl", img_url, "-o", img_path])
+                subprocess.check_output(["curl", str(img_url), "-o", str(img_path)])
 
     def __get_ext(self, url):
         url_noquery = url.split('?')[0]
@@ -176,7 +215,7 @@ class StorePlatform:
 
         return os.path.join(base_path, content.content_id + ext)
 
-    def _update_progress(self, sp: subprocess, content_id):
+    def _update_progress(self, sp: subprocess.Popen, content_id):
         if sp is None:
             return
 
@@ -184,6 +223,8 @@ class StorePlatform:
 
         buf = BytesIO()
         while sp.poll() is None:
+            if not sp.stdout:
+                continue
             out = sp.stdout.read(1)
             buf.write(out)
             if out in (b'\r', b'\n'):

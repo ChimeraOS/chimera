@@ -9,7 +9,7 @@ def authenticate(func):
             authenticated = False
             session['Logged-In'] = False
             session.save()
-        elif not session.get('User-Agent') or session['User-Agent'] != request.headers.get('User-Agent'):
+        elif not session.get('User-Agent') or session['User-Agent'] != request.get_header('User-Agent'):
             session.delete()
             authenticated = False
         if not authenticated:

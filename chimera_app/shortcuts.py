@@ -137,7 +137,7 @@ class SteamShortcutsFile():
             if 'shortcuts' in data:
                 self.current_data = data['shortcuts']
 
-    def match_app_id(self, app_id: str) -> dict:
+    def match_app_id(self, app_id: str) -> tuple[dict, int]:
         """Returns a copy of the shortcut dictionary of the given app_id.
         If not found returns a new empty dictionary.
         """
@@ -196,12 +196,12 @@ class SteamShortcutsFile():
         # remove old shortcuts after a change in 'cmd' which causes the game's id to change and matching to fail resulting in duplicate shortcuts
         if entry['cmd'] in MIGRATIONS.keys():
             shortcut_id = get_shortcut_id(MIGRATIONS[entry['cmd']], entry['name'])
-            shortcut, index = self.match_app_id(shortcut_id)
+            shortcut, index = self.match_app_id(str(shortcut_id))
             if shortcut:
                 self.current_data.pop(index)
 
         shortcut_id = get_shortcut_id(entry['cmd'], entry['name'])
-        shortcut, index = self.match_app_id(shortcut_id)
+        shortcut, index = self.match_app_id(str(shortcut_id))
 
         if 'deleted' in entry and entry['deleted']:
             if shortcut:
@@ -386,8 +386,8 @@ class ShortcutsManager():
     shortcut_entries: List[dict]
 
     def __init__(self,
-                 steam_files: List[SteamShortcutsFile] = None,
-                 shortcut_files: List[ShortcutsFile] = None):
+                 steam_files: List[SteamShortcutsFile] = [],
+                 shortcut_files: List[ShortcutsFile] = []):
         self.steam_files = steam_files if steam_files else []
         self.shortcut_files = shortcut_files if shortcut_files else []
         self.shortcut_entries = []

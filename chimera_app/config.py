@@ -1,5 +1,6 @@
 import os
 import yaml
+from dataclasses import dataclass
 from chimera_app.settings import Settings
 import chimera_app.context as context
 from chimera_app.ftp.server import Server as FTPServer
@@ -243,6 +244,36 @@ GAMEDB = {
     'steam' : {},
 }
 
+@dataclass
+class GameDbEntry:
+    name: str
+    platform: str
+    id: str
+    banner: str | None
+    poster: str | None
+    background: str | None
+    logo: str | None
+    icon: str | None
+    compat_tool: str | None
+    compat_config: str | None
+    launch_options: str | None
+    status: str | None
+    store: str | None
+    steam_input: str | None
+    notes: list[str] | None
+
+    @property
+    def status_icon(self):
+        if self.status == 'verified':
+            return '🟢'
+        elif self.status == 'playable':
+            return '🟡'
+        elif self.status == 'unsupported':
+            return '🔴'
+        else:
+            return '⚫'
+
+
 try:
     with open(os.path.join(DATA_DIR, 'gamedb.yaml')) as yaml_file:
         game_list = yaml.load(yaml_file, Loader=yaml.FullLoader)
@@ -250,6 +281,22 @@ try:
         for game in game_list:
             if 'id' in game:
                 game['id'] = str(game['id'])
-                GAMEDB[game['platform']][game['id']] = game
+                GAMEDB[game['platform']][game['id']] = GameDbEntry(
+                    name=game['name'],
+                    platform=game['platform'],
+                    id=game['id'],
+                    banner=game['banner'] if 'banner' in game else None,
+                    poster=game['poster'] if 'poster' in game else None,
+                    background=game['background'] if 'background' in game else None,
+                    logo=game['logo'] if 'logo' in game else None,
+                    icon=game['icon'] if 'icon' in game else None,
+                    compat_tool=game['compat_tool'] if 'compat_tool' in game else None,
+                    compat_config=game['compat_config'] if 'compat_config' in game else None,
+                    launch_options=game['launch_options'] if 'launch_options' in game else None,
+                    status=game['status'] if 'status' in game else None,
+                    store=game['store'] if 'store' in game else None,
+                    steam_input=game['steam_input'] if 'steam_input' in game else None,
+                    notes=game['notes'] if 'notes' in game else None
+                )
 except:
     print('WARNING: Failed to load game database')

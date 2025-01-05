@@ -11,4 +11,8 @@ class SplashScreen:
 
     def launch(self) -> None:
         print("Showing splash screen")
-        subprocess.Popen([self.__fg, self.__app])
+        self.__proc = subprocess.Popen([self.__fg, self.__app])
+
+    def kill(self) -> None:
+        if self.__proc:
+            self.__proc.kill()

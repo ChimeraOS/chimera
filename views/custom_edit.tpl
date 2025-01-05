@@ -32,14 +32,14 @@
 	<h3>Version: {{app.installed_version}}</h3>
 % end
 
-% if app.get('status'):
+% if app.status:
 	<div class="status-badge" onclick="window.open('/status-info')">
-		{{ app.get('status_icon') }} {{ app.get('status').capitalize() }}
+		{{ app.status_icon }} {{ app.status.capitalize() }}
 	</div>
 % end
 
 <div class="left-content">
-	% if app.get('notes'):
+	% if app.notes:
 		<ul class="notes">
 			% for note in app.notes:
 				<li>{{ note }}</li>

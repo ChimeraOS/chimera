@@ -13,7 +13,7 @@
 
 % from urllib.parse import quote
 % for app in app_list:
-% icon = app.get('status_icon')
+% icon = app.status_icon
 % icon = icon + '  ' if icon else ''
 <div class="app-container">
     <div class="img-container">

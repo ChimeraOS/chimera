@@ -63,7 +63,7 @@ class TweaksFile:
 
     def __init__(self, path: str, auto_load=False):
         self.path = path
-        self.tweaks_data = None
+        self.tweaks_data = {}
         if auto_load:
             self.load_data()
 
@@ -93,7 +93,7 @@ class SteamConfigFile(ABC):
 
     def __init__(self, path: str, auto_load=False):
         self.path = path
-        self.config_data = None
+        self.config_data = vdf.VDFDict()
         if auto_load:
             self.load_data()
 
@@ -133,7 +133,7 @@ class LocalSteamConfig(SteamConfigFile):
 
     def load_data(self) -> None:
         if self.exists():
-            data = vdf.load(open(self.path))
+            data = vdf.VDFDict(vdf.load(open(self.path)))
         else:
             data = vdf.VDFDict()
             data['UserLocalConfigStore'] = {'Software':
@@ -195,7 +195,7 @@ class MainSteamConfig(SteamConfigFile):
 
     def load_data(self, clean=True) -> None:
         if self.exists():
-            data = vdf.load(open(self.path))
+            data = vdf.VDFDict(vdf.load(open(self.path)))
         else:
             data = vdf.VDFDict()
             data['InstallConfigStore'] = {'Software':

@@ -3,17 +3,24 @@ import json
 import os
 import shutil
 import chimera_app.context as context
+from dataclasses import dataclass
 from chimera_app.file_utils import ensure_directory
 from chimera_app.config import CONTENT_DIR, BIN_PATH
 from chimera_app.shortcuts import PlatformShortcutsFile
-from chimera_app.platforms.store_platform import StorePlatform, dic
+from chimera_app.platforms.store_platform import StorePlatform, App
 from chimera_app.steam_config import status_to_collection_name
 
+@dataclass
+class GogGameInfo:
+    id: str
+    title: str
+    isGame: bool
+    image: str
 
 class GOG(StorePlatform):
-    def __init__(self):
-        super().__init__()
-        self.platform_code = 'gog'
+    @property
+    def platform_code(self):
+        return 'gog'
 
     def is_authenticated(self):
         num_lines = 0
@@ -70,7 +77,7 @@ class GOG(StorePlatform):
 
         games = sorted(data['games'], key=lambda g: g['ProductInfo']['title'])
         for game in games:
-            info = dic(game['ProductInfo'])
+            info = GogGameInfo(**game['ProductInfo'])
             if not info.isGame:
                 continue
 
@@ -90,37 +97,36 @@ class GOG(StorePlatform):
             if not poster:
                 poster = default_img
 
-
             db = self._get_db_entry('gog', cid)
 
-            content.append(dic({"content_id": cid,
-                                "summary": "",
-                                "name": info.title,
-                                "native": False,
-                                "installed_version": None,
-                                "available_version": None,
-                                "image_url": banner,
-                                "banner": banner,
-                                "poster": poster,
-                                "background": background,
-                                "logo": logo,
-                                "icon": icon,
-                                "installed": cid in installed_ids,
-                                'operation': None,
-                                "status": db.status,
-                                "status_icon": db.status_icon,
-                                "notes": db.notes,
-                                "compat_tool": db.compat_tool,
-                                "compat_config": db.compat_config,
-                                "launch_options": db.launch_options
-                            }))
+            content.append(App(
+                content_id=cid,
+                summary="",
+                name=info.title,
+                native=False,
+                installed_version=None,
+                available_version=None,
+                image_url=banner,
+                banner=banner,
+                poster=poster,
+                background=background,
+                logo=logo,
+                icon=icon,
+                installed=cid in installed_ids,
+                operation=None,
+                status=db.status,
+                status_icon=db.status_icon,
+                notes=db.notes,
+                compat_tool=db.compat_tool,
+                compat_config=db.compat_config,
+                launch_options=db.launch_options,
+                content_filename=None,
+                content_download_url=None,
+            ))
 
         return content
 
-    def _update(self, content_id) -> subprocess:
-        pass
-
-    def _install(self, content) -> subprocess:
+    def _install(self, content) -> subprocess.Popen:
         cachedir = os.path.join(context.CACHE_HOME, 'chimera')
         shutil.rmtree(cachedir, ignore_errors=True)
         ensure_directory(cachedir)
@@ -144,7 +150,7 @@ class GOG(StorePlatform):
                                 stderr=subprocess.STDOUT,
                                 cwd=cachedir)
 
-    def _uninstall(self, content_id) -> subprocess:
+    def _uninstall(self, content_id) -> subprocess.Popen:
         game_dir = os.path.join(CONTENT_DIR, 'gog', content_id)
         return subprocess.Popen(["rm",
                                  "-rf",

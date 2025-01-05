@@ -102,6 +102,7 @@ def main():
         run_server(args.port)
 
     if args.update:
+        splash = None
         if args.splash:
             splash = SplashScreen()
             splash.launch()
@@ -110,7 +111,7 @@ def main():
         except:
             print('Data update failed')
         finally:
-            if args.splash:
+            if args.splash and splash:
                 splash.kill()
 
     if args.compat:

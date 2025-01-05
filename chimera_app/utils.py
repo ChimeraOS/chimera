@@ -116,7 +116,7 @@ def delete_file(base_dir, platform, name):
     delete_file_link(base_dir, platform, name)
 
 
-def client_running() -> False:
+def client_running() -> bool:
     """Check if the Steam client is running"""
     pid_path = os.path.expanduser('~/.steam/steam.pid')
     if not os.path.exists(pid_path):
@@ -124,8 +124,8 @@ def client_running() -> False:
     with open(pid_path) as pid_file:
         pid = pid_file.read()
     try:
-        maybe_steam = psutil.Process(pid)
-    except psutil.NoSuchProcess:
+        maybe_steam = psutil.Process(int(pid))
+    except:
         return False
     return maybe_steam.name() == 'steam'
 

@@ -16,3 +16,4 @@ pytest
 pytidylib
 requests-mock
 pyfakefs
+pyright

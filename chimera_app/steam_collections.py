@@ -90,7 +90,7 @@ class SteamCollections():
 
 
     def save(self):
-        if not self.collections:
+        if not self.collections or not self.db:
             return
 
         out = self.__encode()
@@ -100,6 +100,9 @@ class SteamCollections():
 
 
     def __encode(self):
+        if not self.collections:
+            return
+
         for col in self.collections:
             if 'value' in col[1]:
                 col[1]['value'] = json.dumps(col[1]['value'])

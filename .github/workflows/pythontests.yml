@@ -20,6 +20,9 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 . --count --max-complexity=10 --max-line-length=127 --show-source --statistics --exclude=tests --exit-zero
+    - name: Analyze code with pyright
+      run: |
+        pyright .
     - name: Run tests
       run: |
         ./run-tests

@@ -10,7 +10,7 @@ import chimera_app.utils as utils
 from chimera_app.file_utils import ensure_directory_for_file
 
 
-def update_data(force=False) -> bool:
+def update_data(force=False):
     attempts = 0
     while attempts < 3:
         try:
@@ -62,7 +62,7 @@ class Downloader():
         with open(db_path, 'w') as db_file:
             db_file.write(json.dumps(branches, sort_keys=True, indent=4))
 
-    def get_installed(self) -> dict:
+    def get_installed(self) -> dict | None:
         """Returns a dictionary with installed branch and version number."""
         version_path = os.path.join(self.db_path, "versions.json")
         if not os.path.exists(version_path):
@@ -73,7 +73,7 @@ class Downloader():
             version = json.load(version_file)
         return version
 
-    def get_installed_version(self) -> str:
+    def get_installed_version(self) -> str | None:
         """Checks installed data package version."""
         versions = self.get_installed()
         ver = None
@@ -81,7 +81,7 @@ class Downloader():
             ver = versions['installed']['sha']
         return ver
 
-    def get_available_versions(self) -> list:
+    def get_available_versions(self) -> list | None:
         """Checks for available data packages versions."""
         branches_path = os.path.join(self.db_path, "branches.json")
         self.fetch_latest()
@@ -114,9 +114,12 @@ class Downloader():
                     updated = True
         return updated
 
-    def get_update_sha(self) -> str:
-        available_versions = self.get_available_versions()
+    def get_update_sha(self) -> str | None:
         sha = None
+        available_versions = self.get_available_versions()
+        if not available_versions:
+            return None
+
         for versions in available_versions:
             if self.channel == versions['name']:
                 sha = versions['sha']
@@ -138,6 +141,9 @@ class Downloader():
         if not updated or force:
             self.fetch_latest()
             sha = self.get_update_sha()
+            if not sha:
+                return False
+
             self.download_package(sha)
             zip_path = os.path.join(self.db_path, "data.zip")
             version_path = os.path.join(self.db_path, "versions.json")
