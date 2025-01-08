@@ -1,6 +1,5 @@
 import os
 import subprocess
-import psutil
 from chimera_app.config import BIN_PATH
 
 

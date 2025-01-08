@@ -4,7 +4,6 @@ import re
 import shutil
 import subprocess
 from datetime import datetime
-import psutil
 import chimera_app.context as context
 import chimera_app.shortcuts as shortcuts
 
@@ -124,6 +123,7 @@ def client_running() -> bool:
     with open(pid_path) as pid_file:
         pid = pid_file.read()
     try:
+        import psutil
         maybe_steam = psutil.Process(int(pid))
     except:
         return False

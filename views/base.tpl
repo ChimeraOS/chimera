@@ -29,7 +29,9 @@
 		<div class="left">
             <div class="menuitems" id="mainmenu">
                 <a href="/library">Library</a>
+                % if not get('content_share_only'):
                 <a href="/actions">Actions</a>
+                % end
                 <a href="/system">System</a>
                 <a href="/logout">Log Out</a>
             </div>

@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 % from urllib.parse import quote
 
 <h2>{{app.name}}</h2>

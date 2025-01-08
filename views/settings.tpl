@@ -1,17 +1,21 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 <form action="/system/update" method="post" enctype="multipart/form-data">
+    % if not get('content_share_only'):
     <h4>Storage</h4>
     <hr>
     <a class="button" href="/system/storage">
         Configure Storage
     </a>
+    % end
 
     <h4>Logging in</h4>
     <hr>
-    By default a random password is shown on your TV every time you try to log in here. This can be disabled by configuring a set password.
+    <div {{ 'hidden' if get('content_share_only') else '' }}>
+    <p>By default a random password is shown on your TV every time you try to log in here. This can be disabled by configuring a set password.</p>
 
     <div class="label">Generate a new password for each login</div>
-	<input type="checkbox" name="generate_password" id="generate_password" onclick="setShowPasswordField()" {{'checked' if not settings["keep_password"] else ''}} />
+    <input type="checkbox" name="generate_password" id="generate_password" onclick="setShowPasswordField()" {{'checked' if not settings["keep_password"] and not get('content_share_only') else ''}} />
+    </div>
 
     <div id="password">
     <div class="label">Log in password</div>
@@ -20,6 +24,7 @@
 
 	</div>
 
+    <div {{ 'hidden' if get('content_share_only') else '' }}>
     <h4>FTP Server</h4>
     <hr>
     FTP can be used for transferring files to and from this machine. You can connect to use with an FTP client at ftp://{{hostname}}:{{settings["ftp_port"]}}/ if enabled.<br>
@@ -74,6 +79,8 @@
     <div class="label">Enable Content Sharing</div>
     Allows other Chimera instances on the same network to download content from this instance. Only a single instance on your network should have this setting enabled. The server must be restarted for changes to this setting to take effect.<br><br>
     <input type="checkbox" name="enable_content_sharing" id="enable_content_sharing" {{'checked' if settings["enable_content_sharing"] else ''}} />
+    </div>
+
     <button>Save</button>
 </form>
 <script>

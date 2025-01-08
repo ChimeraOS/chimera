@@ -1,5 +1,4 @@
 import os
-import plyvel
 import json
 import sys
 import time
@@ -18,6 +17,8 @@ class SteamCollections():
 
 
     def open(self):
+        import plyvel
+
         if self.collections:
             return
 

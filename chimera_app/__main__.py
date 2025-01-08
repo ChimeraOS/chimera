@@ -1,3 +1,4 @@
+import os
 import argparse
 from chimera_app.data import update_data
 from chimera_app.compat_tools import install_all_compat_tools
@@ -60,11 +61,12 @@ def setup_argparse():
 
 
 def run_server(port):
-    import os
     import shutil
     import bottle
     from chimera_app.server import server
     from chimera_app.config import RESOURCE_DIR, FTP_SERVER, UPLOADS_DIR
+
+    CONTENT_SHARE_ONLY = os.environ.get('CONTENT_SHARE_ONLY') == 'true'
 
     if not os.environ.get("DISPLAY"):
         os.environ["DISPLAY"] = ":0.0"
@@ -73,7 +75,9 @@ def run_server(port):
         shutil.rmtree(UPLOADS_DIR)
 
     os.chdir(RESOURCE_DIR)
-    FTP_SERVER.run()
+
+    if not CONTENT_SHARE_ONLY:
+        FTP_SERVER.run()
 
     # Server   | url encoding | large file download (3.6 GB) | starts | multi-threaded | installed size
     # default  | y            | y (32s)                      | y      | n              | 0 MB

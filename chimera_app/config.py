@@ -3,11 +3,9 @@ import yaml
 from dataclasses import dataclass
 from chimera_app.settings import Settings
 import chimera_app.context as context
-from chimera_app.ftp.server import Server as FTPServer
 from chimera_app.authenticator import Authenticator, generate_password
 from chimera_app.ssh_keys import SSHKeys
 from chimera_app.steamgrid.steamgrid import Steamgrid
-from chimera_app.storage import StorageConfig
 
 
 def merge_single_level(src1, src2):
@@ -24,6 +22,7 @@ def merge_single_level(src1, src2):
 
     return result
 
+CONTENT_SHARE_ONLY = os.environ.get('CONTENT_SHARE_ONLY') == 'true'
 
 RESOURCE_DIR = os.getcwd()
 if not os.path.isfile(os.path.join(RESOURCE_DIR, 'views/base.tpl')):
@@ -59,15 +58,26 @@ SESSION_OPTIONS = {
 
 SETTINGS_HANDLER = Settings(SETTINGS_DIR, SETTINGS_DEFAULT)
 
-AUTHENTICATOR = Authenticator(BIN_PATH, password_length=5)
+# settings overrides for exclusive content sharing mode
+if CONTENT_SHARE_ONLY:
+    SETTINGS_HANDLER.set_setting('enable_content_sharing', True)
+    SETTINGS_HANDLER.set_setting('enable_remote_launch', False)
+    SETTINGS_HANDLER.set_setting('enable_ftp_server', False)
+    FTP_SERVER = None
+    STORAGE_HANDLER = None
 
-FTP_SERVER = FTPServer(SETTINGS_HANDLER)
+if not CONTENT_SHARE_ONLY:
+    from chimera_app.ftp.server import Server as FTPServer
+    from chimera_app.storage import StorageConfig
+
+    FTP_SERVER = FTPServer(SETTINGS_HANDLER)
+    STORAGE_HANDLER = StorageConfig()
+
+AUTHENTICATOR = Authenticator(BIN_PATH, password_length=5)
 
 SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 STEAMGRID_HANDLER = Steamgrid("423ef7be0f4b9f8cfa1a471149c5b72c")
-
-STORAGE_HANDLER = StorageConfig()
 
 PLATFORMS_DEFAULT = {
     "32x": {
@@ -225,6 +235,12 @@ if PLATFORM_SETTINGS:
 # set id property on all platforms
 for platform_id in PLATFORMS:
     PLATFORMS[platform_id]['id'] = platform_id
+
+# these platforms do not support content sharing so disable them when running in exclusive content sharing mode
+if CONTENT_SHARE_ONLY:
+    PLATFORMS['epic-store']['enabled'] = False
+    PLATFORMS['gog']['enabled'] = False
+    PLATFORMS['flathub']['enabled'] = False
 
 # drop disabled and invalid platforms
 FILTERED_PLATFORMS = {}

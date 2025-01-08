@@ -2,8 +2,6 @@ import os
 import secrets
 import string
 import subprocess
-import psutil
-
 
 def generate_password(length: int) -> str:
     alphabet = string.ascii_uppercase + string.digits
@@ -40,6 +38,7 @@ class Authenticator:
         subprocess.Popen([self.__fg, self.__wrap, self.__app, self.__password])
 
     def kill(self):
+        import psutil
         for process in psutil.process_iter():
             try:
                 cmdline = process.cmdline()

@@ -55,6 +55,8 @@ from chimera_app.shortcuts import get_bpmbanner_id
 import chimera_app.power as power
 
 
+CONTENT_SHARE_ONLY = os.environ.get('CONTENT_SHARE_ONLY') == 'true'
+
 server = SessionMiddleware(app(), SESSION_OPTIONS)
 
 
@@ -65,12 +67,13 @@ storage_operation_device = None
 storage_operation_status = None
 storage_operation_log = None
 
-
-PLATFORM_HANDLERS = {
-    "epic-store": EpicStore(),
-    "flathub": Flathub(),
-    "gog": GOG(),
-}
+PLATFORM_HANDLERS = {}
+if not CONTENT_SHARE_ONLY:
+    PLATFORM_HANDLERS = {
+        "epic-store": EpicStore(),
+        "flathub": Flathub(),
+        "gog": GOG(),
+    }
 
 REMOTE_HANDLERS = {}
 
@@ -99,17 +102,20 @@ def root():
 @route('/actions')
 @authenticate
 def actions():
-    return template('actions.tpl', audio=get_audio(), tdp=power.get_tdp(), bare=True)
+    if CONTENT_SHARE_ONLY:
+        abort(404, 'Running in exclusive content sharing mode')
+    else:
+        return template('actions.tpl', audio=get_audio(), tdp=power.get_tdp(), bare=True, content_share_only=CONTENT_SHARE_ONLY)
 
 @route('/emulators')
 @authenticate
 def emulators():
-    return template('emulators.tpl', bare=True)
+    return template('emulators.tpl', bare=True, content_share_only=CONTENT_SHARE_ONLY)
 
 @route('/library')
 @authenticate
 def platforms():
-    return template('platforms.tpl', platforms=PLATFORMS)
+    return template('platforms.tpl', platforms=PLATFORMS, content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/library/<platform>')
@@ -125,11 +131,13 @@ def platform_page(platform):
                 platform=platform,
                 platformName=PLATFORMS[platform]['name'],
                 remote=False,
+                content_share_only=CONTENT_SHARE_ONLY,
             )
         else:
             return template('custom_login',
                             platform=platform,
-                            platformName=PLATFORMS[platform]['name'])
+                            platformName=PLATFORMS[platform]['name'],
+                            content_share_only=CONTENT_SHARE_ONLY)
 
     shortcut_file = PlatformShortcutsFile(platform)
     shortcuts = sorted(shortcut_file.get_shortcuts_data(),
@@ -154,7 +162,8 @@ def platform_page(platform):
                     shortcuts=data,
                     platform=platform,
                     platformName=PLATFORMS[platform]['name'],
-                    remoteConnected=bool(REMOTE_HANDLERS))
+                    remoteConnected=bool(REMOTE_HANDLERS),
+                    content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/library/<platform>/authenticate', method='POST')
@@ -214,6 +223,7 @@ def new(platform):
             platform=platform,
             platformName=PLATFORMS[platform]['name'],
             remote=remote,
+            content_share_only=CONTENT_SHARE_ONLY,
         )
     return template('new.tpl',
                     isNew=True,
@@ -222,7 +232,8 @@ def new(platform):
                     platformName=PLATFORMS[platform]['name'],
                     name='',
                     hidden='',
-                    steamShortcutID=None
+                    steamShortcutID=None,
+                    content_share_only=CONTENT_SHARE_ONLY,
                     )
 
 
@@ -255,6 +266,7 @@ def edit(platform, name):
                 name=content_id,
                 steamShortcutID=(get_bpmbanner_id(shortcut['cmd'], shortcut['name']) if remoteLaunchEnabled else None),
                 remote=remote,
+                content_share_only=CONTENT_SHARE_ONLY,
             )
         else:
             abort(404, 'Content not found')
@@ -269,6 +281,7 @@ def edit(platform, name):
                     name=name,
                     hidden=shortcut['hidden'],
                     steamShortcutID=(get_bpmbanner_id(platform, name) if remoteLaunchEnabled else None),
+                    content_share_only=CONTENT_SHARE_ONLY,
                     )
 
 
@@ -581,7 +594,7 @@ def install_progress(platform, content_id):
 @route('/status-info')
 @authenticate
 def status_info():
-    return template('status_info.tpl')
+    return template('status_info.tpl', content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/system')
@@ -594,7 +607,7 @@ def settings():
     hostname = request.environ.get('HTTP_HOST').split(":")[0] or request.environ.get('SERVER_NAME')
     username = pwd.getpwuid(os.getuid())[0]
     return template('settings.tpl', settings=current_settings, password_is_set=password_is_set,
-                    ssh_key_ids=ssh_key_ids, hostname=hostname, username=username)
+                    ssh_key_ids=ssh_key_ids, hostname=hostname, username=username, content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/system/update', method='POST')
@@ -717,7 +730,7 @@ def suspend_system():
 @route('/system/storage', method='GET')
 @authenticate
 def storage_page():
-    return template('storage.tpl')
+    return template('storage.tpl', content_share_only=CONTENT_SHARE_ONLY)
 
 
 def operation_status():
@@ -896,17 +909,17 @@ def tdp_up():
 @route('/login')
 def login():
     keep_password = SETTINGS_HANDLER.get_setting('keep_password')
-    if not keep_password:
+    if not keep_password and not CONTENT_SHARE_ONLY:
         AUTHENTICATOR.reset_password()
         AUTHENTICATOR.launch()
-    return template('login', keep_password=keep_password, failed=False)
+    return template('login', keep_password=keep_password or CONTENT_SHARE_ONLY, failed=False, content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/logout')
 def logout():
     session = request.environ.get('beaker.session')
     session.delete()
-    return template('logout')
+    return template('logout', content_share_only=CONTENT_SHARE_ONLY)
 
 @route('/authenticate', method='GET')
 def authenticate_get():
@@ -919,14 +932,20 @@ def authenticate_post():
 def authenticate_route_handler():
     global LOCAL_PASSWORD
 
-    AUTHENTICATOR.kill()
+    if not CONTENT_SHARE_ONLY:
+        AUTHENTICATOR.kill()
+
     password = request.forms.get('password') or request.query.get('password')
     session = request.environ.get('beaker.session')
     keep_password = SETTINGS_HANDLER.get_setting('keep_password') or False
     stored_hash = SETTINGS_HANDLER.get_setting('password')
     local_password = LOCAL_PASSWORD
     LOCAL_PASSWORD=refresh_local_password()
-    if password == local_password or AUTHENTICATOR.matches_password(password.upper()) or (keep_password and stored_hash and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))):
+    DEFAULT_PASSWORD='gamer'
+    if password == local_password or \
+      AUTHENTICATOR.matches_password(password.upper()) or \
+      (CONTENT_SHARE_ONLY and not stored_hash and password == DEFAULT_PASSWORD) or \
+      (keep_password and stored_hash and bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))):
         session['User-Agent'] = request.headers.get('User-Agent')
         session['Logged-In'] = True
         session.save()
@@ -935,10 +954,10 @@ def authenticate_route_handler():
         if session.get('Logged-In', True):
             session['Logged-In'] = False
             session.save()
-        if not keep_password:
+        if not keep_password and not CONTENT_SHARE_ONLY:
             AUTHENTICATOR.reset_password()
             AUTHENTICATOR.launch()
-        return template('login', keep_password=keep_password, failed=True)
+        return template('login', keep_password=keep_password or CONTENT_SHARE_ONLY, failed=True, content_share_only=CONTENT_SHARE_ONLY)
 
 
 @route('/forgotpassword')

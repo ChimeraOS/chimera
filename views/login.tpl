@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 % if keep_password:
 <h3>Please enter your password to continue</h3>
 % else:

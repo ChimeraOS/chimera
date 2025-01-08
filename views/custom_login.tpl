@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 
 % if platform == 'epic-store':
 <p class="platform-login-description">Please <a target="_blank" href="https://legendary.gl/epiclogin">click this link</a>, login to your Epic account if not already logged in, and paste the authorization code that appears into the input box below.</p>

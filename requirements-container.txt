@@ -1,0 +1,7 @@
+bottle
+pyyaml
+requests
+beaker
+bcrypt
+vdf
+waitress

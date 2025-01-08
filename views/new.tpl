@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 
 <script src="/public/alpinejs@3.12.0.min.js"></script>
 

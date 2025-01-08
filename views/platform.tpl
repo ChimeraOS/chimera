@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', content_share_only=get('content_share_only'))
 
 <div class="img-container">
     <a href="/library/{{platform}}/new">
