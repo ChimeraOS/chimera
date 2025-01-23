@@ -603,9 +603,16 @@ def settings():
     current_settings = SETTINGS_HANDLER.get_settings()
     password_field = SETTINGS_HANDLER.get_setting('password')
     password_is_set = password_field and len(password_field) > 7
-    ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
     hostname = request.environ.get('HTTP_HOST').split(":")[0] or request.environ.get('SERVER_NAME')
-    username = pwd.getpwuid(os.getuid())[0]
+
+    ssh_key_ids = []
+    if SSH_KEY_HANDLER:
+        ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
+
+    username = None
+    if not CONTENT_SHARE_ONLY:
+        username = pwd.getpwuid(os.getuid())[0]
+
     return template('settings.tpl', settings=current_settings, password_is_set=password_is_set,
                     ssh_key_ids=ssh_key_ids, hostname=hostname, username=username, content_share_only=CONTENT_SHARE_ONLY)
 
@@ -643,17 +650,19 @@ def settings_update():
     if ftp_port and 1024 < ftp_port < 65536 and ftp_port != 8844:
         SETTINGS_HANDLER.set_setting("ftp_port", ftp_port)
 
-    # Delete SSH keys if asked
-    ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
-    for key_id in ssh_key_ids:
-        if sanitize(request.forms.get(html.escape(key_id)) == 'on'):
-            SSH_KEY_HANDLER.remove_key(key_id)
+    if SSH_KEY_HANDLER:
+        # Delete SSH keys if asked
+        ssh_key_ids = SSH_KEY_HANDLER.get_key_ids()
+        for key_id in ssh_key_ids:
+            if sanitize(request.forms.get(html.escape(key_id)) == 'on'):
+                SSH_KEY_HANDLER.remove_key(key_id)
 
-    # After we are done deleting the selected ssh keys, add a new key if specified
-    # The add_key function makes sanitization not needed
-    SSH_KEY_HANDLER.add_key(request.forms.get('ssh_key'))
+        # After we are done deleting the selected ssh keys, add a new key if specified
+        # The add_key function makes sanitization not needed
+        SSH_KEY_HANDLER.add_key(request.forms.get('ssh_key'))
 
-    FTP_SERVER.reload()
+    if FTP_SERVER:
+        FTP_SERVER.reload()
 
     redirect('/system')
 

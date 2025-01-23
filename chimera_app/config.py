@@ -65,6 +65,7 @@ if CONTENT_SHARE_ONLY:
     SETTINGS_HANDLER.set_setting('enable_ftp_server', False)
     FTP_SERVER = None
     STORAGE_HANDLER = None
+    SSH_KEY_HANDLER = None
 
 if not CONTENT_SHARE_ONLY:
     from chimera_app.ftp.server import Server as FTPServer
@@ -72,10 +73,10 @@ if not CONTENT_SHARE_ONLY:
 
     FTP_SERVER = FTPServer(SETTINGS_HANDLER)
     STORAGE_HANDLER = StorageConfig()
+    SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 AUTHENTICATOR = Authenticator(BIN_PATH, password_length=5)
 
-SSH_KEY_HANDLER = SSHKeys(os.path.expanduser('~/.ssh/authorized_keys'))
 
 STEAMGRID_HANDLER = Steamgrid("423ef7be0f4b9f8cfa1a471149c5b72c")
 

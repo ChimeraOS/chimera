@@ -12,10 +12,9 @@ def __get_steam_user_dirs(steam_dir):
                 user_dirs.append(os.path.join(base, d))
     return user_dirs
 
-
-CACHE_HOME = os.path.expanduser('~/.cache')
-CONFIG_HOME = os.path.expanduser('~/.config')
-DATA_HOME = os.path.expanduser('~/.local/share')
+CACHE_HOME = os.environ.get('XDG_CACHE_HOME') or os.path.expanduser('~/.cache')
+CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config')
+DATA_HOME = os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share')
 USER_SHORTCUT_DIR = os.path.join(DATA_HOME, 'chimera/shortcuts')
 SYSTEM_SHORTCUT_DIR = '/usr/share/chimera/shortcuts'
 SHORTCUT_DIRS = [ USER_SHORTCUT_DIR, SYSTEM_SHORTCUT_DIR ]
