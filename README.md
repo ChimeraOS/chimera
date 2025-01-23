@@ -6,9 +6,10 @@ Chimera is a web app for remotely installing non-Steam software to your Linux ba
 
 - install games from GOG, Epic Games Store, and Flathub
 - upload ROMs for supported console emulators
+- share ROMs across multiple systems
 - quick actions
   - adjust audio volume
-  - adjust TDP of supported devices
+  - toggle the performance overlay
   - load/save emulator state
   - restart steam
   - suspend/reboot/power off
@@ -48,6 +49,35 @@ To restart Steam you can open the menu, click on "Actions", then select "Restart
 If you use ChimeraOS or use `gamescope-session` and have `chimera` installed, the required commands to apply game tweaks and shortcuts to Steam will run automatically when the Steam session starts.
 
 Otherwise, you will need to run `chimera --update` and `chimera --tweaks` while Steam is not running because any changes applied while Steam is running will be overwritten by Steam.
+
+## Emulation Content Sharing
+
+Content sharing allows a single chimera instance to act as a host for ROM files and related artwork. Other instances can then install games directly from the host device without having to re-upload ROM files and select artwork.
+
+Content sharing can be enabled under `System` by clicking on the `Enable Content Sharing` toggle and restarting the service. Please make sure to only enable this feature on a single device in your network, otherwise you may experience issues with connecting to the wrong host.
+
+Once enabled, other chimera instances will automatically connect to the content sharing host. If you click on any emulation platform in the Library, you will see an additional blue `+` button with a radio/transmitter logo in the corner. Clicking on it will bring you to a page where you can install the shared content for that platform to your device.
+
+It is strongly recommended to run the [Chimera Container](#chimera-container) on a home server to host your emulation content.
+
+## Chimera Container
+
+For convenience and to allow for running a chimera server on any OS supporting Docker, a container image is provided.
+
+This container is dedicated to hosting games as shared content for other chimera instances on the same network.
+
+Here is a sample docker compose file for running the container version of chimera:
+```
+services:
+  chimera:
+    image: ghcr.io/chimeraos/chimera:0.23.1
+    volumes:
+      - ./chimera:/data/chimera
+    network_mode: host
+    restart: unless-stopped
+```
+
+NOTE: host network mode is required for other chimera instances to be able to discover the content sharing chimera server.
 
 ## Configuration
 
