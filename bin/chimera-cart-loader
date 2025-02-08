@@ -3,6 +3,18 @@
 DUMP_DIR=/tmp/chimera-cart-loader
 
 function check {
+
+	if lsusb | grep 'ID 05e3:0751' > /dev/null; then
+		# MIG Flash Dumper connected
+		ROM=$(find "/run/media/$USER/GameCard" -name ROM.xci)
+		if [ -e "$ROM" ]; then
+			echo "switch:::$ROM"
+			return 0
+		else
+			return 2
+		fi
+	fi
+
 	if [ ! -e /dev/gboperator ]; then
 		# gboperator not connected
 		return 1
@@ -28,10 +40,15 @@ function load {
 	launcher=$1
 	cart=$2
 
-	ROM="$DUMP_DIR/$cart"
-
 	mkdir -p "$DUMP_DIR"
 	trap "rm -rf $DUMP_DIR" EXIT
+
+	if [ "$launcher" == "switch" ]; then
+		$launcher "$cart"
+		exit
+	fi
+
+	ROM="$DUMP_DIR/$cart"
 	gbopyrator --dump-rom "$ROM"
 	$launcher "$ROM"
 }

@@ -1,6 +1,6 @@
 - name: Cart Loader
   cmd: chimera-cart-loader
-  condition: test -e /dev/gboperator
+  condition: test -e /dev/gboperator || test -e /run/media/$USER/GameCard
   hidden: false
   poster: /usr/share/chimera/images/cart-loader/poster.png
   banner: /usr/share/chimera/images/cart-loader/banner.png

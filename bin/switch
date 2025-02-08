@@ -35,4 +35,10 @@ if [ ! -e ${CONFIG_HOME}/yuzu/qt-config.ini ]; then
 fi
 
 # AppImage requires full path
-${DATA_HOME}/chimera/content/switch/yuzu.AppImage -f -g "${DATA_HOME}/chimera/content/switch/$@"
+ROM_PATH="${DATA_HOME}/chimera/content/switch/$@"
+if [ "${1:0:1}" = "/" ]; then
+	# Already an absolute path, use as is
+	ROM_PATH="$@"
+fi
+
+${DATA_HOME}/chimera/content/switch/yuzu.AppImage -f -g "$ROM_PATH"

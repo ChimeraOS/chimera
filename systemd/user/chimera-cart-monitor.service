@@ -1,7 +1,7 @@
 [Unit]
 Description=Chimera Cart Monitor - Automatically launch games from physical cartridges
-Requires=dev-gboperator.device
-After=dev-gboperator.device
+ConditionPathExists=|/dev/gboperator
+ConditionPathExists=|/run/media/%u/GameCard
 
 [Service]
 ExecStart=/usr/libexec/chimera/chimera-cart-monitor
