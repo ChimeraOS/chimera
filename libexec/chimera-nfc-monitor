@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import signal
+import smartcard.System
+from smartcard.CardConnection import CardConnection
+from smartcard.CardMonitoring import CardMonitor, CardObserver
+
+
+# NTAG 215: 135*4=540 bytes
+PAGE_SIZE=4
+MAX_PAGES=135
+PAGE_OFFSET=4
+TERMINATOR=0xfe
+READ_CMD=[0xff, 0xb0, 0x00]
+
+def read_page(connection, page_number):
+    try:
+        result = connection.transmit([*READ_CMD, page_number, PAGE_SIZE], protocol=CardConnection.T1_protocol)
+        return result[0]
+    except:
+        return []
+
+def read_payload(connection):
+    data = ""
+    page_number = PAGE_OFFSET
+    raw = []
+    while TERMINATOR not in raw and page_number < MAX_PAGES:
+        raw = read_page(connection, page_number)
+        data += "".join([chr(x) for x in raw])
+        page_number += 1
+    return data.split(chr(TERMINATOR))[0]
+
+
+class ChimeraObserver(CardObserver):
+    def update(self, observable, actions):
+        (addedcards, removedcards) = actions
+        for card in addedcards:
+            try:
+                connection = card.createConnection()
+                connection.connect()
+                data = read_payload(connection)
+                parts = data.split('/launch/')
+                app_id = parts[1]
+                print(f'Launching app id: {app_id}')
+                os.system(f'steam steam://rungameid/{app_id}')
+            except:
+                print("Unable to read NFC card")
+
+
+if __name__ == "__main__":
+    monitor = CardMonitor()
+    observer = ChimeraObserver()
+    monitor.addObserver(observer)
+    signal.sigwait([ signal.SIGTERM, signal.SIGINT ])
+    monitor.deleteObserver(observer)

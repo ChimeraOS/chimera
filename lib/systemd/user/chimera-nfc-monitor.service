@@ -1,0 +1,10 @@
+[Unit]
+Description=Chimera NFC Monitor - Automatically launch games using NFC cards
+ConditionPathExists=|/dev/acr122u
+
+[Service]
+ExecStart=/usr/libexec/chimera/chimera-nfc-monitor
+Restart=always
+
+[Install]
+WantedBy=default.target

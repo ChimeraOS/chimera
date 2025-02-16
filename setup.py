@@ -4,16 +4,18 @@ from setuptools import setup, find_packages
 
 setup(
     name="Chimera",
-    version="0.23.1",
+    version="0.24.0",
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
                   },
     data_files=[
         ('bin', glob('bin/*')),
-        ('lib/systemd/system', glob('systemd/system/*')),
-        ('lib/systemd/user', glob('systemd/user/*')),
+        ('lib/systemd/system', glob('lib/systemd/system/*')),
+        ('lib/systemd/user', glob('lib/systemd/user/*')),
+        ('lib/udev/rules.d', glob('lib/udev/rules.d/*')),
         ('libexec/chimera', glob('libexec/*')),
+        ('share/applications', ['org.chimeraos.app.desktop']),
         ('share/chimera/images', glob('images/*.png')),
         ('share/chimera/images/flathub', glob('images/flathub/*.png')),
         ('share/chimera/images/splash', glob('images/splash/*.png')),
@@ -28,7 +30,7 @@ setup(
         ('share/chimera/migrations', glob('migrations/*')),
         ('share/doc/chimera', ['README.md']),
         ('share/doc/chimera', ['LICENSE']),
-        ('share/applications', ['org.chimeraos.app.desktop']),
+        ('share/polkit-1/rules.d', glob('polkit-1/rules.d/*')),
     ],
 
     # Project uses reStructuredText, so ensure that the docutils get
