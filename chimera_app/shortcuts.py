@@ -22,17 +22,16 @@ MIGRATIONS = { 'spsp' : 'psp' }
 
 def create_all_shortcuts():
     """Convenience function to create all shortcuts with default parameters"""
-    for shortcut_dir in context.SHORTCUT_DIRS:
-        if not os.path.isdir(shortcut_dir):
-            print(f'Shortcuts directory does not exist ({shortcut_dir})')
-            return
-
     manager = ShortcutsManager()
     for user_dir in context.STEAM_USER_DIRS:
         # Should change the STEAM_USER_DIRS into USER_IDS
         manager.add_steam_file_for_user(os.path.basename(user_dir))
 
     for shortcut_dir in context.SHORTCUT_DIRS:
+        if not os.path.isdir(shortcut_dir):
+            print(f'WARNING: Shortcuts directory does not exist ({shortcut_dir})')
+            continue
+
         for file in os.scandir(shortcut_dir):
             if file.is_file():
                 manager.add_shortcuts_file_from_path(file.path)
