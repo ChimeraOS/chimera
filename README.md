@@ -65,6 +65,7 @@ It is strongly recommended to run the [Chimera Container](#chimera-container) on
 For convenience and to allow for running a chimera server on any OS supporting Docker, a container image is provided.
 
 This container is dedicated to hosting games as shared content for other chimera instances on the same network.
+When running the container, you can login to the app with the default password `gamer`. It is recommended to change the password immediately.
 
 Here is a sample docker compose file for running the container version of chimera:
 ```
