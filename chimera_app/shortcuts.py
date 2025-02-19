@@ -148,7 +148,7 @@ class SteamShortcutsFile():
         # Match shortcut dictionary and return a copy of it
         for index in data:
             entry = data[index]
-            if 'appid' in entry and entry['appid'] == app_id:
+            if 'appid' in entry and str(entry['appid']) == app_id:
                 return entry.copy(), index
 
         # for new entries
