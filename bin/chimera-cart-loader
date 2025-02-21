@@ -4,7 +4,7 @@ DUMP_DIR=/tmp/chimera-cart-loader
 
 function check {
 
-	if lsusb | grep 'ID 05e3:0751' > /dev/null; then
+	if [ -e /dev/migflashdumper ]; then
 		# MIG Flash Dumper connected
 		ROM=$(find "/run/media/$USER/GameCard" -name ROM.xci)
 		if [ -e "$ROM" ]; then
