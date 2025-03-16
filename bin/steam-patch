@@ -56,12 +56,10 @@ def start_watch(game_dir):
 
 def load_patch_data(data):
     for gameid in data:
-        patch_dir_tweak = getattr(data[gameid], 'patch_dir')
-        patches_tweak = getattr(data[gameid], 'patches')
-        if patch_dir_tweak and patches_tweak:
-            game_dir = patch_dir_tweak
-            patches[game_dir] = patches_tweak
-            start_watch(game_dir)
+        entry = data[gameid]
+        if entry.patch_dir and entry.patches:
+            patches[entry.patch_dir] = entry.patches
+            start_watch(entry.patch_dir)
 
     data.clear()
 

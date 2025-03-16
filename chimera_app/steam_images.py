@@ -61,7 +61,7 @@ def apply_custom_steam_images():
     for key in GAMEDB['steam']:
         entry = GAMEDB['steam'][key]
         for img_type in [ 'banner', 'poster', 'background', 'logo' ]:
-            img_url = getattr(entry, img_type, None)
+            img_url = getattr(entry, img_type)
             if not img_url:
                 continue
             img_path = get_image_path(key, img_url, img_type)

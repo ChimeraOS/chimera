@@ -170,8 +170,8 @@ class LocalSteamConfig(SteamConfigFile):
                                           ['apps'])
 
         for key in tweak_data:
-            steam_input_tweak = getattr(tweak_data[key], 'steam_input', None)
-            if (steam_input_tweak == 'enabled'):
+            entry = tweak_data[key]
+            if (entry.steam_input == 'enabled'):
                 steam_input_data[key] = {
                     "UseSteamControllerConfig": "2",
                     "SteamControllerRumble": "-1",
@@ -179,11 +179,10 @@ class LocalSteamConfig(SteamConfigFile):
                     "EnableSCTenFootOverlayCheckNew": "1"
                 }
 
-            launch_options_tweak = getattr(tweak_data[key], 'launch_options', None)
-            if launch_options_tweak:
+            if entry.launch_options:
                 if key not in launch_options:
                     launch_options[key] = {}
-                launch_options[key]['LaunchOptions'] = (launch_options_tweak)
+                launch_options[key]['LaunchOptions'] = (entry.launch_options)
 
 
 class MainSteamConfig(SteamConfigFile):
@@ -254,10 +253,11 @@ class MainSteamConfig(SteamConfigFile):
                                   ['Steam']['CompatToolMapping'])
 
         for key in tweak_data:
+            dbentry = tweak_data[key]
+
             priority_value = priority
-            priority_tweak = getattr(tweak_data[key], 'priority', None)
-            if priority_tweak:
-                priority_value = priority_tweak
+            if dbentry.priority:
+                priority_value = dbentry.priority
 
             priority_key = 'priority'
             if key in compat and 'Priority' in compat[key]:
@@ -266,12 +266,10 @@ class MainSteamConfig(SteamConfigFile):
             if (key not in compat or
                     priority_key not in compat[key] or
                     int(compat[key][priority_key]) <= priority_value):
-                compat_tool_tweak = getattr(tweak_data[key], 'compat_tool', None)
-                if compat_tool_tweak:
+                if dbentry.compat_tool:
                     entry = {}
-                    entry['name'] = compat_tool_tweak
-                    compat_config_tweak = getattr(tweak_data[key], 'compat_config', None)
-                    if compat_config_tweak:
-                        entry['config'] = compat_config_tweak
+                    entry['name'] = dbentry.compat_tool
+                    if dbentry.compat_config:
+                        entry['config'] = dbentry.compat_config
                     entry[priority_key] = priority_value
                     compat[key] = entry

@@ -278,6 +278,7 @@ class GameDbEntry:
     store: str | None
     steam_input: str | None
     notes: list[str] | None
+    priority: int | None
     patch_dir: str | None
     patches: list | None
 
@@ -316,6 +317,7 @@ try:
                     store=game['store'] if 'store' in game else None,
                     steam_input=game['steam_input'] if 'steam_input' in game else None,
                     notes=game['notes'] if 'notes' in game else None,
+                    priority=game['priority'] if 'priority' in game else None,
                     patch_dir=game['patch_dir'] if 'patch_dir' in game else None,
                     patches=game['patches'] if 'patches' in game else None,
                 )
