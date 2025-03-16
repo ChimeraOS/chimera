@@ -30,8 +30,8 @@ def apply_status_collections(db, user_id):
         col.remove(status_to_collection_name('verified'), [ int(game_id) ] )
         col.remove(status_to_collection_name('playable'), [ int(game_id) ] )
         col.remove(status_to_collection_name('unsupported'), [ int(game_id) ] )
-        if 'status' in db[game_id]:
-            col_name = status_to_collection_name(db[game_id]['status'])
+        if db[game_id].status:
+            col_name = status_to_collection_name(db[game_id].status)
             if col_name:
                 col.add(col_name, [ int(game_id) ])
     col.save()
@@ -52,7 +52,9 @@ def apply_all_tweaks():
         user_config = LocalSteamConfig(user_id)
         user_config.apply_tweaks(GAMEDB['steam'])
         user_config.save()
-        apply_status_collections(GAMEDB['steam'], user_id)
+        if os.environ.get('APPLY_STATUS_COLLECTIONS'):
+            print('Applying status collections')
+            apply_status_collections(GAMEDB['steam'], user_id)
 
 
 class TweaksFile:
