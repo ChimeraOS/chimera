@@ -53,7 +53,7 @@ def apply_all_tweaks():
         user_config.apply_tweaks(GAMEDB['steam'])
         user_config.save()
         if os.environ.get('APPLY_STATUS_COLLECTIONS'):
-            print('Applying status collections')
+            print(f'Applying status collections for user: {user_id}')
             apply_status_collections(GAMEDB['steam'], user_id)
 
 
