@@ -152,7 +152,9 @@ class StorePlatform:
             status=None,
             store=None,
             steam_input=None,
-            notes=None
+            notes=None,
+            patch_dir=None,
+            patches=None
         )
 
     def _get_image_url(self, platform, content_id, img_type='banner'):
