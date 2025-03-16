@@ -160,7 +160,7 @@ class Flathub(StorePlatform):
         }
 
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
-            img_url = getattr(content, img_type)
+            img_url = getattr(content, img_type, None)
             if not img_url:
                 continue
 

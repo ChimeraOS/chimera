@@ -166,8 +166,8 @@ class StorePlatform:
         if not game:
             return None
 
-        img = getattr(game, img_type)
-        banner = getattr(game, 'banner')
+        img = getattr(game, img_type, None)
+        banner = getattr(game, 'banner', None)
 
         if not img and banner and banner.startswith('steam:'):
             img = banner
@@ -190,7 +190,7 @@ class StorePlatform:
 
     def download_images(self, content):
         for img_type in [ 'banner', 'poster', 'background', 'logo', 'icon' ]:
-            img_url = getattr(content, img_type)
+            img_url = getattr(content, img_type, None)
             if img_url and img_url.startswith('http'):
                 img_path = self.get_image_path(content, img_type)
                 subprocess.check_output(["curl", str(img_url), "-o", str(img_path)])
@@ -205,7 +205,7 @@ class StorePlatform:
         return ext
 
     def get_image_path(self, content, img_type='banner'):
-        img_url = getattr(content, img_type)
+        img_url = getattr(content, img_type, None)
         if not img_url:
             return None
 
