@@ -14,7 +14,7 @@ from chimera_app.steam_config import status_to_collection_name
 class GogGameInfo:
     id: str
     title: str
-    isGame: bool
+    is_game: bool
     image: str
 
 class GOG(StorePlatform):
@@ -77,8 +77,14 @@ class GOG(StorePlatform):
 
         games = sorted(data['games'], key=lambda g: g['ProductInfo']['title'])
         for game in games:
-            info = GogGameInfo(**game['ProductInfo'])
-            if not info.isGame:
+            prod = game['ProductInfo']
+            info = GogGameInfo(
+                id=prod['id'],
+                title=prod['title'],
+                is_game=prod['isGame'],
+                image=prod['image'],
+            )
+            if not info.is_game:
                 continue
 
             cid = str(info.id)
