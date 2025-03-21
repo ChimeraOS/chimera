@@ -10,7 +10,6 @@ from chimera_app.config import UPLOADS_DIR
 from chimera_app.shortcuts import PlatformShortcutsFile
 from chimera_app.platforms.store_platform import StorePlatform, App
 from chimera_app.config import PLATFORMS, RESOURCE_DIR, BANNER_DIR, BIN_PATH
-from chimera_app.steam_config import status_to_collection_name
 
 
 

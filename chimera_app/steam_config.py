@@ -12,7 +12,7 @@ from chimera_app.steam_collections import SteamCollections
 
 
 def status_to_collection_name(status):
-    if not status:
+    if not status or not os.environ.get('APPLY_STATUS_COLLECTIONS'):
         return None
     elif status == 'verified':
         return 'ChimeraOS Verified'
