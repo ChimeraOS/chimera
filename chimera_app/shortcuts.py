@@ -174,7 +174,8 @@ class SteamShortcutsFile():
                     col.remove(xtag, self.tags[ytag])
 
         for tag in self.tags:
-            col.add(tag, self.tags[tag])
+            if os.environ.get('APPLY_STATUS_COLLECTIONS') or tag not in STATUS_TAGS:
+                col.add(tag, self.tags[tag])
         col.save()
 
     def tag(self, tag, appid):
