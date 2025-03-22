@@ -7,6 +7,7 @@ import vdf
 import yaml
 import chimera_app.context as context
 from chimera_app.config import GAMEDB
+from chimera_app.config import GameDbEntry
 from chimera_app.file_utils import ensure_directory_for_file
 from chimera_app.steam_collections import SteamCollections
 
@@ -104,7 +105,7 @@ class SteamConfigFile(ABC):
         return os.path.exists(self.path)
 
     @abstractmethod
-    def apply_tweaks(self, tweak_data: dict, priority: int) -> None:
+    def apply_tweaks(self, tweak_data: dict[str, GameDbEntry], priority: int) -> None:
         """Apply tweaks data to this configuration file"""
 
     @abstractmethod
@@ -158,7 +159,7 @@ class LocalSteamConfig(SteamConfigFile):
 
         self.config_data = data
 
-    def apply_tweaks(self, tweak_data: dict, priority=0) -> None:
+    def apply_tweaks(self, tweak_data: dict[str, GameDbEntry], priority=0) -> None:
         if not tweak_data:
             return
         if not self.config_data:
@@ -246,7 +247,7 @@ class MainSteamConfig(SteamConfigFile):
 
         self.config_data = data
 
-    def apply_tweaks(self, tweak_data: dict, priority=209) -> None:
+    def apply_tweaks(self, tweak_data: dict[str, GameDbEntry], priority=209) -> None:
         if not tweak_data:
             return
         if not self.config_data:

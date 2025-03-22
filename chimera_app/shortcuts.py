@@ -10,6 +10,7 @@ import yaml
 import chimera_app.context as context
 import chimera_app.utils as utils
 import chimera_app.steam_config as steam_config
+from chimera_app.config import GameDbEntry
 from chimera_app.steam_collections import SteamCollections
 from chimera_app.file_utils import ensure_directory_for_file
 
@@ -494,15 +495,33 @@ class ShortcutsManager():
     def register_compat_data(self) -> None:
         """Register all compatibility tools mapping for current entries"""
         compat_data = {}
-        for entry in self.shortcut_entries:
-            compat_id = get_compat_id(entry['cmd'], entry['name'])
-            if 'compat_tool' in entry:
-                if compat_id not in compat_data:
-                    compat_data[compat_id] = {}
-                compat_data[compat_id]['compat_tool'] = entry['compat_tool']
-                if 'compat_config' in entry:
-                    (compat_data[compat_id]
-                                ['compat_config']) = entry['compat_config']
+        for shortcut in self.shortcut_entries:
+            if 'compat_tool' not in shortcut:
+                continue
+
+            entry = GameDbEntry(
+                name="",
+                platform="",
+                id="",
+                banner=None,
+                poster=None,
+                background=None,
+                logo=None,
+                icon=None,
+                compat_tool=shortcut['compat_tool'],
+                compat_config=shortcut['compat_config'] if 'compat_config' in shortcut else None,
+                launch_options=None,
+                status=None,
+                store=None,
+                steam_input=None,
+                notes=None,
+                priority=None,
+                patch_dir=None,
+                patches=None
+            )
+
+            compat_id = get_compat_id(shortcut['cmd'], shortcut['name'])
+            compat_data[compat_id] = entry
 
         config_file = steam_config.MainSteamConfig(auto_load=False)
         config_file.load_data(clean=False)
