@@ -67,4 +67,4 @@ export SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT="0x28de/0x11ff"
 retroarch \
 --appendconfig "${RETRO_CONFIG}|${CORE_CONFIG}" \
 --libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
-"$@"
+"$(pwd)/$@"
