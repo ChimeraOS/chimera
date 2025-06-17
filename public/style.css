@@ -170,6 +170,10 @@ h4 {
     background-color: #ff3333;
 }
 
+.secondary {
+    margin-top: 30px;
+}
+
 .info-link {
     color: blue !important;
     text-decoration: underline !important;
@@ -410,6 +414,10 @@ button.small {
     padding: 0px;
     margin: 5px;
     height: 50px;
+}
+
+.accent {
+    color: #3268a8
 }
 
 @media screen and (max-width: 950px) {

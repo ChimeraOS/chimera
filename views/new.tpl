@@ -19,6 +19,7 @@ async function fetchimgs(url) {
 function images() {
 	return {
 		isEditing: '{{isEditing}}' === 'True',
+		isEditingArtwork: '{{isEditingArtwork}}' === 'True',
 		gameName: "{{!name}}",
 		gameID: null,
 		gameOptions: [],
@@ -33,6 +34,12 @@ function images() {
 				this.gameOptions = [];
 				return;
 			}
+
+			if (this.isEditing && !this.isEditingArtwork) {
+				this.gameOptions = [];
+				return;
+			}
+
 			url = "/steamgrid/search/" + this.gameName.replace(/'/g, "");
 			response = await fetch(url);
 			games = await response.json();
@@ -42,14 +49,7 @@ function images() {
 				return;
 			}
 
-			if (!this.isEditing) {
-				this.gameOptions = games.data;
-				return;
-			}
-
-			if (games.data && games.data.length > 0) {
-				this.setGameName(games.data[0].name, games.data[0].id);
-			}
+			this.gameOptions = games.data;
 		},
 		images: {
 			banner: [{}],
@@ -77,9 +77,7 @@ function images() {
 
 		setGameName(name, id) {
 			this.showSuggestions = false;
-			if (!this.isEditing) {
-				this.gameName = name;
-			}
+			this.gameName = name;
 			this.gameID = id;
 			this.gameOptions = [];
 			this.selected = {
@@ -150,24 +148,38 @@ function images() {
 
 
 <div x-data="images()">
+% from urllib.parse import quote
+
 <form autocomplete="off" action="/shortcuts/{{ 'edit' if isEditing else 'new' }}" method="post" enctype="multipart/form-data">
-	<input type="hidden" value="{{name}}" name="original_name">
+	<input type="hidden" value="{{content_id}}" name="original_name">
 	<input type="hidden" value="{{platform}}" name="platform">
 
 	<div class="label">Name</div>
 	<div class="steamgridapi">
-		<input id="gamename" @blur="clearGameOptions()" x-effect="updateGameOptions()" x-model.debounce.500ms="gameName" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing else '' }}/>
+		<input id="gamename" @blur="clearGameOptions()" x-effect="updateGameOptions()" x-model.debounce.500ms="gameName" type="text" name="name" value="{{name}}" required {{ 'disabled' if isEditing and not isEditingArtwork else '' }}/>
 		<template x-for="game in gameOptions" x-show="showSuggestions">
 			<div class="game-name-suggestion" @click="setGameName(game.name, game.id)" x-text="game.name"></div>
 		</template>
 	</div>
 
+	% if isEditing and not isEditingArtwork:
+		<div class="label">Artwork <a href="/library/{{platform}}/edit_artwork/{{quote(name)}}"><i class="ri-pencil-fill accent"></i></a></div>
+		<a href="/library/{{platform}}/edit_artwork/{{quote(name)}}">
+			<div class="img-container">
+				<img src="{{quote(banner)}}" alt="{{name}}" title="{{name}}">
+			</div>
+		</a>
+	% end
+
+	% if not isEditingArtwork:
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 
 	<div class="label">Content</div>
 	<input type="file" class="filepond" name="content" />
+	% end
 
+	% if isNew or isEditingArtwork:
 	<template x-for="type in IMAGE_TYPES">
 		<div>
 			<div class="label" x-text="capitalize(type)"></div>
@@ -179,6 +191,7 @@ function images() {
 			</div>
 		</div>
 	</template>
+	% end
 
 	% if isEditing :
 		<button>Update</button>
@@ -197,16 +210,23 @@ FilePond.setOptions({
 });
 </script>
 
-% if steamShortcutID:
+% if steamShortcutID and not isEditingArtwork:
 <form action="/launch/{{steamShortcutID}}">
-	<button>Launch</button>
+	<button class="secondary">Launch</button>
 </form>
 % end
 
-% if isEditing:
+% if isEditing and not isEditingArtwork:
 <form action="/shortcuts/delete" method="post">
 	<input type="hidden" value="{{platform}}" name="platform">
 	<input type="hidden" value="{{name}}" name="name">
 	<button class="delete">Delete</button>
 </form>
 % end
+
+% if isEditingArtwork:
+<form action="/library/{{platform}}/edit/{{quote(name)}}">
+	<button class="delete">Cancel</button>
+</form>
+% end
+</div>

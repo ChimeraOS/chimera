@@ -228,9 +228,11 @@ def new(platform):
     return template('new.tpl',
                     isNew=True,
                     isEditing=False,
+                    isEditingArtwork=False,
                     platform=platform,
                     platformName=PLATFORMS[platform]['name'],
                     name='',
+                    content_id='',
                     hidden='',
                     steamShortcutID=None,
                     content_share_only=CONTENT_SHARE_ONLY,
@@ -274,16 +276,62 @@ def edit(platform, name):
     shortcuts = PlatformShortcutsFile(platform)
     shortcut = shortcuts.get_shortcut_match(name)
 
+    if 'banner' in shortcut:
+        filename = os.path.basename(shortcut['banner'])
+        banner = f'/images/banner/{platform}/{filename}'
+
     return template('new.tpl',
+                    isNew=False,
                     isEditing=True,
+                    isEditingArtwork=False,
                     platform=platform,
                     platformName=PLATFORMS[platform]['name'],
                     name=name,
+                    content_id=name,
                     hidden=shortcut['hidden'],
+                    banner=banner,
                     steamShortcutID=(get_bpmbanner_id(platform, name) if remoteLaunchEnabled else None),
                     content_share_only=CONTENT_SHARE_ONLY,
                     )
 
+@route('/library/<platform>/edit_artwork/<name>')
+@authenticate
+def edit_artwork(platform, name):
+    remoteLaunchEnabled = SETTINGS_HANDLER.get_setting('enable_remote_launch')
+
+    handler = None
+    remote = False
+    content_id = name
+    if platform in PLATFORM_HANDLERS:
+        handler = PLATFORM_HANDLERS[platform]
+    elif request.query.remote == 'true':
+        handler = REMOTE_HANDLERS[platform]
+        remote = True
+
+    if handler:
+        if not authenticate_platform(platform):
+            return
+
+        content = handler.get_content(content_id)
+        shortcut = handler.get_shortcut(content)
+        name = shortcut['name']
+    else:
+        shortcuts = PlatformShortcutsFile(platform)
+        shortcut = shortcuts.get_shortcut_match(name)
+
+    return template('new.tpl',
+                    isNew=False,
+                    isEditing=True,
+                    isEditingArtwork=True,
+                    platform=platform,
+                    platformName=PLATFORMS[platform]['name'],
+                    content_id=content_id,
+                    name=name,
+                    hidden=shortcut['hidden'],
+                    steamShortcutID=(get_bpmbanner_id(platform, name) if remoteLaunchEnabled else None),
+                    remote=remote,
+                    content_share_only=CONTENT_SHARE_ONLY,
+                    )
 
 @route('/images/flathub/<content_id>')
 @authenticate
