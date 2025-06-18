@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="Chimera",
-    version="0.24.6",
+    version="0.24.7",
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': ['chimera = chimera_app.__main__:main']
