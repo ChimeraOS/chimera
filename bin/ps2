@@ -1,8 +1,34 @@
 #! /bin/bash
 
-if [ ! -e ~/.config/retroarch/system/pcsx2 ]; then
-	mkdir -p ~/.config/retroarch/system/pcsx2
-	ln -s ~/.local/share/chimera/content/ps2 ~/.config/retroarch/system/pcsx2/bios
+DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+
+if [ ! -e ${CONFIG_HOME}/retroarch/system/pcsx2 ]; then
+	mkdir -p ${CONFIG_HOME}/retroarch/system/pcsx2
+	ln -s ${DATA_HOME}/chimera/content/ps2 ${CONFIG_HOME}/retroarch/system/pcsx2/bios
+fi
+
+if [ ! -e ${CONFIG_HOME}/retroarch/system/pcsx2/memcards ]; then
+	mkdir -p ${DATA_HOME}/chimera/saves/ps2
+	ln -s ${DATA_HOME}/chimera/saves/ps2 ${CONFIG_HOME}/retroarch/system/pcsx2/memcards
+fi
+
+
+# migrate memory cards from pcsx2 to lrps2
+BASE_SAVE_DIR="${DATA_HOME}/chimera/saves/ps2"
+
+OLD_CARD_1="${BASE_SAVE_DIR}/pcsx2 (alpha)/pcsx2/Slot 1/Shared Memory Card (8 MB).ps2"
+OLD_CARD_2="${BASE_SAVE_DIR}/pcsx2 (alpha)/pcsx2/Slot 2/Shared Memory Card (8 MB).ps2"
+
+NEW_CARD_1="${BASE_SAVE_DIR}/Mcd001.ps2"
+NEW_CARD_2="${BASE_SAVE_DIR}/Mcd002.ps2"
+
+if [ -e "$OLD_CARD_1" ] && [ ! -e "$NEW_CARD_1" ]; then
+        ln -s "$OLD_CARD_1" "$NEW_CARD_1"
+fi
+
+if [ -e "$OLD_CARD_2" ] && [ ! -e "$NEW_CARD_2" ]; then
+        ln -s "$OLD_CARD_2" "$NEW_CARD_2"
 fi
 
 /usr/libexec/chimera/launcher ps2 pcsx2 "$@"
