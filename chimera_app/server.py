@@ -276,9 +276,14 @@ def edit(platform, name):
     shortcuts = PlatformShortcutsFile(platform)
     shortcut = shortcuts.get_shortcut_match(name)
 
+    banner = ""
     if 'banner' in shortcut:
         filename = os.path.basename(shortcut['banner'])
         banner = f'/images/banner/{platform}/{filename}'
+
+    hidden = False
+    if not remote and 'hidden' in shortcut:
+        hidden = shortcut['hidden']
 
     return template('new.tpl',
                     isNew=False,
@@ -288,7 +293,7 @@ def edit(platform, name):
                     platformName=PLATFORMS[platform]['name'],
                     name=name,
                     content_id=name,
-                    hidden=shortcut['hidden'],
+                    hidden=hidden,
                     banner=banner,
                     steamShortcutID=(get_bpmbanner_id(platform, name) if remoteLaunchEnabled else None),
                     content_share_only=CONTENT_SHARE_ONLY,
