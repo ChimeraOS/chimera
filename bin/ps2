@@ -17,8 +17,10 @@ fi
 # migrate memory cards from pcsx2 to lrps2
 BASE_SAVE_DIR="${DATA_HOME}/chimera/saves/ps2"
 
-OLD_CARD_1="${BASE_SAVE_DIR}/pcsx2 (alpha)/pcsx2/Slot 1/Shared Memory Card (8 MB).ps2"
-OLD_CARD_2="${BASE_SAVE_DIR}/pcsx2 (alpha)/pcsx2/Slot 2/Shared Memory Card (8 MB).ps2"
+# old memory cards can be in different subdirectories depending on the first ps2 core version used
+find ${BASE_SAVE_DIR} -name "*.ps2" > /tmp/chimera_ps2_memcard_migration
+OLD_CARD_1="$(cat /tmp/chimera_ps2_memcard_migration | grep 'Slot 1')"
+OLD_CARD_2="$(cat /tmp/chimera_ps2_memcard_migration | grep 'Slot 2')"
 
 NEW_CARD_1="${BASE_SAVE_DIR}/Mcd001.ps2"
 NEW_CARD_2="${BASE_SAVE_DIR}/Mcd002.ps2"
