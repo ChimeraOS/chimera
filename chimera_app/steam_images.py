@@ -26,7 +26,7 @@ def get_image_path(steamid, img_url, img_type):
 def download_image(img_url, img_path):
     if img_url and img_url.startswith('http'):
         if not os.path.exists(img_path):
-            subprocess.check_output(["curl", img_url, "-o", img_path])
+            subprocess.check_output(["curl", "-L", img_url, "-o", img_path])
 
 def get_image_id(type, steamid):
     if type == 'banner':

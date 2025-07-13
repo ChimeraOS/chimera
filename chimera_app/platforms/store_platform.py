@@ -177,13 +177,13 @@ class StorePlatform:
             steam_id = img.split(':')[1]
             match img_type:
                 case 'banner':
-                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/header.jpg'
+                    img = 'https://cdn.steamstatic.com/steam/apps/' + str(steam_id) + '/header.jpg'
                 case 'poster':
-                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/library_600x900_2x.jpg'
+                    img = 'https://cdn.steamstatic.com/steam/apps/' + str(steam_id) + '/library_600x900_2x.jpg'
                 case 'background':
-                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/library_hero.jpg'
+                    img = 'https://cdn.steamstatic.com/steam/apps/' + str(steam_id) + '/library_hero.jpg'
                 case 'logo':
-                    img = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_id) + '/logo.png'
+                    img = 'https://cdn.steamstatic.com/steam/apps/' + str(steam_id) + '/logo.png'
                 case 'icon':
                     img = None
 
@@ -194,7 +194,7 @@ class StorePlatform:
             img_url = getattr(content, img_type)
             if img_url and img_url.startswith('http'):
                 img_path = self.get_image_path(content, img_type)
-                subprocess.check_output(["curl", str(img_url), "-o", str(img_path)])
+                subprocess.check_output(["curl", "-L", str(img_url), "-o", str(img_path)])
 
     def __get_ext(self, url):
         url_noquery = url.split('?')[0]
