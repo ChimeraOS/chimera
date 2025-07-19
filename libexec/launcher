@@ -18,6 +18,8 @@ fi
 
 shift 2
 
+ROM_PATH=$(realpath "$@")
+
 mkdir -p ${SAVE_DIR}
 
 COMMON_CONFIG=/usr/share/chimera/config/retroarch-common.cfg
@@ -48,7 +50,7 @@ fi
 if [ "${CHIMERA_DISABLE_RETROARCH_CONFIG_OVERRIDES}" == "1" ]; then
 	retroarch \
 	--libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
-	"$@"
+	"$ROM_PATH"
 	exit $?
 fi
 
@@ -67,4 +69,4 @@ export SDL_GAMECONTROLLER_IGNORE_DEVICES_EXCEPT="0x28de/0x11ff"
 retroarch \
 --appendconfig "${RETRO_CONFIG}|${CORE_CONFIG}" \
 --libretro /usr/lib/libretro/${RETRO_CORE}_libretro.so \
-"$(pwd)/$@"
+"$ROM_PATH"
