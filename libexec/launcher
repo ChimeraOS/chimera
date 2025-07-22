@@ -16,6 +16,11 @@ if [ -f ${LOCAL_CONFIG} ]; then
 	CORE_CONFIG=${LOCAL_CONFIG}
 fi
 
+CONTENT_DIR=${DATA_HOME}/chimera/content/${1}
+TMP_SYSTEM_DIR=/tmp/chimera-retroarch-system-dir
+rm -f "${TMP_SYSTEM_DIR}"
+ln -s "${CONTENT_DIR}" "${TMP_SYSTEM_DIR}"
+
 shift 2
 
 ROM_PATH=$(realpath "$@")
