@@ -6,6 +6,7 @@
 
 const IMAGE_TYPES = ['banner', 'poster', 'background', 'logo', 'icon'];
 
+
 function capitalize(word) {
 	return word.charAt(0).toUpperCase() + word.slice(1);
 }
@@ -161,7 +162,9 @@ function images() {
 			<div class="game-name-suggestion" @click="setGameName(game.name, game.id)" x-text="game.name"></div>
 		</template>
 	</div>
-
+	<div class="label">File Name</div>
+	<h3>{{name}}</h3>
+	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 	% if isEditing and not isEditingArtwork:
 		<div class="label">Artwork <a href="/library/{{platform}}/edit_artwork/{{quote(name)}}"><i class="ri-pencil-fill accent"></i></a></div>
 		<a href="/library/{{platform}}/edit_artwork/{{quote(name)}}">
@@ -175,8 +178,11 @@ function images() {
 	<div class="label">Hidden</div>
 	<input type="checkbox" name="hidden" {{'checked' if hidden else ''}} />
 
+
+
+
 	<div class="label">Content</div>
-	<input type="file" class="filepond" name="content" />
+	<input type="file" class="filepond" name="content" multiple/>
 	% end
 
 	% if isNew or isEditingArtwork:
@@ -208,6 +214,12 @@ FilePond.setOptions({
 	chunkUploads : true,
 	chunkSize : 1000000 // 1 MB
 });
+
+const pond =FilePond.find(document.querySelector('.filepond'));
+pond.on('processfile', (error, file) => {
+  console.log('event triggered', file)
+  
+})
 </script>
 
 % if steamShortcutID and not isEditingArtwork:

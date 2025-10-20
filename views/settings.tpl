@@ -69,6 +69,15 @@
         </table>
     % end
 
+    <h4>SteamgridDB Api Token</h4>
+    <hr>
+    <a href="https://github.com/steamgriddb">SteamgridDB</a> is a an open source 3rd party plugin for browsing and managing library art for non steam games.
+    In order to utilize the bulk upload functionality you must retreive an api key.
+    A key can be retreived easily by visiting <a href='https://www.steamgriddb.com/profile/preferences/api'>SteamGridDb</a> and clicking "Login via Steam". Then clicking "Create Api Key".
+    The generated key can then be inputted below.
+    <div class="label">Api Token</div>
+    <input name="steamgriddb_api_key" value={{settings["steamgriddb_api_key"]}} style="width:425px; text-align: center;"/>
+
     <h4>Other</h4>
     <hr>
 
@@ -80,7 +89,6 @@
     Allows other Chimera instances on the same network to download content from this instance. Only a single instance on your network should have this setting enabled. The server must be restarted for changes to this setting to take effect.<br><br>
     <input type="checkbox" name="enable_content_sharing" id="enable_content_sharing" {{'checked' if settings["enable_content_sharing"] else ''}} />
     </div>
-
     <button>Save</button>
 </form>
 <script>
@@ -127,7 +135,6 @@
             confirm.required = false
         }
     }
-
     setShowPasswordField()
     setShowFTPSettings()
 </script>

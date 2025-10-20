@@ -5,3 +5,5 @@ venv/
 .pybuild
 *.egg-info
 *.code-workspace
+docker-compose.yaml
+/.DS_Store

@@ -13,6 +13,8 @@ import chimera_app.steam_config as steam_config
 from chimera_app.config import GameDbEntry
 from chimera_app.steam_collections import SteamCollections
 from chimera_app.file_utils import ensure_directory_for_file
+import fcntl
+import threading
 
 
 STATUS_TAGS = [ 'ChimeraOS Verified', 'ChimeraOS Playable', 'ChimeraOS Unsupported' ]
@@ -186,7 +188,7 @@ class SteamShortcutsFile():
 
     def add_shortcut(self, entry: dict):
         """Creates a new shortcut with given dictionary. Will try to match
-        with an existing shortcut in this file. If no existing shortcut can
+        with an existing shortcut in this file. If no existing shortcut can`
         be found, then create a new entry.
         """
         if 'name' not in entry:
@@ -295,12 +297,31 @@ class ShortcutsFile():
 
     path: str
     shortcuts_data: List[dict]
+    file: None
+    thread_lock = threading.Lock()
 
     def __init__(self, path: str, auto_load: bool = True):
+        
         self.path = path
         self.shortcuts_data = []
         if auto_load:
             self.load_data()
+
+    def __enter__(self):
+        self.thread_lock.acquire()
+        self.file = open(self.path, 'a+')
+        fcntl.flock(self.file.fileno(), fcntl.LOCK_EX)
+        self.load_data(file_handle=self.file)
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tab):
+        try:
+            self.save(file_handle=self.file)
+        finally:
+            fcntl.flock(self.file.fileno(), fcntl.LOCK_UN)
+            self.file.close()
+            self.file = None     
+            self.thread_lock.release()
 
     def exists(self) -> bool:
         """Returns true if this file exists. False otherwise"""
@@ -310,17 +331,23 @@ class ShortcutsFile():
         """Returns this file shortcuts in a list of dictionaries"""
         return self.shortcuts_data
 
-    def load_data(self) -> None:
+    def load_data(self, file_handle=None) -> None:
+        
         """Load shortcuts from this file"""
         if not self.exists():
             self.shortcuts_data = []
             return
 
-        with open(self.path) as yaml_file:
-            data = yaml.load(yaml_file, Loader=yaml.FullLoader)
-            if isinstance(data, dict):
-                data = [data]
-        self.shortcuts_data = data
+        if file_handle:
+            file_handle.seek(0)
+            data = yaml.load(file_handle, Loader=yaml.FullLoader)
+        else:
+            with open(self.path) as yaml_file:
+                data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+
+        if isinstance(data, dict):
+            data = [data]
+        self.shortcuts_data = data or []
 
     def add_shortcut(self, shortcut: dict) -> None:
         """Add a shortcut to the end of the shortcuts data list"""
@@ -359,7 +386,7 @@ class ShortcutsFile():
             if 'deleted' in shortcut and shortcut['deleted'] == True:
                 self.shortcuts_data.remove(shortcut)
 
-    def save(self) -> None:
+    def save(self, file_handle=None) -> None:
         """Save this file with current shortcuts data"""
         ensure_directory_for_file(self.path)
         with open(self.path, 'w') as file:

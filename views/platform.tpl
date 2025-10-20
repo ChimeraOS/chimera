@@ -1,10 +1,20 @@
 % rebase('base.tpl', content_share_only=get('content_share_only'))
 
+
 <div class="img-container">
     <a href="/library/{{platform}}/new">
         <img src="/images/add.png" alt="Add new shortcut" title="Add new shortcut">
     </a>
 </div>
+
+<div class="img-container">
+    <a href="/library/{{platform}}/bulk-upload">
+        <img src="/images/bulk-upload.png" alt="Add new shortcut" title="Add new shortcut">
+    </a>
+</div>
+
+
+
 % if remoteConnected:
 <div class="img-container">
     <a href="/library/{{platform}}/new?remote=true">
@@ -12,6 +22,8 @@
     </a>
 </div>
 % end
+
+
 
 % from urllib.parse import quote
 % for s in shortcuts:
@@ -24,4 +36,5 @@
         % end
     </div>
 </a>
+
 % end
