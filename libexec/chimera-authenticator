@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import sys
-import pyglet
+import pygame
 
 
 class Color:
-    TEXT = (252, 252, 252, 255)
-    BACKGROUND = (15, 47, 78, 255)
+    TEXT = (252, 252, 252)
+    BACKGROUND = (15, 47, 78)
 
 
 # Load the password from the command line arguments
@@ -15,75 +15,64 @@ else:
     print("No password to show specified")
     exit(1)
 
+pygame.init()
+
 # Initialize window
-window = pyglet.window.Window(fullscreen=True)
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+width, height = screen.get_size()
 
-# Setup joystick events
-joysticks = pyglet.input.get_joysticks()
+font_size = width // 20
 
-def on_joybutton_press(joystick, button_name):
-    pyglet.app.exit()
+# Try to load DejaVu Sans, fall back to default
+try:
+    password_font = pygame.font.SysFont("dejavusans", font_size, bold=True)
+    label_font = pygame.font.SysFont("dejavusans", font_size // 2)
+except:
+    password_font = pygame.font.Font(None, font_size)
+    label_font = pygame.font.Font(None, font_size // 2)
 
+# Pre-render text surfaces
+instructions_surf = label_font.render("Your password for the web interface is:", True, Color.TEXT)
+password_surf = password_font.render(password, True, Color.TEXT)
+quit_surf = label_font.render("Press any button or ESC to exit this screen", True, Color.TEXT)
+
+# Center positions
+instructions_rect = instructions_surf.get_rect(centerx=width // 2, centery=height - font_size)
+password_rect = password_surf.get_rect(centerx=width // 2, centery=height // 2)
+quit_rect = quit_surf.get_rect(centerx=width // 2, centery=font_size)
+
+# Setup joystick
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
 for joystick in joysticks:
-    joystick.open(window)
-    joystick.on_joybutton_press = on_joybutton_press
+    joystick.init()
 
-# Solid Background
-background = pyglet.sprite.Sprite(
-    pyglet.image.SolidColorImagePattern(color=Color.BACKGROUND).create_image(
-        window.width, window.height)
-)
-
-# Display text instructions
-font_size = (window.width//20)
-
-password_label = pyglet.text.Label(password,
-                                   font_name='dejavusans',
-                                   font_size=font_size,
-                                   x=window.width//2,
-                                   y=window.height//2,
-                                   anchor_x='center',
-                                   anchor_y='center')
-password_label.bold=True
-password_label.color=Color.TEXT
-
-quit_label = pyglet.text.Label("Press any button or ESC to exit this screen",
-                               font_name='dejavusans',
-                               font_size=font_size//2,
-                               x=window.width//2,
-                               y=font_size,
-                               anchor_x='center',
-                               anchor_y='center')
-quit_label.color=Color.TEXT
-
-instructions_label = pyglet.text.Label("Your password for the web interface is:",
-                               font_name='dejavusans',
-                               font_size=font_size//2,
-                               x=window.width//2,
-                               y=window.height - font_size,
-                               anchor_x='center',
-                               anchor_y='center')
-instructions_label.color=Color.TEXT
-
-@window.event
-def on_draw():
-    window.clear()
-    background.draw()
-    instructions_label.draw()
-    password_label.draw()
-    quit_label.draw()
-
-@window.event
-def on_key_press(symbol, modifiers):
-    if symbol == pyglet.window.key.ESCAPE:
-        pyglet.app.exit()
-
-@window.event
-def on_mouse_press(x, y, button, modifiers):
-    pyglet.app.exit()
 
 def main():
-    pyglet.app.run()
+    clock = pygame.time.Clock()
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                running = False
+            elif event.type == pygame.JOYBUTTONDOWN:
+                running = False
+
+        screen.fill(Color.BACKGROUND)
+        screen.blit(instructions_surf, instructions_rect)
+        screen.blit(password_surf, password_rect)
+        screen.blit(quit_surf, quit_rect)
+        pygame.display.flip()
+        clock.tick(30)
+
+    pygame.quit()
+
 
 if __name__ == "__main__":
     main()

@@ -40,7 +40,7 @@ setup(
         'pyyaml',
         'requests',
         'beaker',
-        'pyglet',
+        'pygame',
         'psutil',
         'bcrypt',
         'vdf',
